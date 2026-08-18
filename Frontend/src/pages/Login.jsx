@@ -33,8 +33,9 @@ function Login() {
   return (
     <div className="login-page">
       <section className="login-card">
-        <h1>IoT Monitor</h1>
-        <p>Sign in to monitor your environment and devices.</p>
+        <p className="login-eyebrow">IoT Environment Monitoring</p>
+        <h1>Welcome back</h1>
+        <p>Sign in to access the monitoring dashboard and device controls.</p>
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">

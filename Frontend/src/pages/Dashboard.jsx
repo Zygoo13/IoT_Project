@@ -67,7 +67,10 @@ function Dashboard() {
 
   return (
     <section className="page dashboard">
-      <h1>Dashboard</h1>
+      <header className="page-header">
+        <h1>Dashboard</h1>
+        <p>Monitor the latest environment readings and control connected devices.</p>
+      </header>
 
       <div className="sensor-grid">
         {sensors.map((sensor) => (
@@ -81,21 +84,24 @@ function Dashboard() {
       </div>
 
       <section className="chart-section">
-        <h2>Realtime Environment Data</h2>
+        <div className="section-heading">
+          <h2>Realtime Environment Data</h2>
+          <p>Latest 15 sensor samples</p>
+        </div>
         {sensorSamples.length === 0 ? (
           <p>No data</p>
         ) : (
           <div className="chart-container">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={sensorSamples}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="recordedAt" />
-                <YAxis />
+              <LineChart data={sensorSamples} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+                <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="recordedAt" minTickGap={30} tick={{ fill: "#64748b", fontSize: 12 }} />
+                <YAxis tick={{ fill: "#64748b", fontSize: 12 }} />
                 <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="temperature" stroke="#d97706" name="Temperature" />
-                <Line type="monotone" dataKey="humidity" stroke="#2563eb" name="Humidity" />
-                <Line type="monotone" dataKey="light" stroke="#16a34a" name="Light" />
+                <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                <Line type="monotone" dataKey="temperature" stroke="#f59e0b" strokeWidth={2.5} dot={false} name="Temperature" />
+                <Line type="monotone" dataKey="humidity" stroke="#2563eb" strokeWidth={2.5} dot={false} name="Humidity" />
+                <Line type="monotone" dataKey="light" stroke="#10b981" strokeWidth={2.5} dot={false} name="Light" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -103,7 +109,10 @@ function Dashboard() {
       </section>
 
       <section className="device-section">
-        <h2>Device Controls</h2>
+        <div className="section-heading">
+          <h2>Device Controls</h2>
+          <p>Send commands to the configured LED devices.</p>
+        </div>
         <div className="device-grid">
           {devices.map((device) => (
             <DeviceControl

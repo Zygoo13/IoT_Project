@@ -1,10 +1,18 @@
 function SensorCard({ title, value, unit }) {
-  const displayValue = value === undefined || value === null ? "N/A" : `${value} ${unit}`;
+  const hasValue = value !== undefined && value !== null;
 
   return (
     <article className="sensor-card">
       <p>{title}</p>
-      <strong>{displayValue}</strong>
+      <strong className="sensor-value">
+        {hasValue ? (
+          <>
+            {value} <span>{unit}</span>
+          </>
+        ) : (
+          "N/A"
+        )}
+      </strong>
     </article>
   );
 }

@@ -3,10 +3,12 @@ function DeviceControl({ device, waitingConfirmation, onControl }) {
     <article className="device-card">
       <h3>{device.name}</h3>
       <p className="device-status">
-        Status: <strong>{device.status}</strong>
+        Status: <span className={device.status === "ON" ? "device-status-badge is-on" : "device-status-badge is-off"}>{device.status}</span>
       </p>
 
-      {waitingConfirmation && <p className="waiting-message">Waiting for confirmation...</p>}
+      <p className="waiting-message" aria-live="polite">
+        {waitingConfirmation ? "Waiting for confirmation..." : "\u00a0"}
+      </p>
 
       <div className="device-actions">
         <button

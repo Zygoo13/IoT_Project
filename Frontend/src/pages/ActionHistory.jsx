@@ -106,67 +106,72 @@ function ActionHistory() {
 
   return (
     <section className="page history-page">
-      <h1>Action History</h1>
+      <header className="page-header">
+        <h1>Action History</h1>
+        <p>Review requested actions and their recorded device status.</p>
+      </header>
 
-      <section className="toolbar search-section">
-        <h2>Search</h2>
-        <form className="search-controls" onSubmit={handleSearch}>
-          <select
-            aria-label="Search field"
-            value={searchField}
-            onChange={(event) => setSearchField(event.target.value)}
-          >
-            <option value="id">ID</option>
-            <option value="device">Device</option>
-          </select>
-          <input
-            aria-label="Search value"
-            value={searchInput}
-            onChange={(event) => setSearchInput(event.target.value)}
-            placeholder="Search value"
-          />
-          <button className="primary-button" type="submit">
-            Search
-          </button>
-        </form>
-      </section>
+      <section className="query-panel" aria-label="Action History query controls">
+        <div className="query-top-row">
+          <form className="search-controls query-search-controls" onSubmit={handleSearch}>
+            <label className="query-control query-search-field">
+              Search field
+              <select
+                value={searchField}
+                onChange={(event) => setSearchField(event.target.value)}
+              >
+                <option value="id">ID</option>
+                <option value="device">Device</option>
+              </select>
+            </label>
+            <label className="query-control query-search-input">
+              Search
+              <input
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                placeholder="Search value"
+              />
+            </label>
+            <button className="primary-button" type="submit">
+              Search
+            </button>
+          </form>
 
-      <section className="toolbar sort-section">
-        <label>
-          Sort by
-          <select
-            value={sortField}
-            onChange={(event) => {
-              setSortField(event.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="id">ID</option>
-            <option value="device">Device</option>
-            <option value="action">Action</option>
-            <option value="status">Status</option>
-            <option value="time">Time</option>
-          </select>
-        </label>
-        <label>
-          Order
-          <select
-            value={sortOrder}
-            onChange={(event) => {
-              setSortOrder(event.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="asc">ASC</option>
-            <option value="desc">DESC</option>
-          </select>
-        </label>
-      </section>
+          <div className="sort-controls">
+            <label className="query-control">
+              Sort by
+              <select
+                value={sortField}
+                onChange={(event) => {
+                  setSortField(event.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="id">ID</option>
+                <option value="device">Device</option>
+                <option value="action">Action</option>
+                <option value="status">Status</option>
+                <option value="time">Time</option>
+              </select>
+            </label>
+            <label className="query-control query-order-control">
+              Order
+              <select
+                value={sortOrder}
+                onChange={(event) => {
+                  setSortOrder(event.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="asc">ASC</option>
+                <option value="desc">DESC</option>
+              </select>
+            </label>
+          </div>
+        </div>
 
-      <section className="toolbar filter-section">
-        <h2>Filters</h2>
-        <div className="history-filter-grid">
-          <label>
+        <div className="query-filter-row history-query-filter-row">
+          <label className="query-control">
             Device
             <select name="device" value={filterInputs.device} onChange={handleFilterChange}>
               <option value="">All</option>
@@ -177,7 +182,7 @@ function ActionHistory() {
               ))}
             </select>
           </label>
-          <label>
+          <label className="query-control">
             Action
             <select name="action" value={filterInputs.action} onChange={handleFilterChange}>
               <option value="">All</option>
@@ -185,7 +190,7 @@ function ActionHistory() {
               <option value="OFF">OFF</option>
             </select>
           </label>
-          <label>
+          <label className="query-control">
             Status
             <select name="status" value={filterInputs.status} onChange={handleFilterChange}>
               <option value="">All</option>
@@ -193,22 +198,22 @@ function ActionHistory() {
               <option value="OFF">OFF</option>
             </select>
           </label>
-          <label>
+          <label className="query-control history-time-control">
             From time
             <input name="fromTime" type="datetime-local" value={filterInputs.fromTime} onInput={handleFilterChange} />
           </label>
-          <label>
+          <label className="query-control history-time-control">
             To time
             <input name="toTime" type="datetime-local" value={filterInputs.toTime} onInput={handleFilterChange} />
           </label>
-        </div>
-        <div className="filter-actions">
-          <button className="primary-button" type="button" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
-          <button className="secondary-button" type="button" onClick={handleResetFilters}>
-            Reset
-          </button>
+          <div className="filter-actions query-actions">
+            <button className="secondary-button" type="button" onClick={handleResetFilters}>
+              Reset
+            </button>
+            <button className="primary-button" type="button" onClick={handleApplyFilters}>
+              Apply Filters
+            </button>
+          </div>
         </div>
       </section>
 

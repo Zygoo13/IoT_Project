@@ -19,7 +19,7 @@ function Sidebar() {
     <aside className="sidebar">
       <div className="sidebar-title">
         <span>IoT Monitor</span>
-        <small>Environment & devices</small>
+        <small>Environment System</small>
       </div>
 
       <nav className="navigation" aria-label="Main navigation">

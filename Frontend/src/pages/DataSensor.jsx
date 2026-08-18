@@ -123,109 +123,138 @@ function DataSensor() {
 
   return (
     <section className="page data-page">
-      <h1>Data Sensor</h1>
+      <header className="page-header">
+        <h1>Data Sensor</h1>
+        <p>Search, filter, and review recorded environment samples.</p>
+      </header>
 
-      <section className="toolbar search-section">
-        <h2>Search</h2>
-        <form className="search-controls" onSubmit={handleSearch}>
-          <select
-            aria-label="Search field"
-            value={searchField}
-            onChange={(event) => setSearchField(event.target.value)}
-          >
-            <option value="id">ID</option>
-            <option value="temperature">Temperature</option>
-            <option value="humidity">Humidity</option>
-            <option value="light">Light</option>
-            <option value="time">Time</option>
-          </select>
-          <input
-            aria-label="Search value"
-            value={searchInput}
-            onChange={(event) => setSearchInput(event.target.value)}
-            placeholder="Search value"
-          />
-          <button className="primary-button" type="submit">
-            Search
-          </button>
-        </form>
-      </section>
+      <section className="query-panel" aria-label="Data Sensor query controls">
+        <div className="query-top-row">
+          <form className="search-controls query-search-controls" onSubmit={handleSearch}>
+            <label className="query-control query-search-field">
+              Search field
+              <select
+                value={searchField}
+                onChange={(event) => setSearchField(event.target.value)}
+              >
+                <option value="id">ID</option>
+                <option value="temperature">Temperature</option>
+                <option value="humidity">Humidity</option>
+                <option value="light">Light</option>
+                <option value="time">Time</option>
+              </select>
+            </label>
+            <label className="query-control query-search-input">
+              Search
+              <input
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                placeholder="Search value"
+              />
+            </label>
+            <button className="primary-button" type="submit">
+              Search
+            </button>
+          </form>
 
-      <section className="toolbar sort-section">
-        <label>
-          Sort by
-          <select
-            value={sortField}
-            onChange={(event) => {
-              setSortField(event.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="id">ID</option>
-            <option value="temperature">Temperature</option>
-            <option value="humidity">Humidity</option>
-            <option value="light">Light</option>
-            <option value="time">Time</option>
-          </select>
-        </label>
-        <label>
-          Order
-          <select
-            value={sortOrder}
-            onChange={(event) => {
-              setSortOrder(event.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="asc">ASC</option>
-            <option value="desc">DESC</option>
-          </select>
-        </label>
-      </section>
-
-      <section className="toolbar filter-section">
-        <h2>Filters</h2>
-        <div className="filter-grid">
-          <label>
-            Temperature min
-            <input name="minTemperature" type="number" value={filterInputs.minTemperature} onChange={handleFilterChange} />
-          </label>
-          <label>
-            Temperature max
-            <input name="maxTemperature" type="number" value={filterInputs.maxTemperature} onChange={handleFilterChange} />
-          </label>
-          <label>
-            Humidity min
-            <input name="minHumidity" type="number" value={filterInputs.minHumidity} onChange={handleFilterChange} />
-          </label>
-          <label>
-            Humidity max
-            <input name="maxHumidity" type="number" value={filterInputs.maxHumidity} onChange={handleFilterChange} />
-          </label>
-          <label>
-            Light min
-            <input name="minLight" type="number" value={filterInputs.minLight} onChange={handleFilterChange} />
-          </label>
-          <label>
-            Light max
-            <input name="maxLight" type="number" value={filterInputs.maxLight} onChange={handleFilterChange} />
-          </label>
-          <label>
-            From time
-            <input name="fromTime" type="datetime-local" value={filterInputs.fromTime} onInput={handleFilterChange} />
-          </label>
-          <label>
-            To time
-            <input name="toTime" type="datetime-local" value={filterInputs.toTime} onInput={handleFilterChange} />
-          </label>
+          <div className="sort-controls">
+            <label className="query-control">
+              Sort by
+              <select
+                value={sortField}
+                onChange={(event) => {
+                  setSortField(event.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="id">ID</option>
+                <option value="temperature">Temperature</option>
+                <option value="humidity">Humidity</option>
+                <option value="light">Light</option>
+                <option value="time">Time</option>
+              </select>
+            </label>
+            <label className="query-control query-order-control">
+              Order
+              <select
+                value={sortOrder}
+                onChange={(event) => {
+                  setSortOrder(event.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="asc">ASC</option>
+                <option value="desc">DESC</option>
+              </select>
+            </label>
+          </div>
         </div>
-        <div className="filter-actions">
-          <button className="primary-button" type="button" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
-          <button className="secondary-button" type="button" onClick={handleResetFilters}>
-            Reset
-          </button>
+
+        <div className="query-filter-row data-query-filter-row">
+          <fieldset className="filter-group">
+            <legend>Temperature</legend>
+            <div className="range-controls">
+              <label>
+                <span>Min</span>
+                <input name="minTemperature" aria-label="Temperature min" type="number" value={filterInputs.minTemperature} onChange={handleFilterChange} />
+              </label>
+              <label>
+                <span>Max</span>
+                <input name="maxTemperature" aria-label="Temperature max" type="number" value={filterInputs.maxTemperature} onChange={handleFilterChange} />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset className="filter-group">
+            <legend>Humidity</legend>
+            <div className="range-controls">
+              <label>
+                <span>Min</span>
+                <input name="minHumidity" aria-label="Humidity min" type="number" value={filterInputs.minHumidity} onChange={handleFilterChange} />
+              </label>
+              <label>
+                <span>Max</span>
+                <input name="maxHumidity" aria-label="Humidity max" type="number" value={filterInputs.maxHumidity} onChange={handleFilterChange} />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset className="filter-group">
+            <legend>Light</legend>
+            <div className="range-controls">
+              <label>
+                <span>Min</span>
+                <input name="minLight" aria-label="Light min" type="number" value={filterInputs.minLight} onChange={handleFilterChange} />
+              </label>
+              <label>
+                <span>Max</span>
+                <input name="maxLight" aria-label="Light max" type="number" value={filterInputs.maxLight} onChange={handleFilterChange} />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset className="filter-group time-filter-group">
+            <legend>Time range</legend>
+            <div className="range-controls">
+              <label>
+                <span>From</span>
+                <input name="fromTime" aria-label="From time" type="datetime-local" value={filterInputs.fromTime} onInput={handleFilterChange} />
+              </label>
+              <label>
+                <span>To</span>
+                <input name="toTime" aria-label="To time" type="datetime-local" value={filterInputs.toTime} onInput={handleFilterChange} />
+              </label>
+            </div>
+          </fieldset>
+
+          <div className="filter-actions query-actions">
+            <button className="secondary-button" type="button" onClick={handleResetFilters}>
+              Reset
+            </button>
+            <button className="primary-button" type="button" onClick={handleApplyFilters}>
+              Apply Filters
+            </button>
+          </div>
         </div>
       </section>
 

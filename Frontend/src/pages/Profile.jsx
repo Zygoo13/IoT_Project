@@ -12,7 +12,10 @@ function Profile() {
   return (
     <section className="page profile-page">
       <article className="profile-card">
-        <h1>Profile</h1>
+        <header className="profile-header">
+          <h1>Profile</h1>
+          <p>Project owner information</p>
+        </header>
 
         <div className="profile-avatar-container">
           <img src={avatar} alt="Profile avatar" className="profile-avatar" />
