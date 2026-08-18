@@ -1,0 +1,122 @@
+import { useEffect, useState } from "react";
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import DeviceControl from "../components/DeviceControl";
+import SensorCard from "../components/SensorCard";
+import { dashboardSamples, devices as mockDevices, sensors } from "../data/mockData";
+
+function createMockSample(lastId) {
+  return {
+    id: lastId + 1,
+    temperature: Number((25 + Math.random() * 10).toFixed(1)),
+    humidity: Math.round(50 + Math.random() * 40),
+    light: Math.round(200 + Math.random() * 600),
+    recordedAt: new Date().toLocaleTimeString("en-GB", { hour12: false }),
+  };
+}
+
+function Dashboard() {
+  const [sensorSamples, setSensorSamples] = useState(dashboardSamples);
+  const [devices, setDevices] = useState(mockDevices);
+  const [pendingDevices, setPendingDevices] = useState({});
+  const latestSample = sensorSamples[sensorSamples.length - 1];
+
+  useEffect(() => {
+    // Mock a new sensor sample every 2 seconds.
+    // Later this can be replaced by WebSocket/SSE.
+    const interval = setInterval(() => {
+      setSensorSamples((currentSamples) => {
+        const lastSample = currentSamples[currentSamples.length - 1];
+        const newSample = createMockSample(lastSample ? lastSample.id : 1000);
+
+        return [...currentSamples, newSample].slice(-15);
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  function handleDeviceControl(deviceCode, action) {
+    setPendingDevices((current) => ({
+      ...current,
+      [deviceCode]: true,
+    }));
+
+    // Later this will call the backend API and wait for ESP32 confirmation.
+    setTimeout(() => {
+      setDevices((currentDevices) =>
+        currentDevices.map((device) =>
+          device.code === deviceCode ? { ...device, status: action } : device,
+        ),
+      );
+
+      setPendingDevices((current) => ({
+        ...current,
+        [deviceCode]: false,
+      }));
+    }, 700);
+  }
+
+  return (
+    <section className="page dashboard">
+      <h1>Dashboard</h1>
+
+      <div className="sensor-grid">
+        {sensors.map((sensor) => (
+          <SensorCard
+            key={sensor.code}
+            title={sensor.name}
+            value={latestSample?.[sensor.field]}
+            unit={sensor.unit}
+          />
+        ))}
+      </div>
+
+      <section className="chart-section">
+        <h2>Realtime Environment Data</h2>
+        {sensorSamples.length === 0 ? (
+          <p>No data</p>
+        ) : (
+          <div className="chart-container">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={sensorSamples}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="recordedAt" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="temperature" stroke="#d97706" name="Temperature" />
+                <Line type="monotone" dataKey="humidity" stroke="#2563eb" name="Humidity" />
+                <Line type="monotone" dataKey="light" stroke="#16a34a" name="Light" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </section>
+
+      <section className="device-section">
+        <h2>Device Controls</h2>
+        <div className="device-grid">
+          {devices.map((device) => (
+            <DeviceControl
+              key={device.code}
+              device={device}
+              waitingConfirmation={pendingDevices[device.code]}
+              onControl={handleDeviceControl}
+            />
+          ))}
+        </div>
+      </section>
+    </section>
+  );
+}
+
+export default Dashboard;
