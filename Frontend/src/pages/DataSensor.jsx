@@ -1,22 +1,13 @@
 import { useState } from "react";
-import { mockSensorSamples } from "../data/mockData";
+import { mockSensorData } from "../data/mockData";
+import { DATE_TIME_FORMAT, formatDateTime, parseDateTime } from "../utils/dateTime";
 
 const PAGE_SIZE = 20;
 
 const initialFilters = {
-  minTemperature: "",
-  maxTemperature: "",
-  minHumidity: "",
-  maxHumidity: "",
-  minLight: "",
-  maxLight: "",
   fromTime: "",
   toTime: "",
 };
-
-function formatTime(recordedAt) {
-  return new Date(recordedAt).toLocaleString("en-GB");
-}
 
 function DataSensor() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,6 +18,7 @@ function DataSensor() {
   const [sortOrder, setSortOrder] = useState("desc");
   const [filterInputs, setFilterInputs] = useState(initialFilters);
   const [filters, setFilters] = useState(initialFilters);
+  const [filterError, setFilterError] = useState("");
 
   function handleSearch(event) {
     event.preventDefault();
@@ -43,6 +35,20 @@ function DataSensor() {
   }
 
   function handleApplyFilters() {
+    const fromDate = filterInputs.fromTime ? parseDateTime(filterInputs.fromTime) : null;
+    const toDate = filterInputs.toTime ? parseDateTime(filterInputs.toTime) : null;
+
+    if ((filterInputs.fromTime && !fromDate) || (filterInputs.toTime && !toDate)) {
+      setFilterError(`Use the format ${DATE_TIME_FORMAT}.`);
+      return;
+    }
+
+    if (fromDate && toDate && fromDate > toDate) {
+      setFilterError("From time must be earlier than or equal to To time.");
+      return;
+    }
+
+    setFilterError("");
     setFilters(filterInputs);
     setCurrentPage(1);
   }
@@ -50,66 +56,48 @@ function DataSensor() {
   function handleResetFilters() {
     setFilterInputs(initialFilters);
     setFilters(initialFilters);
+    setFilterError("");
     setCurrentPage(1);
   }
 
-  let result = [...mockSensorSamples];
+  const fromDate = filters.fromTime ? parseDateTime(filters.fromTime) : null;
+  const toDate = filters.toTime ? parseDateTime(filters.toTime) : null;
+
+  let result = [...mockSensorData];
 
   if (searchValue) {
     const valueToFind = searchValue.toLowerCase();
 
-    result = result.filter((sample) => {
+    result = result.filter((record) => {
       if (searchField === "time") {
-        return formatTime(sample.recordedAt).toLowerCase().includes(valueToFind);
+        return formatDateTime(record.recordedAt).toLowerCase().includes(valueToFind);
       }
 
-      return String(sample[searchField]).toLowerCase().includes(valueToFind);
+      return String(record[searchField]).toLowerCase().includes(valueToFind);
     });
   }
 
-  result = result.filter((sample) => {
-    if (filters.minTemperature !== "" && sample.temperature < Number(filters.minTemperature)) {
+  result = result.filter((record) => {
+    if (fromDate && new Date(record.recordedAt) < fromDate) {
       return false;
     }
 
-    if (filters.maxTemperature !== "" && sample.temperature > Number(filters.maxTemperature)) {
-      return false;
-    }
-
-    if (filters.minHumidity !== "" && sample.humidity < Number(filters.minHumidity)) {
-      return false;
-    }
-
-    if (filters.maxHumidity !== "" && sample.humidity > Number(filters.maxHumidity)) {
-      return false;
-    }
-
-    if (filters.minLight !== "" && sample.light < Number(filters.minLight)) {
-      return false;
-    }
-
-    if (filters.maxLight !== "" && sample.light > Number(filters.maxLight)) {
-      return false;
-    }
-
-    if (filters.fromTime && new Date(sample.recordedAt) < new Date(filters.fromTime)) {
-      return false;
-    }
-
-    if (filters.toTime && new Date(sample.recordedAt) > new Date(filters.toTime)) {
+    if (toDate && new Date(record.recordedAt) > toDate) {
       return false;
     }
 
     return true;
   });
 
-  result.sort((firstSample, secondSample) => {
+  result.sort((firstRecord, secondRecord) => {
     let comparison;
 
     if (sortField === "time") {
-      comparison = new Date(firstSample.recordedAt) - new Date(secondSample.recordedAt);
+      comparison = new Date(firstRecord.recordedAt) - new Date(secondRecord.recordedAt);
+    } else if (sortField === "sensorName") {
+      comparison = firstRecord.sensorName.localeCompare(secondRecord.sensorName);
     } else {
-      comparison = firstSample[sortField] - secondSample[sortField];
+      comparison = firstRecord[sortField] - secondRecord[sortField];
     }
 
     return sortOrder === "asc" ? comparison : -comparison;
@@ -117,7 +105,7 @@ function DataSensor() {
 
   const totalPages = Math.ceil(result.length / PAGE_SIZE);
   const startIndex = (currentPage - 1) * PAGE_SIZE;
-  const pageSamples = result.slice(startIndex, startIndex + PAGE_SIZE);
+  const pageRecords = result.slice(startIndex, startIndex + PAGE_SIZE);
   const firstItem = result.length === 0 ? 0 : startIndex + 1;
   const lastItem = Math.min(startIndex + PAGE_SIZE, result.length);
 
@@ -125,7 +113,7 @@ function DataSensor() {
     <section className="page data-page">
       <header className="page-header">
         <h1>Data Sensor</h1>
-        <p>Search, filter, and review recorded environment samples.</p>
+        <p>Search, filter, and review individual SensorData readings.</p>
       </header>
 
       <section className="query-panel" aria-label="Data Sensor query controls">
@@ -138,9 +126,8 @@ function DataSensor() {
                 onChange={(event) => setSearchField(event.target.value)}
               >
                 <option value="id">ID</option>
-                <option value="temperature">Temperature</option>
-                <option value="humidity">Humidity</option>
-                <option value="light">Light</option>
+                <option value="sensorName">Sensor Type</option>
+                <option value="value">Value</option>
                 <option value="time">Time</option>
               </select>
             </label>
@@ -168,9 +155,8 @@ function DataSensor() {
                 }}
               >
                 <option value="id">ID</option>
-                <option value="temperature">Temperature</option>
-                <option value="humidity">Humidity</option>
-                <option value="light">Light</option>
+                <option value="sensorName">Sensor Type</option>
+                <option value="value">Value</option>
                 <option value="time">Time</option>
               </select>
             </label>
@@ -191,58 +177,16 @@ function DataSensor() {
         </div>
 
         <div className="query-filter-row data-query-filter-row">
-          <fieldset className="filter-group">
-            <legend>Temperature</legend>
-            <div className="range-controls">
-              <label>
-                <span>Min</span>
-                <input name="minTemperature" aria-label="Temperature min" type="number" value={filterInputs.minTemperature} onChange={handleFilterChange} />
-              </label>
-              <label>
-                <span>Max</span>
-                <input name="maxTemperature" aria-label="Temperature max" type="number" value={filterInputs.maxTemperature} onChange={handleFilterChange} />
-              </label>
-            </div>
-          </fieldset>
-
-          <fieldset className="filter-group">
-            <legend>Humidity</legend>
-            <div className="range-controls">
-              <label>
-                <span>Min</span>
-                <input name="minHumidity" aria-label="Humidity min" type="number" value={filterInputs.minHumidity} onChange={handleFilterChange} />
-              </label>
-              <label>
-                <span>Max</span>
-                <input name="maxHumidity" aria-label="Humidity max" type="number" value={filterInputs.maxHumidity} onChange={handleFilterChange} />
-              </label>
-            </div>
-          </fieldset>
-
-          <fieldset className="filter-group">
-            <legend>Light</legend>
-            <div className="range-controls">
-              <label>
-                <span>Min</span>
-                <input name="minLight" aria-label="Light min" type="number" value={filterInputs.minLight} onChange={handleFilterChange} />
-              </label>
-              <label>
-                <span>Max</span>
-                <input name="maxLight" aria-label="Light max" type="number" value={filterInputs.maxLight} onChange={handleFilterChange} />
-              </label>
-            </div>
-          </fieldset>
-
           <fieldset className="filter-group time-filter-group">
             <legend>Time range</legend>
             <div className="range-controls">
               <label>
                 <span>From</span>
-                <input name="fromTime" aria-label="From time" type="datetime-local" value={filterInputs.fromTime} onInput={handleFilterChange} />
+                <input name="fromTime" aria-label="From time" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.fromTime} onChange={handleFilterChange} />
               </label>
               <label>
                 <span>To</span>
-                <input name="toTime" aria-label="To time" type="datetime-local" value={filterInputs.toTime} onInput={handleFilterChange} />
+                <input name="toTime" aria-label="To time" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.toTime} onChange={handleFilterChange} />
               </label>
             </div>
           </fieldset>
@@ -256,10 +200,11 @@ function DataSensor() {
             </button>
           </div>
         </div>
+        {filterError && <p className="query-error" role="alert">{filterError}</p>}
       </section>
 
       <p className="result-info">
-        Showing {firstItem}-{lastItem} of {result.length} samples
+        Showing {firstItem}-{lastItem} of {result.length} records
       </p>
 
       <div className="table-container">
@@ -267,27 +212,25 @@ function DataSensor() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Temperature</th>
-              <th>Humidity</th>
-              <th>Light</th>
+              <th>Sensor Type</th>
+              <th>Value</th>
               <th>Time</th>
             </tr>
           </thead>
           <tbody>
-            {pageSamples.length === 0 ? (
+            {pageRecords.length === 0 ? (
               <tr>
-                <td colSpan="5" className="empty-table-cell">
+                <td colSpan="4" className="empty-table-cell">
                   No data found.
                 </td>
               </tr>
             ) : (
-              pageSamples.map((sample) => (
-                <tr key={sample.id}>
-                  <td>{sample.id}</td>
-                  <td>{sample.temperature} °C</td>
-                  <td>{sample.humidity} %</td>
-                  <td>{sample.light} lux</td>
-                  <td>{formatTime(sample.recordedAt)}</td>
+              pageRecords.map((record) => (
+                <tr key={record.id}>
+                  <td>{record.id}</td>
+                  <td>{record.sensorName}</td>
+                  <td>{record.value} {record.unit}</td>
+                  <td>{formatDateTime(record.recordedAt)}</td>
                 </tr>
               ))
             )}

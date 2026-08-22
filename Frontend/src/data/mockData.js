@@ -1,7 +1,28 @@
 export const sensors = [
-  { code: "TEMP01", name: "Temperature", field: "temperature", unit: "°C" },
-  { code: "HUM01", name: "Humidity", field: "humidity", unit: "%" },
-  { code: "LIGHT01", name: "Light", field: "light", unit: "lux" },
+  {
+    id: 1,
+    code: "DHT11_TEMP",
+    name: "DHT11 - Temperature",
+    type: "TEMPERATURE",
+    field: "temperature",
+    unit: "°C",
+  },
+  {
+    id: 2,
+    code: "DHT11_HUM",
+    name: "DHT11 - Humidity",
+    type: "HUMIDITY",
+    field: "humidity",
+    unit: "%RH",
+  },
+  {
+    id: 3,
+    code: "LDR_LIGHT",
+    name: "LDR LM393 - Light",
+    type: "LIGHT",
+    field: "light",
+    unit: "lux",
+  },
 ];
 
 export const devices = [
@@ -9,7 +30,8 @@ export const devices = [
   { id: 2, code: "LED2", name: "LED 2", status: "OFF" },
 ];
 
-export const dashboardSamples = [
+// Grouped chart points are presentation data only, not a persisted entity.
+export const dashboardPoints = [
   { id: 1001, temperature: 27.8, humidity: 69, light: 410, recordedAt: "18:20:00" },
   { id: 1002, temperature: 28.1, humidity: 70, light: 425, recordedAt: "18:20:02" },
   { id: 1003, temperature: 28.3, humidity: 71, light: 430, recordedAt: "18:20:04" },
@@ -27,17 +49,26 @@ export const dashboardSamples = [
   { id: 1015, temperature: 28.7, humidity: 71, light: 520, recordedAt: "18:20:28" },
 ];
 
-const historyStartTime = new Date("2026-08-16T08:00:00");
+const sensorDataStartTime = new Date("2026-08-16T08:00:00");
 
-export const mockSensorSamples = Array.from({ length: 100 }, (_, index) => {
-  const recordedAt = new Date(historyStartTime);
-  recordedAt.setMinutes(recordedAt.getMinutes() + index * 5);
+export const mockSensorData = Array.from({ length: 150 }, (_, index) => {
+  const sensor = sensors[index % sensors.length];
+  const cycleIndex = Math.floor(index / sensors.length);
+  const recordedAt = new Date(sensorDataStartTime.getTime() + cycleIndex * 2 * 1000);
+  const values = {
+    TEMPERATURE: Number((25 + ((cycleIndex * 7) % 100) / 10).toFixed(1)),
+    HUMIDITY: 50 + ((cycleIndex * 13) % 41),
+    LIGHT: 200 + ((cycleIndex * 37) % 601),
+  };
 
   return {
     id: 1001 + index,
-    temperature: Number((25 + ((index * 7) % 100) / 10).toFixed(1)),
-    humidity: 50 + ((index * 13) % 41),
-    light: 200 + ((index * 37) % 601),
+    sensorId: sensor.id,
+    sensorCode: sensor.code,
+    sensorName: sensor.name,
+    sensorType: sensor.type,
+    value: values[sensor.type],
+    unit: sensor.unit,
     recordedAt: recordedAt.toISOString(),
   };
 });
@@ -57,6 +88,8 @@ export const mockActionHistory = Array.from({ length: 80 }, (_, index) => {
 
   return {
     id: index + 1,
+    userId: 1,
+    deviceId: index % 4 < 2 ? 1 : 2,
     device: index % 4 < 2 ? "LED1" : "LED2",
     action: actionAndStatus.action,
     status: actionAndStatus.status,
@@ -68,6 +101,7 @@ export const mockActionHistory = Array.from({ length: 80 }, (_, index) => {
 });
 
 export const mockUser = {
+  id: 1,
   username: "admin",
   password: "admin123",
   fullName: "Your Name",
@@ -79,8 +113,11 @@ export const profile = {
   fullName: mockUser.fullName,
   studentCode: mockUser.studentCode,
   email: mockUser.email,
-  githubUrl: "https://github.com/",
+  githubUrl: "https://github.com/Zygoo13/IoT_Project",
   figmaUrl: "https://www.figma.com/",
-  apiDocsUrl: "#",
-  reportUrl: "#",
+  apiDocsUrl: "",
+  reportUrl: "",
+  avatarUrl: "",
+  createdAt: "2026-08-16T08:00:00.000Z",
+  updatedAt: "2026-08-16T08:00:00.000Z",
 };

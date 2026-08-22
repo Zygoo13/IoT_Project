@@ -11,9 +11,9 @@ import {
 } from "recharts";
 import DeviceControl from "../components/DeviceControl";
 import SensorCard from "../components/SensorCard";
-import { dashboardSamples, devices as mockDevices, sensors } from "../data/mockData";
+import { dashboardPoints, devices as mockDevices, sensors } from "../data/mockData";
 
-function createMockSample(lastId) {
+function createMockChartPoint(lastId) {
   return {
     id: lastId + 1,
     temperature: Number((25 + Math.random() * 10).toFixed(1)),
@@ -24,20 +24,20 @@ function createMockSample(lastId) {
 }
 
 function Dashboard() {
-  const [sensorSamples, setSensorSamples] = useState(dashboardSamples);
+  const [chartPoints, setChartPoints] = useState(dashboardPoints);
   const [devices, setDevices] = useState(mockDevices);
   const [pendingDevices, setPendingDevices] = useState({});
-  const latestSample = sensorSamples[sensorSamples.length - 1];
+  const latestPoint = chartPoints[chartPoints.length - 1];
 
   useEffect(() => {
-    // Mock a new sensor sample every 2 seconds.
-    // Later this can be replaced by WebSocket/SSE.
+    // Mock a new presentation point every 2 seconds.
+    // Later this can be replaced by STOMP over native WebSocket.
     const interval = setInterval(() => {
-      setSensorSamples((currentSamples) => {
-        const lastSample = currentSamples[currentSamples.length - 1];
-        const newSample = createMockSample(lastSample ? lastSample.id : 1000);
+      setChartPoints((currentPoints) => {
+        const lastPoint = currentPoints[currentPoints.length - 1];
+        const newPoint = createMockChartPoint(lastPoint ? lastPoint.id : 1000);
 
-        return [...currentSamples, newSample].slice(-15);
+        return [...currentPoints, newPoint].slice(-15);
       });
     }, 2000);
 
@@ -77,7 +77,7 @@ function Dashboard() {
           <SensorCard
             key={sensor.code}
             title={sensor.name}
-            value={latestSample?.[sensor.field]}
+            value={latestPoint?.[sensor.field]}
             unit={sensor.unit}
           />
         ))}
@@ -86,14 +86,14 @@ function Dashboard() {
       <section className="chart-section">
         <div className="section-heading">
           <h2>Realtime Environment Data</h2>
-          <p>Latest 15 sensor samples</p>
+          <p>Latest 15 measurement points</p>
         </div>
-        {sensorSamples.length === 0 ? (
+        {chartPoints.length === 0 ? (
           <p>No data</p>
         ) : (
           <div className="chart-container">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={sensorSamples} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+              <LineChart data={chartPoints} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
                 <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="recordedAt" minTickGap={30} tick={{ fill: "#64748b", fontSize: 12 }} />
                 <YAxis tick={{ fill: "#64748b", fontSize: 12 }} />

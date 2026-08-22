@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { devices, mockActionHistory } from "../data/mockData";
+import { DATE_TIME_FORMAT, formatDateTime, parseDateTime } from "../utils/dateTime";
 
 const PAGE_SIZE = 20;
 
@@ -11,10 +12,6 @@ const initialFilters = {
   toTime: "",
 };
 
-function formatTime(createdAt) {
-  return new Date(createdAt).toLocaleString("en-GB");
-}
-
 function ActionHistory() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchField, setSearchField] = useState("id");
@@ -24,6 +21,7 @@ function ActionHistory() {
   const [sortOrder, setSortOrder] = useState("desc");
   const [filterInputs, setFilterInputs] = useState(initialFilters);
   const [filters, setFilters] = useState(initialFilters);
+  const [filterError, setFilterError] = useState("");
 
   function handleSearch(event) {
     event.preventDefault();
@@ -40,6 +38,20 @@ function ActionHistory() {
   }
 
   function handleApplyFilters() {
+    const fromDate = filterInputs.fromTime ? parseDateTime(filterInputs.fromTime) : null;
+    const toDate = filterInputs.toTime ? parseDateTime(filterInputs.toTime) : null;
+
+    if ((filterInputs.fromTime && !fromDate) || (filterInputs.toTime && !toDate)) {
+      setFilterError(`Use the format ${DATE_TIME_FORMAT}.`);
+      return;
+    }
+
+    if (fromDate && toDate && fromDate > toDate) {
+      setFilterError("From time must be earlier than or equal to To time.");
+      return;
+    }
+
+    setFilterError("");
     setFilters(filterInputs);
     setCurrentPage(1);
   }
@@ -47,8 +59,12 @@ function ActionHistory() {
   function handleResetFilters() {
     setFilterInputs(initialFilters);
     setFilters(initialFilters);
+    setFilterError("");
     setCurrentPage(1);
   }
+
+  const fromDate = filters.fromTime ? parseDateTime(filters.fromTime) : null;
+  const toDate = filters.toTime ? parseDateTime(filters.toTime) : null;
 
   let result = [...mockActionHistory];
 
@@ -73,11 +89,11 @@ function ActionHistory() {
       return false;
     }
 
-    if (filters.fromTime && new Date(record.createdAt) < new Date(filters.fromTime)) {
+    if (fromDate && new Date(record.createdAt) < fromDate) {
       return false;
     }
 
-    if (filters.toTime && new Date(record.createdAt) > new Date(filters.toTime)) {
+    if (toDate && new Date(record.createdAt) > toDate) {
       return false;
     }
 
@@ -200,11 +216,11 @@ function ActionHistory() {
           </label>
           <label className="query-control history-time-control">
             From time
-            <input name="fromTime" type="datetime-local" value={filterInputs.fromTime} onInput={handleFilterChange} />
+            <input name="fromTime" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.fromTime} onChange={handleFilterChange} />
           </label>
           <label className="query-control history-time-control">
             To time
-            <input name="toTime" type="datetime-local" value={filterInputs.toTime} onInput={handleFilterChange} />
+            <input name="toTime" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.toTime} onChange={handleFilterChange} />
           </label>
           <div className="filter-actions query-actions">
             <button className="secondary-button" type="button" onClick={handleResetFilters}>
@@ -215,6 +231,7 @@ function ActionHistory() {
             </button>
           </div>
         </div>
+        {filterError && <p className="query-error" role="alert">{filterError}</p>}
       </section>
 
       <p className="result-info">
@@ -254,7 +271,7 @@ function ActionHistory() {
                       {record.status}
                     </span>
                   </td>
-                  <td>{formatTime(record.createdAt)}</td>
+                  <td>{formatDateTime(record.createdAt)}</td>
                 </tr>
               ))
             )}
