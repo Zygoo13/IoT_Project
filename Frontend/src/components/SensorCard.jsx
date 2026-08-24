@@ -1,4 +1,4 @@
-function SensorCard({ title, value, unit }) {
+function SensorCard({ title, value, unit, stale }) {
   const hasValue = value !== undefined && value !== null;
 
   return (
@@ -13,6 +13,7 @@ function SensorCard({ title, value, unit }) {
           "N/A"
         )}
       </strong>
+      {stale && <span className="stale-label">Stale</span>}
     </article>
   );
 }

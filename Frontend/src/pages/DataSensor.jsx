@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Pagination from "../components/Pagination";
 import { mockSensorData } from "../data/mockData";
 import { DATE_TIME_FORMAT, formatDateTime, parseDateTime } from "../utils/dateTime";
 
@@ -238,36 +239,12 @@ function DataSensor() {
         </table>
       </div>
 
-      {totalPages > 0 && (
-        <nav className="pagination" aria-label="Data Sensor pages">
-          <button
-            className="page-button"
-            type="button"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            Previous
-          </button>
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-            <button
-              key={pageNumber}
-              className={pageNumber === currentPage ? "page-button active" : "page-button"}
-              type="button"
-              onClick={() => setCurrentPage(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-          ))}
-          <button
-            className="page-button"
-            type="button"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            Next
-          </button>
-        </nav>
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        label="Data Sensor pages"
+      />
     </section>
   );
 }

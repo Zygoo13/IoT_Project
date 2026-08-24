@@ -13,6 +13,36 @@ import DeviceControl from "../components/DeviceControl";
 import SensorCard from "../components/SensorCard";
 import { dashboardPoints, devices as mockDevices, sensors } from "../data/mockData";
 
+const HARDWARE_OFFLINE_THRESHOLD = 30_000;
+const DEVICE_COMMAND_TIMEOUT = 10_000;
+const MOCK_CONFIRMATION_DELAY = 700;
+const DEVICE_STORAGE_KEY = "device-statuses";
+const MOCK_TELEMETRY_ENABLED = true;
+const MOCK_DEVICE_CONFIRMATIONS = true;
+
+function loadSavedDevices() {
+  try {
+    const savedStatuses = JSON.parse(localStorage.getItem(DEVICE_STORAGE_KEY) || "{}");
+
+    return mockDevices.map((device) => ({
+      ...device,
+      status: savedStatuses[device.code] || device.status,
+    }));
+  } catch {
+    return mockDevices;
+  }
+}
+
+function saveDeviceStatuses(devices) {
+  const statuses = Object.fromEntries(devices.map((device) => [device.code, device.status]));
+
+  try {
+    localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(statuses));
+  } catch {
+    // The mock still works when browser storage is unavailable; only reload restore is skipped.
+  }
+}
+
 function createMockChartPoint(lastId) {
   return {
     id: lastId + 1,
@@ -25,14 +55,29 @@ function createMockChartPoint(lastId) {
 
 function Dashboard() {
   const [chartPoints, setChartPoints] = useState(dashboardPoints);
-  const [devices, setDevices] = useState(mockDevices);
-  const [pendingDevices, setPendingDevices] = useState({});
+  const [devices, setDevices] = useState(() =>
+    mockDevices.map((device) => ({ ...device, status: "UNKNOWN" })),
+  );
+  const [commandStates, setCommandStates] = useState({});
+  const [lastTelemetryAt, setLastTelemetryAt] = useState(Date.now());
+  const [hardwareOffline, setHardwareOffline] = useState(false);
   const latestPoint = chartPoints[chartPoints.length - 1];
+
+  useEffect(() => {
+    // Mock the Dashboard REST load. Production will load these confirmed states from Backend/Database.
+    const timer = setTimeout(() => setDevices(loadSavedDevices()), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Mock a new presentation point every 2 seconds.
     // Later this can be replaced by STOMP over native WebSocket.
     const interval = setInterval(() => {
+      if (!MOCK_TELEMETRY_ENABLED) {
+        return;
+      }
+
+      setLastTelemetryAt(Date.now());
       setChartPoints((currentPoints) => {
         const lastPoint = currentPoints[currentPoints.length - 1];
         const newPoint = createMockChartPoint(lastPoint ? lastPoint.id : 1000);
@@ -44,25 +89,77 @@ function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    setHardwareOffline(false);
+    const timer = setTimeout(() => setHardwareOffline(true), HARDWARE_OFFLINE_THRESHOLD);
+    return () => clearTimeout(timer);
+  }, [lastTelemetryAt]);
+
   function handleDeviceControl(deviceCode, action) {
-    setPendingDevices((current) => ({
+    const requestId = Date.now();
+
+    setCommandStates((current) => ({
       ...current,
-      [deviceCode]: true,
+      [deviceCode]: {
+        requestId,
+        pending: true,
+        action,
+        message: `Sending ${action}...`,
+        type: "pending",
+      },
     }));
 
-    // Later this will call the backend API and wait for ESP32 confirmation.
-    setTimeout(() => {
-      setDevices((currentDevices) =>
-        currentDevices.map((device) =>
-          device.code === deviceCode ? { ...device, status: action } : device,
-        ),
-      );
+    const timeout = setTimeout(() => {
+      setCommandStates((current) => {
+        if (current[deviceCode]?.requestId !== requestId) {
+          return current;
+        }
 
-      setPendingDevices((current) => ({
-        ...current,
-        [deviceCode]: false,
-      }));
-    }, 700);
+        return {
+          ...current,
+          [deviceCode]: {
+            ...current[deviceCode],
+            pending: false,
+            message: "Device not responding - Last confirmed",
+            type: "error",
+          },
+        };
+      });
+    }, DEVICE_COMMAND_TIMEOUT);
+
+    // Set MOCK_DEVICE_CONFIRMATIONS to false to see the 10-second timeout state.
+    if (!MOCK_DEVICE_CONFIRMATIONS) {
+      return;
+    }
+
+    // Mock a valid ESP32 confirmation. The confirmed badge changes only here.
+    setTimeout(() => {
+      clearTimeout(timeout);
+      setDevices((currentDevices) => {
+        const confirmedDevices = currentDevices.map((device) =>
+          device.code === deviceCode ? { ...device, status: action } : device,
+        );
+
+        saveDeviceStatuses(confirmedDevices);
+        return confirmedDevices;
+      });
+
+      setCommandStates((current) => {
+        if (current[deviceCode]?.requestId !== requestId) {
+          return current;
+        }
+
+        return {
+          ...current,
+          [deviceCode]: {
+            ...current[deviceCode],
+            pending: false,
+            message: "Confirmed",
+            type: "success",
+          },
+        };
+      });
+    }, MOCK_CONFIRMATION_DELAY);
   }
 
   return (
@@ -72,6 +169,14 @@ function Dashboard() {
         <p>Monitor the latest environment readings and control connected devices.</p>
       </header>
 
+      <div className={hardwareOffline ? "hardware-status offline" : "hardware-status online"} role={hardwareOffline ? "alert" : "status"}>
+        <strong>{hardwareOffline ? "Hardware Offline" : "Hardware Online"}</strong>
+        <span>
+          {hardwareOffline ? "No telemetry for 30 seconds. Values below are stale." : "Receiving mock telemetry."}
+          {` Last received: ${new Date(lastTelemetryAt).toLocaleString()}`}
+        </span>
+      </div>
+
       <div className="sensor-grid">
         {sensors.map((sensor) => (
           <SensorCard
@@ -79,6 +184,7 @@ function Dashboard() {
             title={sensor.name}
             value={latestPoint?.[sensor.field]}
             unit={sensor.unit}
+            stale={hardwareOffline}
           />
         ))}
       </div>
@@ -118,7 +224,8 @@ function Dashboard() {
             <DeviceControl
               key={device.code}
               device={device}
-              waitingConfirmation={pendingDevices[device.code]}
+              commandState={commandStates[device.code]}
+              hardwareOffline={hardwareOffline}
               onControl={handleDeviceControl}
             />
           ))}

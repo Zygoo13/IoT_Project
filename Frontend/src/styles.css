@@ -1484,3 +1484,134 @@ body,
     width: 100%;
   }
 }
+
+/* V5: hardware freshness, confirmed device state, and advanced pagination. */
+.hardware-status {
+  display: flex;
+  gap: 10px 18px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border: 1px solid;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.hardware-status.online {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.hardware-status.offline {
+  border-color: #fed7aa;
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.hardware-status span {
+  text-align: right;
+}
+
+.stale-label {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #ffedd5;
+  color: #9a3412;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.is-unknown {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.command-message {
+  min-height: 20px;
+  margin: 10px 0 0;
+  color: var(--slate-500);
+  font-size: 14px;
+}
+
+.command-message.pending {
+  color: #b45309;
+}
+
+.command-message.success {
+  color: #15803d;
+}
+
+.command-message.error,
+.device-offline-note {
+  color: #b42318;
+}
+
+.device-offline-note {
+  margin: 6px 0 0;
+  font-size: 12px;
+}
+
+.pagination-area {
+  margin-top: 20px;
+}
+
+.pagination-area .pagination {
+  align-items: center;
+  margin-top: 0;
+}
+
+.page-jump {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--slate-500);
+  font-size: 14px;
+}
+
+.page-jump input {
+  width: 58px;
+  min-height: 36px;
+  padding: 6px 8px;
+  border: 1px solid var(--slate-300);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.page-jump input:focus {
+  border-color: #60a5fa;
+  outline: 3px solid rgb(147 197 253 / 35%);
+}
+
+.pagination-error {
+  margin: 8px 0 0;
+  color: #b42318;
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  .hardware-status {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hardware-status span {
+    text-align: left;
+  }
+
+  .pagination-area .pagination {
+    align-items: stretch;
+  }
+
+  .page-jump {
+    width: 100%;
+    order: -1;
+  }
+
+  .page-jump input {
+    flex: 1;
+  }
+}
