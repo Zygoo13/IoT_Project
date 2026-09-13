@@ -12,6 +12,7 @@ import {
 import DeviceControl from "../components/DeviceControl";
 import SensorCard from "../components/SensorCard";
 import { dashboardPoints, devices as mockDevices, sensors } from "../data/mockData";
+import { formatDateTime } from "../utils/dateTime";
 
 const HARDWARE_OFFLINE_THRESHOLD = 30_000;
 const DEVICE_COMMAND_TIMEOUT = 10_000;
@@ -19,6 +20,8 @@ const MOCK_CONFIRMATION_DELAY = 700;
 const DEVICE_STORAGE_KEY = "device-statuses";
 const MOCK_TELEMETRY_ENABLED = true;
 const MOCK_DEVICE_CONFIRMATIONS = true;
+const MOCK_BACKEND_AVAILABLE = true;
+const MOCK_REALTIME_CONNECTED = true;
 
 function loadSavedDevices() {
   try {
@@ -59,11 +62,16 @@ function Dashboard() {
     mockDevices.map((device) => ({ ...device, status: "UNKNOWN" })),
   );
   const [commandStates, setCommandStates] = useState({});
-  const [lastTelemetryAt, setLastTelemetryAt] = useState(Date.now());
-  const [hardwareOffline, setHardwareOffline] = useState(false);
+  const [lastTelemetryAt, setLastTelemetryAt] = useState(null);
+  const [hardwareState, setHardwareState] = useState("CHECKING");
+  const hardwareOffline = hardwareState === "OFFLINE";
   const latestPoint = chartPoints[chartPoints.length - 1];
 
   useEffect(() => {
+    if (!MOCK_BACKEND_AVAILABLE) {
+      return undefined;
+    }
+
     // Mock the Dashboard REST load. Production will load these confirmed states from Backend/Database.
     const timer = setTimeout(() => setDevices(loadSavedDevices()), 300);
     return () => clearTimeout(timer);
@@ -73,11 +81,12 @@ function Dashboard() {
     // Mock a new presentation point every 2 seconds.
     // Later this can be replaced by STOMP over native WebSocket.
     const interval = setInterval(() => {
-      if (!MOCK_TELEMETRY_ENABLED) {
+      if (!MOCK_BACKEND_AVAILABLE || !MOCK_REALTIME_CONNECTED || !MOCK_TELEMETRY_ENABLED) {
         return;
       }
 
       setLastTelemetryAt(Date.now());
+      setHardwareState("ONLINE");
       setChartPoints((currentPoints) => {
         const lastPoint = currentPoints[currentPoints.length - 1];
         const newPoint = createMockChartPoint(lastPoint ? lastPoint.id : 1000);
@@ -90,13 +99,17 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    setHardwareOffline(false);
-    const timer = setTimeout(() => setHardwareOffline(true), HARDWARE_OFFLINE_THRESHOLD);
+    if (!MOCK_BACKEND_AVAILABLE || !MOCK_REALTIME_CONNECTED) {
+      return undefined;
+    }
+
+    const timer = setTimeout(() => setHardwareState("OFFLINE"), HARDWARE_OFFLINE_THRESHOLD);
     return () => clearTimeout(timer);
   }, [lastTelemetryAt]);
 
   function handleDeviceControl(deviceCode, action) {
     const requestId = Date.now();
+    const actionLabel = action === "ON" ? "bật" : "tắt";
 
     setCommandStates((current) => ({
       ...current,
@@ -104,7 +117,7 @@ function Dashboard() {
         requestId,
         pending: true,
         action,
-        message: `Sending ${action}...`,
+        message: `Đang gửi lệnh ${actionLabel}...`,
         type: "pending",
       },
     }));
@@ -120,7 +133,7 @@ function Dashboard() {
           [deviceCode]: {
             ...current[deviceCode],
             pending: false,
-            message: "Device not responding - Last confirmed",
+            message: "Thiết bị không phản hồi. Giữ nguyên trạng thái trước đó.",
             type: "error",
           },
         };
@@ -154,7 +167,7 @@ function Dashboard() {
           [deviceCode]: {
             ...current[deviceCode],
             pending: false,
-            message: "Confirmed",
+            message: "Đã cập nhật trạng thái.",
             type: "success",
           },
         };
@@ -165,16 +178,43 @@ function Dashboard() {
   return (
     <section className="page dashboard">
       <header className="page-header">
-        <h1>Dashboard</h1>
-        <p>Monitor the latest environment readings and control connected devices.</p>
+        <h1>Tổng quan</h1>
+        <p>Theo dõi môi trường và điều khiển thiết bị.</p>
       </header>
 
-      <div className={hardwareOffline ? "hardware-status offline" : "hardware-status online"} role={hardwareOffline ? "alert" : "status"}>
-        <strong>{hardwareOffline ? "Hardware Offline" : "Hardware Online"}</strong>
-        <span>
-          {hardwareOffline ? "No telemetry for 30 seconds. Values below are stale." : "Receiving mock telemetry."}
-          {` Last received: ${new Date(lastTelemetryAt).toLocaleString()}`}
-        </span>
+      {!MOCK_BACKEND_AVAILABLE && (
+        <div className="system-alert backend-alert" role="alert">
+          <strong>Không thể kết nối máy chủ</strong>
+          <span>Chưa tải được dữ liệu. Hãy thử lại khi máy chủ hoạt động.</span>
+        </div>
+      )}
+
+      {!MOCK_REALTIME_CONNECTED && (
+        <div className="system-alert realtime-alert" role="alert">
+          <strong>Mất kết nối dữ liệu trực tiếp</strong>
+          <span>Dữ liệu mới đang tạm dừng. Các giá trị cũ vẫn được giữ lại.</span>
+        </div>
+      )}
+
+      <div className={`hardware-status ${hardwareState.toLowerCase()}`} role={hardwareOffline ? "alert" : "status"}>
+        {hardwareState === "CHECKING" && (
+          <>
+            <strong>Đang kiểm tra phần cứng</strong>
+            <span>Chưa nhận được dữ liệu mới.</span>
+          </>
+        )}
+        {hardwareState === "ONLINE" && (
+          <>
+            <strong>Phần cứng đang hoạt động</strong>
+            <span>Cập nhật lần cuối: {formatDateTime(lastTelemetryAt)}</span>
+          </>
+        )}
+        {hardwareState === "OFFLINE" && (
+          <>
+            <strong>Không nhận được dữ liệu từ phần cứng</strong>
+            <span>Đã quá 30 giây. Các giá trị bên dưới là dữ liệu cũ. Lần cuối: {lastTelemetryAt ? formatDateTime(lastTelemetryAt) : "Chưa có"}</span>
+          </>
+        )}
       </div>
 
       <div className="sensor-grid">
@@ -191,11 +231,11 @@ function Dashboard() {
 
       <section className="chart-section">
         <div className="section-heading">
-          <h2>Realtime Environment Data</h2>
-          <p>Latest 15 measurement points</p>
+          <h2>Biểu đồ môi trường</h2>
+          <p>15 lần đo gần nhất</p>
         </div>
         {chartPoints.length === 0 ? (
-          <p>No data</p>
+          <p>Chưa có dữ liệu</p>
         ) : (
           <div className="chart-container">
             <ResponsiveContainer width="100%" height="100%">
@@ -205,9 +245,9 @@ function Dashboard() {
                 <YAxis tick={{ fill: "#64748b", fontSize: 12 }} />
                 <Tooltip />
                 <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
-                <Line type="monotone" dataKey="temperature" stroke="#f59e0b" strokeWidth={2.5} dot={false} name="Temperature" />
-                <Line type="monotone" dataKey="humidity" stroke="#2563eb" strokeWidth={2.5} dot={false} name="Humidity" />
-                <Line type="monotone" dataKey="light" stroke="#10b981" strokeWidth={2.5} dot={false} name="Light" />
+                <Line type="monotone" dataKey="temperature" stroke="#f59e0b" strokeWidth={2.5} dot={false} name="Nhiệt độ" />
+                <Line type="monotone" dataKey="humidity" stroke="#2563eb" strokeWidth={2.5} dot={false} name="Độ ẩm" />
+                <Line type="monotone" dataKey="light" stroke="#10b981" strokeWidth={2.5} dot={false} name="Ánh sáng" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -216,8 +256,8 @@ function Dashboard() {
 
       <section className="device-section">
         <div className="section-heading">
-          <h2>Device Controls</h2>
-          <p>Send commands to the configured LED devices.</p>
+          <h2>Điều khiển thiết bị</h2>
+          <p>Bật hoặc tắt từng đèn LED.</p>
         </div>
         <div className="device-grid">
           {devices.map((device) => (

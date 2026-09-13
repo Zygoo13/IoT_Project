@@ -15,7 +15,7 @@ function Pagination({ currentPage, totalPages, onPageChange, label }) {
     const pageNumber = Number(pageInput);
 
     if (!Number.isInteger(pageNumber) || pageNumber < 1 || pageNumber > totalPages) {
-      setError(`Enter a page from 1 to ${totalPages}.`);
+      setError(`Nhập số trang từ 1 đến ${totalPages}.`);
       return;
     }
 
@@ -31,14 +31,14 @@ function Pagination({ currentPage, totalPages, onPageChange, label }) {
     <div className="pagination-area">
       <nav className="pagination" aria-label={label}>
         <button className="page-button" type="button" disabled={currentPage === 1} onClick={() => onPageChange(1)}>
-          First
+          Trang đầu
         </button>
         <button className="page-button" type="button" disabled={currentPage === 1} onClick={() => onPageChange(currentPage - 1)}>
-          Previous
+          Trước
         </button>
 
         <form className="page-jump" onSubmit={handleGo}>
-          <label htmlFor={inputId}>Page</label>
+          <label htmlFor={inputId}>Trang</label>
           <input
             id={inputId}
             inputMode="numeric"
@@ -46,15 +46,15 @@ function Pagination({ currentPage, totalPages, onPageChange, label }) {
             onChange={(event) => setPageInput(event.target.value)}
             aria-invalid={Boolean(error)}
           />
-          <span>of {totalPages}</span>
-          <button className="page-button" type="submit">Go</button>
+          <span>/ {totalPages}</span>
+          <button className="page-button" type="submit">Đến</button>
         </form>
 
         <button className="page-button" type="button" disabled={currentPage === totalPages} onClick={() => onPageChange(currentPage + 1)}>
-          Next
+          Sau
         </button>
         <button className="page-button" type="button" disabled={currentPage === totalPages} onClick={() => onPageChange(totalPages)}>
-          Last
+          Trang cuối
         </button>
       </nav>
       {error && <p className="pagination-error" role="alert">{error}</p>}

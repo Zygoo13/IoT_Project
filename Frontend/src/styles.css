@@ -1504,6 +1504,12 @@ body,
   color: #166534;
 }
 
+.hardware-status.checking {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+}
+
 .hardware-status.offline {
   border-color: #fed7aa;
   background: #fff7ed;
@@ -1511,6 +1517,34 @@ body,
 }
 
 .hardware-status span {
+  text-align: right;
+}
+
+.system-alert {
+  display: flex;
+  gap: 10px 18px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border: 1px solid;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.backend-alert {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.realtime-alert {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.system-alert span {
   text-align: right;
 }
 
@@ -1593,12 +1627,14 @@ body,
 }
 
 @media (max-width: 600px) {
-  .hardware-status {
+  .hardware-status,
+  .system-alert {
     align-items: flex-start;
     flex-direction: column;
   }
 
-  .hardware-status span {
+  .hardware-status span,
+  .system-alert span {
     text-align: left;
   }
 
@@ -1614,4 +1650,50 @@ body,
   .page-jump input {
     flex: 1;
   }
+}
+
+/* Giao diện gọn, ít trang trí và thống nhất giữa các trang. */
+.profile-card,
+.sensor-card,
+.chart-section,
+.device-card,
+.query-panel,
+.table-container {
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 6%);
+}
+
+.sensor-card,
+.sensor-card:nth-child(2),
+.sensor-card:nth-child(3) {
+  border-top: 1px solid var(--slate-200);
+}
+
+.hardware-status,
+.system-alert {
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.hardware-status.online {
+  border-color: var(--slate-200);
+  background: #ffffff;
+  color: var(--slate-700);
+}
+
+.hardware-status.online strong {
+  color: #166534;
+}
+
+.query-panel {
+  box-shadow: none;
+}
+
+.login-page {
+  background: var(--page-background);
+}
+
+.page h1,
+.login-card h1 {
+  font-size: clamp(26px, 2vw, 31px);
 }

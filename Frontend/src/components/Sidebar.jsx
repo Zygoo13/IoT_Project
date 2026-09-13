@@ -1,10 +1,10 @@
 import { NavLink, useNavigate } from "react-router-dom";
 
 const navigationItems = [
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/data-sensor", label: "Data Sensor" },
-  { to: "/action-history", label: "Action History" },
-  { to: "/profile", label: "Profile" },
+  { to: "/dashboard", label: "Tổng quan" },
+  { to: "/data-sensor", label: "Dữ liệu cảm biến" },
+  { to: "/action-history", label: "Lịch sử điều khiển" },
+  { to: "/profile", label: "Hồ sơ" },
 ];
 
 function Sidebar() {
@@ -18,11 +18,11 @@ function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-title">
-        <span>IoT Monitor</span>
-        <small>Environment System</small>
+        <span>Giám sát IoT</span>
+        <small>Môi trường và thiết bị</small>
       </div>
 
-      <nav className="navigation" aria-label="Main navigation">
+      <nav className="navigation" aria-label="Điều hướng chính">
         {navigationItems.map((item) => (
           <NavLink
             key={item.to}
@@ -35,7 +35,7 @@ function Sidebar() {
       </nav>
 
       <button className="logout-button" type="button" onClick={handleLogout}>
-        Logout
+        Đăng xuất
       </button>
     </aside>
   );

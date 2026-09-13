@@ -13,7 +13,7 @@ function SensorCard({ title, value, unit, stale }) {
           "N/A"
         )}
       </strong>
-      {stale && <span className="stale-label">Stale</span>}
+      {stale && <span className="stale-label">Dữ liệu cũ</span>}
     </article>
   );
 }

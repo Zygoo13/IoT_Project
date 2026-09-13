@@ -13,7 +13,7 @@ function Login() {
     event.preventDefault();
 
     if (!username || !password) {
-      setError("Please enter username and password.");
+      setError("Vui lòng nhập tên đăng nhập và mật khẩu.");
       return;
     }
 
@@ -23,7 +23,7 @@ function Login() {
       return;
     }
 
-    setError("Invalid username or password.");
+    setError("Tên đăng nhập hoặc mật khẩu không đúng.");
   }
 
   if (isAuthenticated) {
@@ -33,13 +33,13 @@ function Login() {
   return (
     <div className="login-page">
       <section className="login-card">
-        <p className="login-eyebrow">IoT Environment Monitoring</p>
-        <h1>Welcome back</h1>
-        <p>Sign in to access the monitoring dashboard and device controls.</p>
+        <p className="login-eyebrow">Hệ thống giám sát môi trường</p>
+        <h1>Đăng nhập</h1>
+        <p>Đăng nhập để xem dữ liệu và điều khiển thiết bị.</p>
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Tên đăng nhập</label>
             <input
               id="username"
               value={username}
@@ -49,7 +49,7 @@ function Login() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Mật khẩu</label>
             <input
               id="password"
               type="password"
@@ -59,10 +59,10 @@ function Login() {
             />
           </div>
 
-          {error && <p className="login-error">{error}</p>}
+          {error && <p className="login-error" role="alert">{error}</p>}
 
           <button className="login-button" type="submit">
-            Login
+            Đăng nhập
           </button>
         </form>
       </section>

@@ -24,6 +24,9 @@ function getInitialProfile() {
     return {
       ...profile,
       ...savedProfileData,
+      fullName: parsedProfile.fullName === "Your Name" ? profile.fullName : parsedProfile.fullName,
+      studentCode: parsedProfile.studentCode === "Your Student Code" ? profile.studentCode : parsedProfile.studentCode,
+      email: parsedProfile.email === "your-email@example.com" ? profile.email : parsedProfile.email,
       avatarUrl: parsedProfile.avatarUrl || legacyAvatar || profile.avatarUrl,
     };
   } catch {
@@ -40,8 +43,8 @@ function Profile() {
   const projectLinks = [
     { label: "GitHub", url: profileData.githubUrl },
     { label: "Figma", url: profileData.figmaUrl },
-    { label: "API Docs", url: profileData.apiDocsUrl },
-    { label: "Report", url: profileData.reportUrl },
+    { label: "Tài liệu API", url: profileData.apiDocsUrl },
+    { label: "Báo cáo", url: profileData.reportUrl },
   ];
 
   function handleEdit() {
@@ -67,13 +70,13 @@ function Profile() {
     }
 
     if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
-      setError("Please choose a JPG, PNG, or WebP image.");
+      setError("Chỉ chấp nhận ảnh JPG, PNG hoặc WebP.");
       event.target.value = "";
       return;
     }
 
     if (file.size > MAX_AVATAR_SIZE) {
-      setError("Avatar must be 2 MB or smaller.");
+      setError("Ảnh đại diện không được lớn hơn 2 MB.");
       event.target.value = "";
       return;
     }
@@ -88,7 +91,7 @@ function Profile() {
       setError("");
     };
 
-    reader.onerror = () => setError("Unable to read the selected image.");
+    reader.onerror = () => setError("Không thể đọc ảnh đã chọn.");
     reader.readAsDataURL(file);
   }
 
@@ -108,12 +111,12 @@ function Profile() {
     };
 
     if (!updatedProfile.fullName || !updatedProfile.studentCode || !updatedProfile.email) {
-      setError("Please fill in all required fields.");
+      setError("Vui lòng nhập đầy đủ các thông tin bắt buộc.");
       return;
     }
 
     if (!isValidEmail(updatedProfile.email)) {
-      setError("Please enter a valid email address.");
+      setError("Địa chỉ email không hợp lệ.");
       return;
     }
 
@@ -123,7 +126,7 @@ function Profile() {
       setError("");
       setIsEditing(false);
     } catch {
-      setError("Unable to save profile in this browser.");
+      setError("Không thể lưu hồ sơ trên trình duyệt này.");
     }
   }
 
@@ -137,15 +140,15 @@ function Profile() {
     <section className="page profile-page">
       <article className="profile-card">
         <header className="profile-header">
-          <h1>Profile</h1>
-          <p>Project owner information</p>
+          <h1>Hồ sơ</h1>
+          <p>Thông tin cá nhân và liên kết đồ án.</p>
         </header>
 
         {isEditing ? (
           <form className="profile-form" onSubmit={handleSave}>
             <div className="profile-avatar-edit">
-              <img src={formData.avatarUrl || defaultAvatar} alt="Profile avatar preview" className="profile-avatar" />
-              <label htmlFor="profile-avatar">Avatar</label>
+              <img src={formData.avatarUrl || defaultAvatar} alt="Xem trước ảnh đại diện" className="profile-avatar" />
+              <label htmlFor="profile-avatar">Ảnh đại diện</label>
               <input
                 id="profile-avatar"
                 className="profile-file-input"
@@ -153,16 +156,16 @@ function Profile() {
                 accept="image/jpeg,image/png,image/webp"
                 onChange={handleAvatarChange}
               />
-              <small>JPG, PNG, or WebP up to 2 MB. Stored locally in mock mode.</small>
+              <small>Ảnh JPG, PNG hoặc WebP, tối đa 2 MB. Bản mock lưu ảnh trên trình duyệt.</small>
             </div>
 
             <label className="profile-form-group">
-              Full Name *
+              Họ và tên *
               <input name="fullName" value={formData.fullName} onChange={handleChange} required />
             </label>
 
             <label className="profile-form-group">
-              Student Code *
+              Mã sinh viên *
               <input name="studentCode" value={formData.studentCode} onChange={handleChange} required />
             </label>
 
@@ -172,22 +175,22 @@ function Profile() {
             </label>
 
             <label className="profile-form-group">
-              GitHub URL
+              Liên kết GitHub
               <input name="githubUrl" type="url" value={formData.githubUrl} onChange={handleChange} />
             </label>
 
             <label className="profile-form-group">
-              Figma URL
+              Liên kết Figma
               <input name="figmaUrl" type="url" value={formData.figmaUrl} onChange={handleChange} />
             </label>
 
             <label className="profile-form-group">
-              API Docs URL
+              Liên kết tài liệu API
               <input name="apiDocsUrl" type="url" value={formData.apiDocsUrl} onChange={handleChange} />
             </label>
 
             <label className="profile-form-group">
-              Report URL
+              Liên kết báo cáo
               <input name="reportUrl" type="url" value={formData.reportUrl} onChange={handleChange} />
             </label>
 
@@ -199,27 +202,27 @@ function Profile() {
 
             <div className="profile-form-actions">
               <button className="secondary-button" type="button" onClick={handleCancel}>
-                Cancel
+                Hủy
               </button>
               <button className="primary-button" type="submit">
-                Save Changes
+                Lưu thay đổi
               </button>
             </div>
           </form>
         ) : (
           <>
             <div className="profile-avatar-container">
-              <img src={profileData.avatarUrl || defaultAvatar} alt="Profile avatar" className="profile-avatar" />
+              <img src={profileData.avatarUrl || defaultAvatar} alt="Ảnh đại diện" className="profile-avatar" />
             </div>
 
             <section className="profile-info">
-              <h2>Personal Information</h2>
+              <h2>Thông tin cá nhân</h2>
               <div className="profile-row">
-                <span>Full Name</span>
+                <span>Họ và tên</span>
                 <strong>{profileData.fullName}</strong>
               </div>
               <div className="profile-row">
-                <span>Student Code</span>
+                <span>Mã sinh viên</span>
                 <strong>{profileData.studentCode}</strong>
               </div>
               <div className="profile-row">
@@ -229,7 +232,7 @@ function Profile() {
             </section>
 
             <section className="profile-links">
-              <h2>Project Links</h2>
+              <h2>Liên kết đồ án</h2>
               <div className="profile-link-list">
                 {projectLinks.map((link) =>
                   link.url && link.url !== "#" ? (
@@ -238,7 +241,7 @@ function Profile() {
                     </a>
                   ) : (
                     <span key={link.label} className="profile-link disabled">
-                      {link.label} - Not configured
+                      {link.label} - Chưa thiết lập
                     </span>
                   ),
                 )}
@@ -247,7 +250,7 @@ function Profile() {
 
             <div className="profile-view-actions">
               <button className="primary-button profile-edit-button" type="button" onClick={handleEdit}>
-                Edit Profile
+                Chỉnh sửa hồ sơ
               </button>
             </div>
           </>

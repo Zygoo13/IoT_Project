@@ -2,7 +2,7 @@ export const sensors = [
   {
     id: 1,
     code: "DHT11_TEMP",
-    name: "DHT11 - Temperature",
+    name: "Nhiệt độ DHT11",
     type: "TEMPERATURE",
     field: "temperature",
     unit: "°C",
@@ -10,7 +10,7 @@ export const sensors = [
   {
     id: 2,
     code: "DHT11_HUM",
-    name: "DHT11 - Humidity",
+    name: "Độ ẩm DHT11",
     type: "HUMIDITY",
     field: "humidity",
     unit: "%RH",
@@ -18,7 +18,7 @@ export const sensors = [
   {
     id: 3,
     code: "LDR_LIGHT",
-    name: "LDR LM393 - Light",
+    name: "Ánh sáng LDR LM393",
     type: "LIGHT",
     field: "light",
     unit: "lux",
@@ -47,6 +47,7 @@ export const dashboardPoints = [
   { id: 1013, temperature: 28.6, humidity: 70, light: 505, recordedAt: "18:20:24" },
   { id: 1014, temperature: 28.5, humidity: 71, light: 512, recordedAt: "18:20:26" },
   { id: 1015, temperature: 28.7, humidity: 71, light: 520, recordedAt: "18:20:28" },
+  { id: 1016, temperature: 45, humidity: 81, light: 533, recordedAt: "18:20:28" },
 ];
 
 const sensorDataStartTime = new Date("2026-08-16T08:00:00");
@@ -104,9 +105,9 @@ export const mockUser = {
   id: 1,
   username: "admin",
   password: "admin123",
-  fullName: "Your Name",
-  studentCode: "Your Student Code",
-  email: "your-email@example.com",
+  fullName: "Nguyễn Văn A",
+  studentCode: "B21DCCN001",
+  email: "sinhvien@example.com",
 };
 
 export const profile = {

@@ -6,20 +6,27 @@ function DeviceControl({ device, commandState, hardwareOffline, onControl }) {
     : device.status === "OFF"
       ? "device-status-badge is-off"
       : "device-status-badge is-unknown";
+  const statusLabel = device.status === "ON"
+    ? "Đang bật"
+    : device.status === "OFF"
+      ? "Đang tắt"
+      : "Chưa xác định";
 
   return (
     <article className="device-card">
       <h3>{device.name}</h3>
       <p className="device-status">
-        Confirmed status: <span className={badgeClass}>{device.status}</span>
+        Trạng thái: <span className={badgeClass}>{statusLabel}</span>
       </p>
 
-      <p className={`command-message ${commandState?.type || ""}`} aria-live="polite">
-        {isUnknown ? "Unable to load status" : commandState?.message || "Ready"}
-      </p>
+      {(isUnknown || commandState) && (
+        <p className={`command-message ${commandState?.type || ""}`} aria-live="polite">
+          {isUnknown ? "Chưa tải được trạng thái thiết bị." : commandState.message}
+        </p>
+      )}
 
       {hardwareOffline && !isUnknown && (
-        <p className="device-offline-note">Hardware is offline. This is the last confirmed status.</p>
+        <p className="device-offline-note">Mất kết nối phần cứng. Đây là trạng thái được xác nhận gần nhất.</p>
       )}
 
       <div className="device-actions">
@@ -29,7 +36,7 @@ function DeviceControl({ device, commandState, hardwareOffline, onControl }) {
           disabled={isPending || isUnknown}
           onClick={() => onControl(device.code, "ON")}
         >
-          ON
+          Bật
         </button>
         <button
           className="off-button"
@@ -37,7 +44,7 @@ function DeviceControl({ device, commandState, hardwareOffline, onControl }) {
           disabled={isPending || isUnknown}
           onClick={() => onControl(device.code, "OFF")}
         >
-          OFF
+          Tắt
         </button>
       </div>
     </article>

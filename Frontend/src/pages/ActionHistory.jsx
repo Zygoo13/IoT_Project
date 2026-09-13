@@ -43,12 +43,12 @@ function ActionHistory() {
     const toDate = filterInputs.toTime ? parseDateTime(filterInputs.toTime) : null;
 
     if ((filterInputs.fromTime && !fromDate) || (filterInputs.toTime && !toDate)) {
-      setFilterError(`Use the format ${DATE_TIME_FORMAT}.`);
+      setFilterError(`Nhập thời gian theo định dạng ${DATE_TIME_FORMAT}.`);
       return;
     }
 
     if (fromDate && toDate && fromDate > toDate) {
-      setFilterError("From time must be earlier than or equal to To time.");
+      setFilterError("Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc.");
       return;
     }
 
@@ -124,39 +124,39 @@ function ActionHistory() {
   return (
     <section className="page history-page">
       <header className="page-header">
-        <h1>Action History</h1>
-        <p>Review requested actions and their recorded device status.</p>
+        <h1>Lịch sử điều khiển</h1>
+        <p>Xem các lệnh đã gửi và trạng thái thiết bị được ghi nhận.</p>
       </header>
 
-      <section className="query-panel" aria-label="Action History query controls">
+      <section className="query-panel" aria-label="Bộ lọc lịch sử điều khiển">
         <div className="query-top-row">
           <form className="search-controls query-search-controls" onSubmit={handleSearch}>
             <label className="query-control query-search-field">
-              Search field
+              Tìm theo
               <select
                 value={searchField}
                 onChange={(event) => setSearchField(event.target.value)}
               >
                 <option value="id">ID</option>
-                <option value="device">Device</option>
+                <option value="device">Thiết bị</option>
               </select>
             </label>
             <label className="query-control query-search-input">
-              Search
+              Từ khóa
               <input
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
-                placeholder="Search value"
+                placeholder="Nhập nội dung cần tìm"
               />
             </label>
             <button className="primary-button" type="submit">
-              Search
+              Tìm kiếm
             </button>
           </form>
 
           <div className="sort-controls">
             <label className="query-control">
-              Sort by
+              Sắp xếp theo
               <select
                 value={sortField}
                 onChange={(event) => {
@@ -165,14 +165,14 @@ function ActionHistory() {
                 }}
               >
                 <option value="id">ID</option>
-                <option value="device">Device</option>
-                <option value="action">Action</option>
-                <option value="status">Status</option>
-                <option value="time">Time</option>
+                <option value="device">Thiết bị</option>
+                <option value="action">Lệnh</option>
+                <option value="status">Trạng thái</option>
+                <option value="time">Thời gian</option>
               </select>
             </label>
             <label className="query-control query-order-control">
-              Order
+              Thứ tự
               <select
                 value={sortOrder}
                 onChange={(event) => {
@@ -180,8 +180,8 @@ function ActionHistory() {
                   setCurrentPage(1);
                 }}
               >
-                <option value="asc">ASC</option>
-                <option value="desc">DESC</option>
+                <option value="asc">Tăng dần</option>
+                <option value="desc">Giảm dần</option>
               </select>
             </label>
           </div>
@@ -189,9 +189,9 @@ function ActionHistory() {
 
         <div className="query-filter-row history-query-filter-row">
           <label className="query-control">
-            Device
+            Thiết bị
             <select name="device" value={filterInputs.device} onChange={handleFilterChange}>
-              <option value="">All</option>
+              <option value="">Tất cả</option>
               {devices.map((device) => (
                 <option key={device.code} value={device.code}>
                   {device.code}
@@ -200,35 +200,35 @@ function ActionHistory() {
             </select>
           </label>
           <label className="query-control">
-            Action
+            Lệnh
             <select name="action" value={filterInputs.action} onChange={handleFilterChange}>
-              <option value="">All</option>
-              <option value="ON">ON</option>
-              <option value="OFF">OFF</option>
+              <option value="">Tất cả</option>
+              <option value="ON">Bật</option>
+              <option value="OFF">Tắt</option>
             </select>
           </label>
           <label className="query-control">
-            Status
+            Trạng thái
             <select name="status" value={filterInputs.status} onChange={handleFilterChange}>
-              <option value="">All</option>
-              <option value="ON">ON</option>
-              <option value="OFF">OFF</option>
+              <option value="">Tất cả</option>
+              <option value="ON">Bật</option>
+              <option value="OFF">Tắt</option>
             </select>
           </label>
           <label className="query-control history-time-control">
-            From time
-            <input name="fromTime" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.fromTime} onChange={handleFilterChange} />
+            Từ thời điểm
+            <input name="fromTime" aria-label="Từ thời điểm" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.fromTime} onChange={handleFilterChange} />
           </label>
           <label className="query-control history-time-control">
-            To time
-            <input name="toTime" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.toTime} onChange={handleFilterChange} />
+            Đến thời điểm
+            <input name="toTime" aria-label="Đến thời điểm" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.toTime} onChange={handleFilterChange} />
           </label>
           <div className="filter-actions query-actions">
             <button className="secondary-button" type="button" onClick={handleResetFilters}>
-              Reset
+              Xóa lọc
             </button>
             <button className="primary-button" type="button" onClick={handleApplyFilters}>
-              Apply Filters
+              Áp dụng
             </button>
           </div>
         </div>
@@ -236,7 +236,7 @@ function ActionHistory() {
       </section>
 
       <p className="result-info">
-        Showing {firstItem}-{lastItem} of {result.length} records
+        Hiển thị {firstItem}-{lastItem} trên tổng số {result.length} bản ghi
       </p>
 
       <div className="table-container">
@@ -244,17 +244,17 @@ function ActionHistory() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Device</th>
-              <th>Action</th>
-              <th>Status</th>
-              <th>Time</th>
+              <th>Thiết bị</th>
+              <th>Lệnh</th>
+              <th>Trạng thái</th>
+              <th>Thời gian</th>
             </tr>
           </thead>
           <tbody>
             {pageRecords.length === 0 ? (
               <tr>
                 <td colSpan="5" className="empty-table-cell">
-                  No data found.
+                  Không tìm thấy dữ liệu.
                 </td>
               </tr>
             ) : (
@@ -264,12 +264,12 @@ function ActionHistory() {
                   <td>{record.device}</td>
                   <td>
                     <span className={record.action === "ON" ? "action-badge is-on" : "action-badge is-off"}>
-                      {record.action}
+                      {record.action === "ON" ? "BẬT" : "TẮT"}
                     </span>
                   </td>
                   <td>
                     <span className={record.status === "ON" ? "status-badge is-on" : "status-badge is-off"}>
-                      {record.status}
+                      {record.status === "ON" ? "BẬT" : "TẮT"}
                     </span>
                   </td>
                   <td>{formatDateTime(record.createdAt)}</td>
@@ -284,7 +284,7 @@ function ActionHistory() {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
-        label="Action History pages"
+        label="Phân trang lịch sử điều khiển"
       />
     </section>
   );

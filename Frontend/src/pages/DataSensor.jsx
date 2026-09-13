@@ -40,12 +40,12 @@ function DataSensor() {
     const toDate = filterInputs.toTime ? parseDateTime(filterInputs.toTime) : null;
 
     if ((filterInputs.fromTime && !fromDate) || (filterInputs.toTime && !toDate)) {
-      setFilterError(`Use the format ${DATE_TIME_FORMAT}.`);
+      setFilterError(`Nhập thời gian theo định dạng ${DATE_TIME_FORMAT}.`);
       return;
     }
 
     if (fromDate && toDate && fromDate > toDate) {
-      setFilterError("From time must be earlier than or equal to To time.");
+      setFilterError("Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc.");
       return;
     }
 
@@ -113,41 +113,41 @@ function DataSensor() {
   return (
     <section className="page data-page">
       <header className="page-header">
-        <h1>Data Sensor</h1>
-        <p>Search, filter, and review individual SensorData readings.</p>
+        <h1>Dữ liệu cảm biến</h1>
+        <p>Tra cứu các lần đo đã lưu.</p>
       </header>
 
-      <section className="query-panel" aria-label="Data Sensor query controls">
+      <section className="query-panel" aria-label="Bộ lọc dữ liệu cảm biến">
         <div className="query-top-row">
           <form className="search-controls query-search-controls" onSubmit={handleSearch}>
             <label className="query-control query-search-field">
-              Search field
+              Tìm theo
               <select
                 value={searchField}
                 onChange={(event) => setSearchField(event.target.value)}
               >
                 <option value="id">ID</option>
-                <option value="sensorName">Sensor Type</option>
-                <option value="value">Value</option>
-                <option value="time">Time</option>
+                <option value="sensorName">Loại cảm biến</option>
+                <option value="value">Giá trị</option>
+                <option value="time">Thời gian</option>
               </select>
             </label>
             <label className="query-control query-search-input">
-              Search
+              Từ khóa
               <input
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
-                placeholder="Search value"
+                placeholder="Nhập nội dung cần tìm"
               />
             </label>
             <button className="primary-button" type="submit">
-              Search
+              Tìm kiếm
             </button>
           </form>
 
           <div className="sort-controls">
             <label className="query-control">
-              Sort by
+              Sắp xếp theo
               <select
                 value={sortField}
                 onChange={(event) => {
@@ -156,13 +156,13 @@ function DataSensor() {
                 }}
               >
                 <option value="id">ID</option>
-                <option value="sensorName">Sensor Type</option>
-                <option value="value">Value</option>
-                <option value="time">Time</option>
+                <option value="sensorName">Loại cảm biến</option>
+                <option value="value">Giá trị</option>
+                <option value="time">Thời gian</option>
               </select>
             </label>
             <label className="query-control query-order-control">
-              Order
+              Thứ tự
               <select
                 value={sortOrder}
                 onChange={(event) => {
@@ -170,8 +170,8 @@ function DataSensor() {
                   setCurrentPage(1);
                 }}
               >
-                <option value="asc">ASC</option>
-                <option value="desc">DESC</option>
+                <option value="asc">Tăng dần</option>
+                <option value="desc">Giảm dần</option>
               </select>
             </label>
           </div>
@@ -179,25 +179,25 @@ function DataSensor() {
 
         <div className="query-filter-row data-query-filter-row">
           <fieldset className="filter-group time-filter-group">
-            <legend>Time range</legend>
+            <legend>Khoảng thời gian</legend>
             <div className="range-controls">
               <label>
-                <span>From</span>
-                <input name="fromTime" aria-label="From time" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.fromTime} onChange={handleFilterChange} />
+                <span>Từ</span>
+                <input name="fromTime" aria-label="Từ thời điểm" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.fromTime} onChange={handleFilterChange} />
               </label>
               <label>
-                <span>To</span>
-                <input name="toTime" aria-label="To time" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.toTime} onChange={handleFilterChange} />
+                <span>Đến</span>
+                <input name="toTime" aria-label="Đến thời điểm" type="text" placeholder={DATE_TIME_FORMAT} value={filterInputs.toTime} onChange={handleFilterChange} />
               </label>
             </div>
           </fieldset>
 
           <div className="filter-actions query-actions">
             <button className="secondary-button" type="button" onClick={handleResetFilters}>
-              Reset
+              Xóa lọc
             </button>
             <button className="primary-button" type="button" onClick={handleApplyFilters}>
-              Apply Filters
+              Áp dụng
             </button>
           </div>
         </div>
@@ -205,7 +205,7 @@ function DataSensor() {
       </section>
 
       <p className="result-info">
-        Showing {firstItem}-{lastItem} of {result.length} records
+        Hiển thị {firstItem}-{lastItem} trên tổng số {result.length} bản ghi
       </p>
 
       <div className="table-container">
@@ -213,16 +213,16 @@ function DataSensor() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Sensor Type</th>
-              <th>Value</th>
-              <th>Time</th>
+              <th>Loại cảm biến</th>
+              <th>Giá trị</th>
+              <th>Thời gian</th>
             </tr>
           </thead>
           <tbody>
             {pageRecords.length === 0 ? (
               <tr>
                 <td colSpan="4" className="empty-table-cell">
-                  No data found.
+                  Không tìm thấy dữ liệu.
                 </td>
               </tr>
             ) : (
@@ -243,7 +243,7 @@ function DataSensor() {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
-        label="Data Sensor pages"
+        label="Phân trang dữ liệu cảm biến"
       />
     </section>
   );
