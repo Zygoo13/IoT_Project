@@ -232,7 +232,7 @@ function Dashboard() {
       <section className="chart-section">
         <div className="section-heading">
           <h2>Biểu đồ môi trường</h2>
-          <p>15 lần đo gần nhất</p>
+          {/* <p>15 lần đo gần nhất</p> */}
         </div>
         {chartPoints.length === 0 ? (
           <p>Chưa có dữ liệu</p>
@@ -256,8 +256,8 @@ function Dashboard() {
 
       <section className="device-section">
         <div className="section-heading">
-          <h2>Điều khiển thiết bị</h2>
-          <p>Bật hoặc tắt từng đèn LED.</p>
+          {/* <h2>Điều khiển thiết bị</h2>
+          <p>Bật hoặc tắt từng đèn LED.</p> */}
         </div>
         <div className="device-grid">
           {devices.map((device) => (

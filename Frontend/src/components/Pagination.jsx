@@ -23,6 +23,8 @@ function Pagination({ currentPage, totalPages, onPageChange, label }) {
     onPageChange(pageNumber);
   }
 
+
+
   if (totalPages === 0) {
     return null;
   }
