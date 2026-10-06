@@ -10,29 +10,28 @@ import {
 export default function Login() {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [tenDangNhap, setTenDangNhap] = useState("");
+  const [matKhau, setMatKhau] = useState("");
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
+  const [dangTai, setDangTai] = useState(false);
 
-  async function handleSubmit(event) {
+  async function xuLyDangNhap(event) {
     event.preventDefault();
+    setThongBaoLoi("");
 
-    setErrorMessage("");
-
-    if (!username.trim() || !password) {
-      setErrorMessage("Nhập tên đăng nhập và mật khẩu.");
+    if (!tenDangNhap.trim() || !matKhau) {
+      setThongBaoLoi("Nhập tên đăng nhập và mật khẩu.");
       return;
     }
 
-    setIsLoading(true);
+    setDangTai(true);
 
     try {
       const result = await requestApi("/auth/login", {
         method: "POST",
         body: JSON.stringify({
-          username: username.trim(),
-          password,
+          username: tenDangNhap.trim(),
+          password: matKhau,
         }),
       });
 
@@ -40,18 +39,16 @@ export default function Login() {
       navigate("/dashboard", { replace: true });
     } catch (error) {
       if (error.status === 401) {
-        setErrorMessage(
-          "Tên đăng nhập hoặc mật khẩu không đúng.",
-        );
+        setThongBaoLoi("Tên đăng nhập hoặc mật khẩu không đúng.");
       } else {
-        setErrorMessage(
+        setThongBaoLoi(
           error.status
             ? "Đăng nhập thất bại. Thử lại."
             : "Không thể kết nối máy chủ.",
         );
       }
     } finally {
-      setIsLoading(false);
+      setDangTai(false);
     }
   }
 
@@ -62,64 +59,39 @@ export default function Login() {
   return (
     <div className="login-page">
       <section className="login-card">
-        <p className="login-eyebrow">
-          Hệ thống giám sát môi trường
-        </p>
-
+        <p className="login-eyebrow">Hệ thống giám sát môi trường</p>
         <h1>Đăng nhập</h1>
 
-        <form
-          className="login-form"
-          onSubmit={handleSubmit}
-        >
+        <form className="login-form" onSubmit={xuLyDangNhap}>
           <div className="form-group">
-            <label htmlFor="username">
-              Tên đăng nhập
-            </label>
-
+            <label htmlFor="username">Tên đăng nhập</label>
             <input
               id="username"
-              value={username}
-              onChange={(event) =>
-                setUsername(event.target.value)
-              }
+              value={tenDangNhap}
+              onChange={(event) => setTenDangNhap(event.target.value)}
               autoComplete="username"
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">
-              Mật khẩu
-            </label>
-
+            <label htmlFor="password">Mật khẩu</label>
             <input
               id="password"
               type="password"
-              value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
-              }
+              value={matKhau}
+              onChange={(event) => setMatKhau(event.target.value)}
               autoComplete="current-password"
             />
           </div>
 
-          {errorMessage && (
-            <p
-              className="login-error"
-              role="alert"
-            >
-              {errorMessage}
+          {thongBaoLoi && (
+            <p className="login-error" role="alert">
+              {thongBaoLoi}
             </p>
           )}
 
-          <button
-            className="login-button"
-            type="submit"
-            disabled={isLoading}
-          >
-            {isLoading
-              ? "Đang đăng nhập..."
-              : "Login"}
+          <button className="login-button" type="submit" disabled={dangTai}>
+            {dangTai ? "Đang đăng nhập..." : "Login"}
           </button>
         </form>
       </section>

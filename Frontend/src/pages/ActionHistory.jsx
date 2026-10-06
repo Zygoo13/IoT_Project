@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Pagination from "../components/Pagination";
-import {
-  buildQueryString,
-  requestApi,
-} from "../services/api";
+import { buildQueryString, requestApi } from "../services/api";
 import { onRealtime } from "../services/realtime";
 import {
   DATE_TIME_FORMAT,
@@ -32,63 +29,61 @@ const EMPTY_FILTERS = {
 };
 
 export default function ActionHistory() {
-  const [pageIndex, setPageIndex] = useState(0);
-  const [historyPage, setHistoryPage] = useState(EMPTY_PAGE);
+  const [trangHienTai, setTrangHienTai] = useState(0);
+  const [trangLichSu, setTrangLichSu] = useState(EMPTY_PAGE);
 
-  const [searchInput, setSearchInput] = useState("");
-  const [appliedSearch, setAppliedSearch] = useState("");
+  const [tuKhoa, setTuKhoa] = useState("");
+  const [tuKhoaDaApDung, setTuKhoaDaApDung] = useState("");
 
-  const [sortOrder, setSortOrder] = useState("DESC");
+  const [thuTuSapXep, setThuTuSapXep] = useState("DESC");
 
-  const [filterInput, setFilterInput] = useState(EMPTY_FILTERS);
-  const [appliedFilters, setAppliedFilters] = useState(EMPTY_FILTERS);
+  const [boLoc, setBoLoc] = useState(EMPTY_FILTERS);
+  const [boLocDaApDung, setBoLocDaApDung] = useState(EMPTY_FILTERS);
 
-  const [filterError, setFilterError] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [loiBoLoc, setLoiBoLoc] = useState("");
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [refreshVersion, setRefreshVersion] = useState(0);
+  const [dangTai, setDangTai] = useState(true);
+  const [lanLamMoi, setLanLamMoi] = useState(0);
 
-  function refreshPage() {
-    setRefreshVersion((version) => version + 1);
+  function taiLaiTrang() {
+    setLanLamMoi((lanHienTai) => lanHienTai + 1);
   }
 
-  function handleSearch(event) {
+  function xuLyTimKiem(event) {
     event.preventDefault();
 
-    setAppliedSearch(searchInput.trim());
-    setPageIndex(0);
+    setTuKhoaDaApDung(tuKhoa.trim());
+    setTrangHienTai(0);
   }
 
-  function handleSortOrderChange(event) {
-    setSortOrder(event.target.value);
-    setPageIndex(0);
+  function doiThuTuSapXep(event) {
+    setThuTuSapXep(event.target.value);
+    setTrangHienTai(0);
   }
 
-  function handleApplyFilters() {
-    const rangeError = getDateRangeError(
-      filterInput.fromTime,
-      filterInput.toTime,
-    );
+  // Kiểm tra và áp dụng bộ lọc
+  function apDungBoLoc() {
+    const loi = getDateRangeError(boLoc.fromTime, boLoc.toTime);
 
-    if (rangeError) {
-      setFilterError(rangeError);
+    if (loi) {
+      setLoiBoLoc(loi);
       return;
     }
 
-    setFilterError("");
-    setAppliedFilters({ ...filterInput });
-    setPageIndex(0);
+    setLoiBoLoc("");
+    setBoLocDaApDung({ ...boLoc });
+    setTrangHienTai(0);
   }
 
-  function handleClearFilters() {
-    setFilterInput(EMPTY_FILTERS);
-    setAppliedFilters(EMPTY_FILTERS);
-    setFilterError("");
-    setPageIndex(0);
+  function xoaBoLoc() {
+    setBoLoc(EMPTY_FILTERS);
+    setBoLocDaApDung(EMPTY_FILTERS);
+    setLoiBoLoc("");
+    setTrangHienTai(0);
   }
 
-  // Tải lại bảng khi có dữ liệu mới
+  // Tải lại khi có dữ liệu realtime mới
   useEffect(() => {
     return onRealtime((topic) => {
       if (
@@ -96,108 +91,91 @@ export default function ActionHistory() {
         topic === "devices" ||
         topic === "notifications"
       ) {
-        refreshPage();
+        taiLaiTrang();
       }
     });
   }, []);
 
   // Tải lịch sử điều khiển
   useEffect(() => {
-    let isCancelled = false;
+    let daHuy = false;
 
-    async function loadHistoryPage() {
-      const parameters = {
-        page: pageIndex,
+    async function taiLichSuDieuKhien() {
+      const thamSo = {
+        page: trangHienTai,
         size: PAGE_SIZE,
         sortBy: "ID",
-        order: sortOrder,
-        search: appliedSearch,
-        device: appliedFilters.device,
-        action: appliedFilters.action,
-        status: appliedFilters.status,
-        from: appliedFilters.fromTime
-          ? parseDateTime(
-            appliedFilters.fromTime,
-          )?.toISOString()
+        order: thuTuSapXep,
+        search: tuKhoaDaApDung,
+        device: boLocDaApDung.device,
+        action: boLocDaApDung.action,
+        status: boLocDaApDung.status,
+        from: boLocDaApDung.fromTime
+          ? parseDateTime(boLocDaApDung.fromTime)?.toISOString()
           : null,
-        to: appliedFilters.toTime
-          ? parseDateTime(
-            appliedFilters.toTime,
-          )?.toISOString()
+        to: boLocDaApDung.toTime
+          ? parseDateTime(boLocDaApDung.toTime)?.toISOString()
           : null,
       };
 
-      setIsLoading(true);
-      setHistoryPage(EMPTY_PAGE);
+      setDangTai(true);
+      setTrangLichSu(EMPTY_PAGE);
 
       try {
-        const queryString =
-          buildQueryString(parameters);
+        const query = buildQueryString(thamSo);
+        const result = await requestApi(`/action-history?${query}`);
 
-        const result = await requestApi(
-          `/action-history?${queryString}`,
-        );
-
-        if (isCancelled) {
+        if (daHuy) {
           return;
         }
 
-        if (
-          pageIndex > 0 &&
-          pageIndex >= result.totalPages
-        ) {
-          setPageIndex(
-            Math.max(0, result.totalPages - 1),
-          );
+        if (trangHienTai > 0 && trangHienTai >= result.totalPages) {
+          setTrangHienTai(Math.max(0, result.totalPages - 1));
         } else {
-          setHistoryPage(result);
-          setErrorMessage("");
+          setTrangLichSu(result);
+          setThongBaoLoi("");
         }
       } catch (error) {
-        if (isCancelled) {
+        if (daHuy) {
           return;
         }
 
         if (error.status === 400) {
-          setErrorMessage(error.message);
+          setThongBaoLoi(error.message);
         } else {
-          setErrorMessage(
+          setThongBaoLoi(
             error.status
               ? "Không tải được lịch sử điều khiển."
               : "Không thể kết nối máy chủ.",
           );
         }
       } finally {
-        if (!isCancelled) {
-          setIsLoading(false);
+        if (!daHuy) {
+          setDangTai(false);
         }
       }
     }
 
-    void loadHistoryPage();
+    void taiLichSuDieuKhien();
 
     return () => {
-      isCancelled = true;
+      daHuy = true;
     };
   }, [
-    pageIndex,
-    appliedSearch,
-    appliedFilters,
-    sortOrder,
-    refreshVersion,
+    trangHienTai,
+    tuKhoaDaApDung,
+    boLocDaApDung,
+    thuTuSapXep,
+    lanLamMoi,
   ]);
 
-  const firstRecordNumber =
-    historyPage.totalElements
-      ? pageIndex * PAGE_SIZE + 1
-      : 0;
+  const banGhiDau = trangLichSu.totalElements
+    ? trangHienTai * PAGE_SIZE + 1
+    : 0;
 
-  const lastRecordNumber =
-    historyPage.totalElements
-      ? firstRecordNumber +
-      historyPage.content.length -
-      1
-      : 0;
+  const banGhiCuoi = trangLichSu.totalElements
+    ? banGhiDau + trangLichSu.content.length - 1
+    : 0;
 
   return (
     <section className="page history-page">
@@ -212,24 +190,18 @@ export default function ActionHistory() {
         <div className="query-top-row">
           <form
             className="search-controls query-search-controls"
-            onSubmit={handleSearch}
+            onSubmit={xuLyTimKiem}
           >
             <label className="query-control query-search-input">
               Tìm kiếm
-
               <input
-                value={searchInput}
-                onChange={(event) =>
-                  setSearchInput(event.target.value)
-                }
+                value={tuKhoa}
+                onChange={(event) => setTuKhoa(event.target.value)}
                 placeholder="ID, thiết bị, lệnh, trạng thái hoặc thời gian"
               />
             </label>
 
-            <button
-              className="primary-button"
-              type="submit"
-            >
+            <button className="primary-button" type="submit">
               Tìm kiếm
             </button>
           </form>
@@ -237,18 +209,12 @@ export default function ActionHistory() {
           <div className="sort-controls">
             <label className="query-control query-order-control">
               Thứ tự
-
               <select
-                value={sortOrder}
-                onChange={handleSortOrderChange}
+                value={thuTuSapXep}
+                onChange={doiThuTuSapXep}
               >
-                <option value="ASC">
-                  Tăng dần
-                </option>
-
-                <option value="DESC">
-                  Giảm dần
-                </option>
+                <option value="ASC">Tăng dần</option>
+                <option value="DESC">Giảm dần</option>
               </select>
             </label>
           </div>
@@ -257,12 +223,11 @@ export default function ActionHistory() {
         <div className="query-filter-row history-query-filter-row">
           <label className="query-control">
             Thiết bị
-
             <select
-              value={filterInput.device}
+              value={boLoc.device}
               onChange={(event) =>
-                setFilterInput({
-                  ...filterInput,
+                setBoLoc({
+                  ...boLoc,
                   device: event.target.value,
                 })
               }
@@ -275,12 +240,11 @@ export default function ActionHistory() {
 
           <label className="query-control">
             Lệnh
-
             <select
-              value={filterInput.action}
+              value={boLoc.action}
               onChange={(event) =>
-                setFilterInput({
-                  ...filterInput,
+                setBoLoc({
+                  ...boLoc,
                   action: event.target.value,
                 })
               }
@@ -293,12 +257,11 @@ export default function ActionHistory() {
 
           <label className="query-control">
             Trạng thái
-
             <select
-              value={filterInput.status}
+              value={boLoc.status}
               onChange={(event) =>
-                setFilterInput({
-                  ...filterInput,
+                setBoLoc({
+                  ...boLoc,
                   status: event.target.value,
                 })
               }
@@ -311,13 +274,12 @@ export default function ActionHistory() {
 
           <label className="query-control history-time-control">
             Từ thời điểm
-
             <input
               placeholder={DATE_TIME_FORMAT}
-              value={filterInput.fromTime}
+              value={boLoc.fromTime}
               onChange={(event) =>
-                setFilterInput({
-                  ...filterInput,
+                setBoLoc({
+                  ...boLoc,
                   fromTime: event.target.value,
                 })
               }
@@ -326,13 +288,12 @@ export default function ActionHistory() {
 
           <label className="query-control history-time-control">
             Đến thời điểm
-
             <input
               placeholder={DATE_TIME_FORMAT}
-              value={filterInput.toTime}
+              value={boLoc.toTime}
               onChange={(event) =>
-                setFilterInput({
-                  ...filterInput,
+                setBoLoc({
+                  ...boLoc,
                   toTime: event.target.value,
                 })
               }
@@ -343,7 +304,7 @@ export default function ActionHistory() {
             <button
               className="secondary-button"
               type="button"
-              onClick={handleClearFilters}
+              onClick={xoaBoLoc}
             >
               Xóa lọc
             </button>
@@ -351,43 +312,33 @@ export default function ActionHistory() {
             <button
               className="primary-button"
               type="button"
-              onClick={handleApplyFilters}
+              onClick={apDungBoLoc}
             >
               Áp dụng
             </button>
           </div>
         </div>
 
-        {filterError && (
-          <p
-            className="query-error"
-            role="alert"
-          >
-            {filterError}
+        {loiBoLoc && (
+          <p className="query-error" role="alert">
+            {loiBoLoc}
           </p>
         )}
       </section>
 
-      {errorMessage && (
-        <p
-          className="query-error"
-          role="alert"
-        >
-          {errorMessage}{" "}
-
-          <button
-            type="button"
-            onClick={refreshPage}
-          >
+      {thongBaoLoi && (
+        <p className="query-error" role="alert">
+          {thongBaoLoi}{" "}
+          <button type="button" onClick={taiLaiTrang}>
             Thử lại
           </button>
         </p>
       )}
 
       <p className="result-info">
-        {isLoading
+        {dangTai
           ? "Đang tải..."
-          : `Hiển thị ${firstRecordNumber}-${lastRecordNumber} trên tổng số ${historyPage.totalElements} bản ghi`}
+          : `Hiển thị ${banGhiDau}-${banGhiCuoi} trên tổng số ${trangLichSu.totalElements} bản ghi`}
       </p>
 
       <div className="table-container">
@@ -403,55 +354,37 @@ export default function ActionHistory() {
           </thead>
 
           <tbody>
-            {historyPage.content.length > 0 ? (
-              historyPage.content.map((record) => (
+            {trangLichSu.content.length > 0 ? (
+              trangLichSu.content.map((record) => (
                 <tr key={record.id}>
                   <td>{record.id}</td>
-
                   <td>{record.deviceCode}</td>
 
                   <td>
                     <span
-                      className={`action-badge ${record.action === "ON"
-                        ? "is-on"
-                        : "is-off"
+                      className={`status-badge ${record.status === "ON" ? "is-on" : "is-off"
                         }`}
                     >
-                      {record.action === "ON"
-                        ? "BẬT"
-                        : "TẮT"}
+                      {record.status === "ON" ? "BẬT" : "TẮT"}
                     </span>
                   </td>
 
                   <td>
                     <span
-                      className={`status-badge ${record.status === "ON"
-                        ? "is-on"
-                        : "is-off"
+                      className={`status-badge ${record.status === "ON" ? "is-on" : "is-off"
                         }`}
                     >
-                      {record.status === "ON"
-                        ? "BẬT"
-                        : "TẮT"}
+                      {record.status === "ON" ? "BẬT" : "TẮT"}
                     </span>
                   </td>
 
-                  <td>
-                    {formatDateTime(
-                      record.createdAt,
-                    )}
-                  </td>
+                  <td>{formatDateTime(record.createdAt)}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="5"
-                  className="empty-table-cell"
-                >
-                  {isLoading
-                    ? "Đang tải..."
-                    : "Không tìm thấy dữ liệu."}
+                <td colSpan="5" className="empty-table-cell">
+                  {dangTai ? "Đang tải..." : "Không tìm thấy dữ liệu."}
                 </td>
               </tr>
             )}
@@ -460,11 +393,9 @@ export default function ActionHistory() {
       </div>
 
       <Pagination
-        currentPage={pageIndex + 1}
-        totalPages={historyPage.totalPages}
-        onPageChange={(pageNumber) =>
-          setPageIndex(pageNumber - 1)
-        }
+        currentPage={trangHienTai + 1}
+        totalPages={trangLichSu.totalPages}
+        onPageChange={(soTrang) => setTrangHienTai(soTrang - 1)}
         label="Phân trang lịch sử điều khiển"
       />
     </section>

@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 import { clearAccessToken } from "../services/api";
 
-const navigationItems = [
+const mucDieuHuong = [
   { to: "/dashboard", label: "Tổng quan" },
   { to: "/data-sensor", label: "Dữ liệu cảm biến" },
   { to: "/action-history", label: "Lịch sử điều khiển" },
@@ -12,7 +12,7 @@ const navigationItems = [
 export default function Sidebar() {
   const navigate = useNavigate();
 
-  function handleLogout() {
+  function dangXuat() {
     clearAccessToken();
     navigate("/login", { replace: true });
   }
@@ -24,30 +24,19 @@ export default function Sidebar() {
         <small>Môi trường và thiết bị</small>
       </div>
 
-      <nav
-        className="navigation"
-        aria-label="Điều hướng chính"
-      >
-        {navigationItems.map((navigationItem) => (
+      <nav className="navigation" aria-label="Điều hướng chính">
+        {mucDieuHuong.map((item) => (
           <NavLink
-            key={navigationItem.to}
-            to={navigationItem.to}
-            className={({ isActive }) =>
-              isActive
-                ? "nav-link active"
-                : "nav-link"
-            }
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
           >
-            {navigationItem.label}
+            {item.label}
           </NavLink>
         ))}
       </nav>
 
-      <button
-        className="logout-button"
-        type="button"
-        onClick={handleLogout}
-      >
+      <button className="logout-button" type="button" onClick={dangXuat}>
         Đăng xuất
       </button>
     </aside>

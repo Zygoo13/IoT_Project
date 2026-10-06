@@ -19,10 +19,7 @@ import {
 
 import DeviceControl from "../components/DeviceControl";
 import SensorCard from "../components/SensorCard";
-import {
-  buildQueryString,
-  requestApi,
-} from "../services/api";
+import { buildQueryString, requestApi } from "../services/api";
 import { onRealtime } from "../services/realtime";
 import { formatDateTime } from "../utils/dateTime";
 import { formatValue } from "../utils/formatValue";
@@ -54,95 +51,70 @@ const CHART_UNITS = {
   "Ánh sáng": "lux",
 };
 
-const chartTimeFormatter = new Intl.DateTimeFormat(
-  "vi-VN",
-  {
-    timeZone: "Asia/Ho_Chi_Minh",
-    hour: "2-digit",
-    minute: "2-digit",
-  },
-);
+const dinhDangGioBieuDo = new Intl.DateTimeFormat("vi-VN", {
+  timeZone: "Asia/Ho_Chi_Minh",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
 function formatChartTime(value) {
-  return chartTimeFormatter.format(
-    new Date(value),
-  );
+  return dinhDangGioBieuDo.format(new Date(value));
 }
 
 // Chuẩn bị dữ liệu cho biểu đồ
-function buildChartRows(dashboard) {
+function taoDuLieuBieuDo(dashboard) {
   if (!dashboard) {
     return [];
   }
 
-  const rowsByTime = new Map();
+  const duLieuTheoThoiGian = new Map();
 
   for (const sensor of SENSOR_DEFINITIONS) {
-    const sensorPoints =
-      dashboard.chart[sensor.code] || [];
+    const cacDiem = dashboard.chart[sensor.code] || [];
 
-    for (const point of sensorPoints) {
-      const row =
-        rowsByTime.get(point.recordedAt) || {
-          recordedAt: point.recordedAt,
-        };
+    for (const point of cacDiem) {
+      const row = duLieuTheoThoiGian.get(point.recordedAt) || {
+        recordedAt: point.recordedAt,
+      };
 
       row[sensor.field] = Number(point.value);
-
-      rowsByTime.set(
-        point.recordedAt,
-        row,
-      );
+      duLieuTheoThoiGian.set(point.recordedAt, row);
     }
   }
 
-  return Array.from(
-    rowsByTime.values(),
-  ).sort(
+  return Array.from(duLieuTheoThoiGian.values()).sort(
     (first, second) =>
-      new Date(first.recordedAt) -
-      new Date(second.recordedAt),
+      new Date(first.recordedAt) - new Date(second.recordedAt),
   );
 }
 
 // Cập nhật dữ liệu cảm biến realtime
-function applySensorUpdate(
-  dashboard,
-  sensorEvent,
-) {
+function capNhatCamBienRealtime(dashboard, sensorEvent) {
+  if (!dashboard || !dashboard.chart[sensorEvent.sensorCode]) {
+    return dashboard;
+  }
+
+  const duLieuCu = dashboard.latest[sensorEvent.sensorCode];
+
   if (
-    !dashboard ||
-    !dashboard.chart[sensorEvent.sensorCode]
+    duLieuCu &&
+    new Date(duLieuCu.recordedAt) > new Date(sensorEvent.recordedAt)
   ) {
     return dashboard;
   }
 
-  const previousReading =
-    dashboard.latest[sensorEvent.sensorCode];
+  const cacDiem = dashboard.chart[sensorEvent.sensorCode];
 
-  if (
-    previousReading &&
-    new Date(previousReading.recordedAt) >
-    new Date(sensorEvent.recordedAt)
-  ) {
-    return dashboard;
-  }
-
-  const points =
-    dashboard.chart[sensorEvent.sensorCode];
-
-  const isDuplicate = points.some(
+  const biTrung = cacDiem.some(
     (point) =>
-      point.recordedAt ===
-      sensorEvent.recordedAt &&
-      Number(point.value) ===
-      Number(sensorEvent.value),
+      point.recordedAt === sensorEvent.recordedAt &&
+      Number(point.value) === Number(sensorEvent.value),
   );
 
-  const nextPoints = isDuplicate
-    ? points
+  const cacDiemMoi = biTrung
+    ? cacDiem
     : [
-      ...points,
+      ...cacDiem,
       {
         value: sensorEvent.value,
         recordedAt: sensorEvent.recordedAt,
@@ -151,7 +123,6 @@ function applySensorUpdate(
 
   return {
     ...dashboard,
-
     latest: {
       ...dashboard.latest,
       [sensorEvent.sensorCode]: {
@@ -159,427 +130,292 @@ function applySensorUpdate(
         stale: false,
       },
     },
-
     chart: {
       ...dashboard.chart,
-      [sensorEvent.sensorCode]: nextPoints,
+      [sensorEvent.sensorCode]: cacDiemMoi,
     },
   };
 }
 
 export default function Dashboard() {
-  const [dashboard, setDashboard] =
-    useState(null);
+  const [dashboard, setDashboard] = useState(null);
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
+  const [dangTai, setDangTai] = useState(true);
+  const [trangThaiKetNoi, setTrangThaiKetNoi] = useState("CONNECTING");
+  const [trangThaiLenh, setTrangThaiLenh] = useState({});
 
-  const [errorMessage, setErrorMessage] =
-    useState("");
-
-  const [isLoading, setIsLoading] =
-    useState(true);
-
-  const [
-    connectionState,
-    setConnectionState,
-  ] = useState("CONNECTING");
-
-  const [
-    commandStates,
-    setCommandStates,
-  ] = useState({});
-
-  const commandStatesRef =
-    useRef(commandStates);
-
-  const requestTimersRef =
-    useRef(new Set());
+  const trangThaiLenhRef = useRef(trangThaiLenh);
+  const timerYeuCauRef = useRef(new Set());
 
   // Tải dữ liệu Dashboard
-  const loadDashboard =
-    useCallback(async () => {
-      try {
-        const result =
-          await requestApi("/dashboard");
+  const taiDashboard = useCallback(async () => {
+    try {
+      const result = await requestApi("/dashboard");
 
-        setDashboard(result);
-        setErrorMessage("");
-      } catch (error) {
-        setErrorMessage(
-          error.status
-            ? "Không tải được tổng quan."
-            : "Không thể kết nối máy chủ.",
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    }, []);
+      setDashboard(result);
+      setThongBaoLoi("");
+    } catch (error) {
+      setThongBaoLoi(
+        error.status
+          ? "Không tải được tổng quan."
+          : "Không thể kết nối máy chủ.",
+      );
+    } finally {
+      setDangTai(false);
+    }
+  }, []);
 
   // Đánh dấu thiết bị đã phản hồi
-  const markCommandConfirmed =
-    useCallback(
-      (deviceCode, requestId) => {
-        setCommandStates(
-          (currentStates) => {
-            if (
-              currentStates[deviceCode]
-                ?.requestId !== requestId
-            ) {
-              return currentStates;
-            }
+  const danhDauDaPhanHoi = useCallback((deviceCode, requestId) => {
+    setTrangThaiLenh((trangThaiHienTai) => {
+      if (trangThaiHienTai[deviceCode]?.requestId !== requestId) {
+        return trangThaiHienTai;
+      }
 
-            return {
-              ...currentStates,
-
-              [deviceCode]: {
-                requestId,
-                pending: false,
-                type: "success",
-                message:
-                  "Thiết bị đã phản hồi.",
-              },
-            };
-          },
-        );
-      },
-      [],
-    );
+      return {
+        ...trangThaiHienTai,
+        [deviceCode]: {
+          requestId,
+          pending: false,
+          type: "success",
+          message: "Thiết bị đã phản hồi.",
+        },
+      };
+    });
+  }, []);
 
   // Đánh dấu thiết bị không phản hồi
-  const markCommandTimedOut =
-    useCallback(
-      (deviceCode, requestId) => {
-        setCommandStates(
-          (currentStates) => {
-            const command =
-              currentStates[deviceCode];
+  const danhDauHetThoiGian = useCallback((deviceCode, requestId) => {
+    setTrangThaiLenh((trangThaiHienTai) => {
+      const command = trangThaiHienTai[deviceCode];
 
-            if (
-              command?.requestId !==
-              requestId ||
-              command?.publishFailed
-            ) {
-              return currentStates;
-            }
+      if (
+        command?.requestId !== requestId ||
+        command?.publishFailed
+      ) {
+        return trangThaiHienTai;
+      }
 
-            return {
-              ...currentStates,
-
-              [deviceCode]: {
-                requestId,
-                pending: false,
-                type: "error",
-                message:
-                  "Thiết bị không phản hồi.",
-              },
-            };
-          },
-        );
-      },
-      [],
-    );
+      return {
+        ...trangThaiHienTai,
+        [deviceCode]: {
+          requestId,
+          pending: false,
+          type: "error",
+          message: "Thiết bị không phản hồi.",
+        },
+      };
+    });
+  }, []);
 
   // Kiểm tra lại trạng thái lệnh trên Backend
-  const reconcileRequest =
-    useCallback(
-      async (deviceCode, requestId) => {
-        try {
-          const parameters =
-            buildQueryString({
-              searchField: "ID",
-              search: requestId,
-              page: 0,
-              size: 1,
-            });
+  const kiemTraYeuCau = useCallback(
+    async (deviceCode, requestId) => {
+      try {
+        const query = buildQueryString({
+          searchField: "ID",
+          search: requestId,
+          page: 0,
+          size: 1,
+        });
 
-          const historyPage =
-            await requestApi(
-              `/action-history?${parameters}`,
-            );
+        const historyPage = await requestApi(`/action-history?${query}`);
 
-          const history =
-            historyPage.content.find(
-              (record) =>
-                record.id === requestId,
-            );
+        const history = historyPage.content.find(
+          (record) => record.id === requestId,
+        );
 
-          if (!history) {
-            return;
-          }
-
-          if (
-            history.deliveryState ===
-            "CONFIRMED"
-          ) {
-            markCommandConfirmed(
-              deviceCode,
-              requestId,
-            );
-
-            void loadDashboard();
-          } else if (
-            history.deliveryState ===
-            "TIMEOUT"
-          ) {
-            markCommandTimedOut(
-              deviceCode,
-              requestId,
-            );
-          }
-        } catch {
-          // Thử lại khi WebSocket kết nối lại
+        if (!history) {
+          return;
         }
-      },
-      [
-        loadDashboard,
-        markCommandConfirmed,
-        markCommandTimedOut,
-      ],
-    );
 
-  // Xử lý sự kiện realtime
-  const handleRealtimeEvent =
-    useCallback(
-      (topic, realtimeEvent) => {
-        switch (topic) {
-          case "connected": {
-            setConnectionState(
-              "CONNECTED",
-            );
+        if (history.deliveryState === "CONFIRMED") {
+          danhDauDaPhanHoi(deviceCode, requestId);
+          void taiDashboard();
+        } else if (history.deliveryState === "TIMEOUT") {
+          danhDauHetThoiGian(deviceCode, requestId);
+        }
+      } catch {
+        // Thử lại khi WebSocket kết nối lại
+      }
+    },
+    [taiDashboard, danhDauDaPhanHoi, danhDauHetThoiGian],
+  );
 
-            void loadDashboard();
+  // Xử lý dữ liệu realtime
+  const xuLyRealtime = useCallback(
+    (topic, realtimeEvent) => {
+      switch (topic) {
+        case "connected": {
+          setTrangThaiKetNoi("CONNECTED");
+          void taiDashboard();
 
-            for (const [
-              deviceCode,
-              command,
-            ] of Object.entries(
-              commandStatesRef.current,
-            )) {
-              if (
-                command.pending &&
-                command.requestId
-              ) {
-                void reconcileRequest(
-                  deviceCode,
-                  command.requestId,
-                );
-              }
+          for (const [deviceCode, command] of Object.entries(
+            trangThaiLenhRef.current,
+          )) {
+            if (command.pending && command.requestId) {
+              void kiemTraYeuCau(deviceCode, command.requestId);
+            }
+          }
+
+          break;
+        }
+
+        case "disconnected": {
+          setTrangThaiKetNoi("DISCONNECTED");
+          break;
+        }
+
+        case "sensors": {
+          setDashboard((dashboardHienTai) =>
+            capNhatCamBienRealtime(dashboardHienTai, realtimeEvent),
+          );
+          break;
+        }
+
+        case "hardware": {
+          void taiDashboard();
+          break;
+        }
+
+        case "devices": {
+          setDashboard((dashboardHienTai) => {
+            if (!dashboardHienTai) {
+              return dashboardHienTai;
             }
 
-            break;
-          }
-
-          case "disconnected": {
-            setConnectionState(
-              "DISCONNECTED",
-            );
-            break;
-          }
-
-          case "sensors": {
-            setDashboard(
-              (currentDashboard) =>
-                applySensorUpdate(
-                  currentDashboard,
-                  realtimeEvent,
-                ),
-            );
-            break;
-          }
-
-          case "hardware": {
-            void loadDashboard();
-            break;
-          }
-
-          case "devices": {
-            setDashboard(
-              (currentDashboard) => {
-                if (!currentDashboard) {
-                  return currentDashboard;
-                }
-
-                const devices =
-                  currentDashboard.devices.map(
-                    (device) =>
-                      device.code ===
-                        realtimeEvent.deviceCode
-                        ? {
-                          ...device,
-                          status:
-                            realtimeEvent.status,
-                        }
-                        : device,
-                  );
-
-                return {
-                  ...currentDashboard,
-                  devices,
-                };
-              },
+            const devices = dashboardHienTai.devices.map((device) =>
+              device.code === realtimeEvent.deviceCode
+                ? { ...device, status: realtimeEvent.status }
+                : device,
             );
 
-            markCommandConfirmed(
+            return {
+              ...dashboardHienTai,
+              devices,
+            };
+          });
+
+          danhDauDaPhanHoi(
+            realtimeEvent.deviceCode,
+            realtimeEvent.requestId,
+          );
+
+          break;
+        }
+
+        case "notifications": {
+          if (realtimeEvent.type === "DEVICE_TIMEOUT") {
+            danhDauHetThoiGian(
               realtimeEvent.deviceCode,
               realtimeEvent.requestId,
             );
-
-            break;
           }
 
-          case "notifications": {
-            if (
-              realtimeEvent.type ===
-              "DEVICE_TIMEOUT"
-            ) {
-              markCommandTimedOut(
-                realtimeEvent.deviceCode,
-                realtimeEvent.requestId,
-              );
-            }
-
-            break;
-          }
+          break;
         }
-      },
-      [
-        loadDashboard,
-        reconcileRequest,
-        markCommandConfirmed,
-        markCommandTimedOut,
-      ],
-    );
+      }
+    },
+    [taiDashboard, kiemTraYeuCau, danhDauDaPhanHoi, danhDauHetThoiGian],
+  );
 
-  // Gửi lệnh bật hoặc tắt thiết bị
-  async function handleDeviceControl(
-    deviceCode,
-    action,
-  ) {
-    const device =
-      dashboard?.devices.find(
-        (device) =>
-          device.code === deviceCode,
-      );
+  // Gửi lệnh điều khiển thiết bị
+  async function dieuKhienThietBi(deviceCode, action) {
+    const device = dashboard?.devices.find(
+      (device) => device.code === deviceCode,
+    );
 
     if (!device) {
       return;
     }
 
-    setCommandStates(
-      (currentStates) => ({
-        ...currentStates,
-
-        [deviceCode]: {
-          pending: true,
-          requestId: null,
-          type: "pending",
-          message: "Đang gửi lệnh...",
-        },
-      }),
-    );
+    setTrangThaiLenh((trangThaiHienTai) => ({
+      ...trangThaiHienTai,
+      [deviceCode]: {
+        pending: true,
+        requestId: null,
+        type: "pending",
+        message: "Đang gửi lệnh...",
+      },
+    }));
 
     try {
-      const result = await requestApi(
-        `/devices/${device.id}/actions`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            action,
-          }),
+      const result = await requestApi(`/devices/${device.id}/actions`, {
+        method: "POST",
+        body: JSON.stringify({ action }),
+      });
+
+      setTrangThaiLenh((trangThaiHienTai) => ({
+        ...trangThaiHienTai,
+        [deviceCode]: {
+          requestId: result.requestId,
+          pending: true,
+          type: "pending",
+          message: "Đang chờ thiết bị phản hồi.",
         },
-      );
-
-      setCommandStates(
-        (currentStates) => ({
-          ...currentStates,
-
-          [deviceCode]: {
-            requestId:
-              result.requestId,
-            pending: true,
-            type: "pending",
-            message:
-              "Đang chờ thiết bị phản hồi.",
-          },
-        }),
-      );
+      }));
 
       // Kiểm tra trường hợp phản hồi đến sớm
-      void reconcileRequest(
-        deviceCode,
-        result.requestId,
-      );
+      void kiemTraYeuCau(deviceCode, result.requestId);
 
       const timer = setTimeout(() => {
-        void reconcileRequest(
-          deviceCode,
-          result.requestId,
-        );
-
-        requestTimersRef.current.delete(
-          timer,
-        );
+        void kiemTraYeuCau(deviceCode, result.requestId);
+        timerYeuCauRef.current.delete(timer);
       }, 11000);
 
-      requestTimersRef.current.add(timer);
+      timerYeuCauRef.current.add(timer);
     } catch (error) {
-      const publishFailed =
-        error.code ===
-        "MQTT_PUBLISH_FAILED";
+      const publishFailed = error.code === "MQTT_PUBLISH_FAILED";
 
-      setCommandStates(
-        (currentStates) => ({
-          ...currentStates,
-
-          [deviceCode]: {
-            pending: false,
-            requestId:
-              error.requestId || null,
-            type: "error",
-            publishFailed,
-            message: publishFailed
-              ? "Lệnh đã lưu nhưng chưa gửi được đến thiết bị."
-              : "Không gửi được lệnh. Thử lại.",
-          },
-        }),
-      );
+      setTrangThaiLenh((trangThaiHienTai) => ({
+        ...trangThaiHienTai,
+        [deviceCode]: {
+          pending: false,
+          requestId: error.requestId || null,
+          type: "error",
+          publishFailed,
+          message: publishFailed
+            ? "Lệnh đã lưu nhưng chưa gửi được đến thiết bị."
+            : "Không gửi được lệnh. Thử lại.",
+        },
+      }));
     }
   }
 
   useEffect(() => {
-    void loadDashboard();
-  }, [loadDashboard]);
+    void taiDashboard();
+  }, [taiDashboard]);
 
   useEffect(() => {
-    commandStatesRef.current =
-      commandStates;
-  }, [commandStates]);
+    trangThaiLenhRef.current = trangThaiLenh;
+  }, [trangThaiLenh]);
 
   useEffect(() => {
-    const requestTimers =
-      requestTimersRef.current;
+    const cacTimer = timerYeuCauRef.current;
 
     return () => {
-      requestTimers.forEach(
-        clearTimeout,
-      );
+      cacTimer.forEach(clearTimeout);
     };
   }, []);
 
   useEffect(() => {
-    return onRealtime(
-      handleRealtimeEvent,
-    );
-  }, [handleRealtimeEvent]);
+    return onRealtime(xuLyRealtime);
+  }, [xuLyRealtime]);
 
-  const chartRows = useMemo(
-    () => buildChartRows(dashboard),
+  const duLieuBieuDo = useMemo(
+    () => taoDuLieuBieuDo(dashboard),
     [dashboard],
   );
 
-  const hardware =
-    dashboard?.hardware;
+  const phanCung = dashboard?.hardware;
+  const trangThaiPhanCung = phanCung?.status || "CHECKING";
 
-  const hardwareStatus =
-    hardware?.status || "CHECKING";
+  const thongBaoPhanCung =
+    trangThaiPhanCung === "ONLINE"
+      ? "Phần cứng đang hoạt động"
+      : trangThaiPhanCung === "OFFLINE"
+        ? "Không nhận được dữ liệu từ phần cứng"
+        : "Đang kiểm tra phần cứng";
 
   return (
     <section className="page dashboard">
@@ -589,75 +425,42 @@ export default function Dashboard() {
         </header>
 
         <div
-          className={`hardware-status ${hardwareStatus.toLowerCase()}`}
+          className={`hardware-status ${trangThaiPhanCung.toLowerCase()}`}
           role="status"
         >
-          <strong>
-            {hardwareStatus === "ONLINE"
-              ? "Phần cứng đang hoạt động"
-              : hardwareStatus ===
-                "OFFLINE"
-                ? "Không nhận được dữ liệu từ phần cứng"
-                : "Đang kiểm tra phần cứng"}
-          </strong>
+          <strong>{thongBaoPhanCung}</strong>
 
           <span>
-            Cập nhật lần cuối:{" "}
-            {formatDateTime(
-              hardware?.lastSeenAt,
-            )}
+            Cập nhật lần cuối: {formatDateTime(phanCung?.lastSeenAt)}
           </span>
         </div>
       </div>
 
-      {errorMessage && (
-        <div
-          className="system-alert backend-alert"
-          role="alert"
-        >
-          <strong>
-            {errorMessage}
-          </strong>
+      {thongBaoLoi && (
+        <div className="system-alert backend-alert" role="alert">
+          <strong>{thongBaoLoi}</strong>
 
-          <button
-            type="button"
-            onClick={loadDashboard}
-          >
+          <button type="button" onClick={taiDashboard}>
             Thử lại
           </button>
         </div>
       )}
 
-      {connectionState ===
-        "DISCONNECTED" && (
-          <div
-            className="system-alert realtime-alert"
-            role="status"
-          >
-            Mất kết nối cập nhật trực tiếp.
-            Đang kết nối lại.
-          </div>
-        )}
+      {trangThaiKetNoi === "DISCONNECTED" && (
+        <div className="system-alert realtime-alert" role="status">
+          Mất kết nối cập nhật trực tiếp. Đang kết nối lại.
+        </div>
+      )}
 
       <div className="sensor-grid">
-        {SENSOR_DEFINITIONS.map(
-          (sensor) => (
-            <SensorCard
-              key={sensor.code}
-              title={sensor.title}
-              value={
-                dashboard?.latest[
-                  sensor.code
-                ]?.value ?? null
-              }
-              unit={
-                dashboard?.latest[
-                  sensor.code
-                ]?.unit || sensor.unit
-              }
-            />
-          ),
-        )}
+        {SENSOR_DEFINITIONS.map((sensor) => (
+          <SensorCard
+            key={sensor.code}
+            title={sensor.title}
+            value={dashboard?.latest[sensor.code]?.value ?? null}
+            unit={dashboard?.latest[sensor.code]?.unit || sensor.unit}
+          />
+        ))}
       </div>
 
       <section className="chart-section">
@@ -665,29 +468,20 @@ export default function Dashboard() {
           <h2>Biểu đồ môi trường</h2>
 
           <span className="chart-note">
-            Nhiệt độ (°C) · Độ ẩm (%RH) ·
-            Ánh sáng (lux)
+            Nhiệt độ (°C) · Độ ẩm (%RH) · Ánh sáng (lux)
           </span>
         </div>
 
-        {isLoading ? (
+        {dangTai ? (
           <p>Đang tải...</p>
-        ) : chartRows.length === 0 ? (
+        ) : duLieuBieuDo.length === 0 ? (
           <p>Chưa có dữ liệu</p>
         ) : (
           <div className="chart-container">
-            <ResponsiveContainer
-              width="100%"
-              height="100%"
-            >
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={chartRows}
-                margin={{
-                  top: 12,
-                  right: 6,
-                  left: 0,
-                  bottom: 8,
-                }}
+                data={duLieuBieuDo}
+                margin={{ top: 12, right: 6, left: 0, bottom: 8 }}
               >
                 <CartesianGrid
                   stroke="#e2e8f0"
@@ -697,59 +491,33 @@ export default function Dashboard() {
 
                 <XAxis
                   dataKey="recordedAt"
-                  tickFormatter={
-                    formatChartTime
-                  }
+                  tickFormatter={formatChartTime}
                   minTickGap={32}
-                  tick={{
-                    fontSize: 11,
-                  }}
-                  axisLine={{
-                    stroke: "#64748b",
-                  }}
-                  tickLine={{
-                    stroke: "#64748b",
-                  }}
+                  tick={{ fontSize: 11 }}
+                  axisLine={{ stroke: "#64748b" }}
+                  tickLine={{ stroke: "#64748b" }}
                 />
 
                 <YAxis
                   width={65}
                   domain={[0, "auto"]}
                   tickFormatter={formatValue}
-                  tick={{
-                    fontSize: 10,
-                  }}
-                  axisLine={{
-                    stroke: "#64748b",
-                  }}
+                  tick={{ fontSize: 10 }}
+                  axisLine={{ stroke: "#64748b" }}
                   label={{
-                    value:
-                      "°C / %RH / lux",
+                    value: "°C / %RH / lux",
                     angle: -90,
-                    position:
-                      "insideLeft",
-                    style: {
-                      fontSize: 10,
-                    },
+                    position: "insideLeft",
+                    style: { fontSize: 10 },
                   }}
                 />
 
                 <Tooltip
-                  labelFormatter={
-                    formatDateTime
-                  }
-                  formatter={(
-                    value,
+                  labelFormatter={formatDateTime}
+                  formatter={(value, name) => [
+                    `${formatValue(value)} ${CHART_UNITS[name] || ""}`,
                     name,
-                  ) => [
-                      `${formatValue(
-                        value,
-                      )} ${CHART_UNITS[
-                      name
-                      ] || ""
-                      }`,
-                      name,
-                    ]}
+                  ]}
                 />
 
                 <Legend />
@@ -763,9 +531,7 @@ export default function Dashboard() {
                   dot={false}
                   activeDot
                   name="Nhiệt độ"
-                  isAnimationActive={
-                    false
-                  }
+                  isAnimationActive={false}
                 />
 
                 <Line
@@ -777,9 +543,7 @@ export default function Dashboard() {
                   dot={false}
                   activeDot
                   name="Độ ẩm"
-                  isAnimationActive={
-                    false
-                  }
+                  isAnimationActive={false}
                 />
 
                 <Line
@@ -791,9 +555,7 @@ export default function Dashboard() {
                   dot={false}
                   activeDot
                   name="Ánh sáng"
-                  isAnimationActive={
-                    false
-                  }
+                  isAnimationActive={false}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -805,26 +567,15 @@ export default function Dashboard() {
         <div className="section-heading" />
 
         <div className="device-grid">
-          {(dashboard?.devices || []).map(
-            (device) => (
-              <DeviceControl
-                key={device.code}
-                device={device}
-                commandState={
-                  commandStates[
-                  device.code
-                  ]
-                }
-                hardwareOffline={
-                  hardwareStatus ===
-                  "OFFLINE"
-                }
-                onControl={
-                  handleDeviceControl
-                }
-              />
-            ),
-          )}
+          {(dashboard?.devices || []).map((device) => (
+            <DeviceControl
+              key={device.code}
+              device={device}
+              commandState={trangThaiLenh[device.code]}
+              hardwareOffline={trangThaiPhanCung === "OFFLINE"}
+              onControl={dieuKhienThietBi}
+            />
+          ))}
         </div>
       </section>
     </section>

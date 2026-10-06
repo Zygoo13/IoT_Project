@@ -1,4 +1,5 @@
 export function formatValue(value) {
-  const number = Number(value);
-  return Number.isFinite(number) ? number.toFixed(1) : "N/A";
+  const so = Number(value);
+
+  return Number.isFinite(so) ? so.toFixed(1) : "N/A";
 }

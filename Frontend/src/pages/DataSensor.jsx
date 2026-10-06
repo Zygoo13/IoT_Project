@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Pagination from "../components/Pagination";
-import {
-  buildQueryString,
-  requestApi,
-} from "../services/api";
+import { buildQueryString, requestApi } from "../services/api";
 import { onRealtime } from "../services/realtime";
 import {
   DATE_TIME_FORMAT,
@@ -36,168 +33,149 @@ const SENSOR_NAMES = {
 };
 
 export default function DataSensor() {
-  const [pageIndex, setPageIndex] = useState(0);
-  const [sensorPage, setSensorPage] = useState(EMPTY_PAGE);
+  const [trangHienTai, setTrangHienTai] = useState(0);
+  const [trangCamBien, setTrangCamBien] = useState(EMPTY_PAGE);
 
-  const [searchInput, setSearchInput] = useState("");
-  const [appliedSearch, setAppliedSearch] = useState("");
+  const [tuKhoa, setTuKhoa] = useState("");
+  const [tuKhoaDaApDung, setTuKhoaDaApDung] = useState("");
 
-  const [sortOrder, setSortOrder] = useState("DESC");
+  const [thuTuSapXep, setThuTuSapXep] = useState("DESC");
 
-  const [rangeInput, setRangeInput] = useState(EMPTY_RANGE);
-  const [appliedRange, setAppliedRange] = useState(EMPTY_RANGE);
+  const [khoangThoiGian, setKhoangThoiGian] = useState(EMPTY_RANGE);
+  const [khoangDaApDung, setKhoangDaApDung] = useState(EMPTY_RANGE);
 
-  const [filterError, setFilterError] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [loiBoLoc, setLoiBoLoc] = useState("");
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [refreshVersion, setRefreshVersion] = useState(0);
+  const [dangTai, setDangTai] = useState(true);
+  const [lanLamMoi, setLanLamMoi] = useState(0);
 
-  function refreshPage() {
-    setRefreshVersion((version) => version + 1);
+  function taiLaiTrang() {
+    setLanLamMoi((lanHienTai) => lanHienTai + 1);
   }
 
-  function handleSearch(event) {
+  function xuLyTimKiem(event) {
     event.preventDefault();
 
-    setAppliedSearch(searchInput.trim());
-    setPageIndex(0);
+    setTuKhoaDaApDung(tuKhoa.trim());
+    setTrangHienTai(0);
   }
 
-  function handleSortOrderChange(event) {
-    setSortOrder(event.target.value);
-    setPageIndex(0);
+  function doiThuTuSapXep(event) {
+    setThuTuSapXep(event.target.value);
+    setTrangHienTai(0);
   }
 
-  function handleApplyRange() {
-    const rangeError = getDateRangeError(
-      rangeInput.fromTime,
-      rangeInput.toTime,
+  // Kiểm tra khoảng thời gian
+  function apDungKhoangThoiGian() {
+    const loi = getDateRangeError(
+      khoangThoiGian.fromTime,
+      khoangThoiGian.toTime,
     );
 
-    if (rangeError) {
-      setFilterError(rangeError);
+    if (loi) {
+      setLoiBoLoc(loi);
       return;
     }
 
-    setFilterError("");
-    setAppliedRange({ ...rangeInput });
-    setPageIndex(0);
+    setLoiBoLoc("");
+    setKhoangDaApDung({ ...khoangThoiGian });
+    setTrangHienTai(0);
   }
 
-  function handleClearRange() {
-    setRangeInput(EMPTY_RANGE);
-    setAppliedRange(EMPTY_RANGE);
-    setFilterError("");
-    setPageIndex(0);
+  function xoaKhoangThoiGian() {
+    setKhoangThoiGian(EMPTY_RANGE);
+    setKhoangDaApDung(EMPTY_RANGE);
+    setLoiBoLoc("");
+    setTrangHienTai(0);
   }
 
-  // Tải lại bảng khi có dữ liệu mới
+  // Tải lại khi có dữ liệu realtime mới
   useEffect(() => {
     return onRealtime((topic) => {
-      if (
-        topic === "sensors" ||
-        topic === "connected"
-      ) {
-        refreshPage();
+      if (topic === "sensors" || topic === "connected") {
+        taiLaiTrang();
       }
     });
   }, []);
 
   // Tải dữ liệu cảm biến
   useEffect(() => {
-    let isCancelled = false;
+    let daHuy = false;
 
-    async function loadSensorPage() {
-      const parameters = {
-        page: pageIndex,
+    async function taiDuLieuCamBien() {
+      const thamSo = {
+        page: trangHienTai,
         size: PAGE_SIZE,
         sortBy: "ID",
-        order: sortOrder,
-        search: appliedSearch,
-        from: appliedRange.fromTime
-          ? parseDateTime(
-            appliedRange.fromTime,
-          )?.toISOString()
+        order: thuTuSapXep,
+        search: tuKhoaDaApDung,
+        from: khoangDaApDung.fromTime
+          ? parseDateTime(khoangDaApDung.fromTime)?.toISOString()
           : null,
-        to: appliedRange.toTime
-          ? parseDateTime(
-            appliedRange.toTime,
-          )?.toISOString()
+        to: khoangDaApDung.toTime
+          ? parseDateTime(khoangDaApDung.toTime)?.toISOString()
           : null,
       };
 
-      setIsLoading(true);
-      setSensorPage(EMPTY_PAGE);
+      setDangTai(true);
+      setTrangCamBien(EMPTY_PAGE);
 
       try {
-        const queryString =
-          buildQueryString(parameters);
+        const query = buildQueryString(thamSo);
+        const result = await requestApi(`/sensor-data?${query}`);
 
-        const result = await requestApi(
-          `/sensor-data?${queryString}`,
-        );
-
-        if (isCancelled) {
+        if (daHuy) {
           return;
         }
 
-        if (
-          pageIndex > 0 &&
-          pageIndex >= result.totalPages
-        ) {
-          setPageIndex(
-            Math.max(0, result.totalPages - 1),
-          );
+        if (trangHienTai > 0 && trangHienTai >= result.totalPages) {
+          setTrangHienTai(Math.max(0, result.totalPages - 1));
         } else {
-          setSensorPage(result);
-          setErrorMessage("");
+          setTrangCamBien(result);
+          setThongBaoLoi("");
         }
       } catch (error) {
-        if (isCancelled) {
+        if (daHuy) {
           return;
         }
 
         if (error.status === 400) {
-          setErrorMessage(error.message);
+          setThongBaoLoi(error.message);
         } else {
-          setErrorMessage(
+          setThongBaoLoi(
             error.status
               ? "Không tải được dữ liệu cảm biến."
               : "Không thể kết nối máy chủ.",
           );
         }
       } finally {
-        if (!isCancelled) {
-          setIsLoading(false);
+        if (!daHuy) {
+          setDangTai(false);
         }
       }
     }
 
-    void loadSensorPage();
+    void taiDuLieuCamBien();
 
     return () => {
-      isCancelled = true;
+      daHuy = true;
     };
   }, [
-    pageIndex,
-    appliedSearch,
-    appliedRange,
-    sortOrder,
-    refreshVersion,
+    trangHienTai,
+    tuKhoaDaApDung,
+    khoangDaApDung,
+    thuTuSapXep,
+    lanLamMoi,
   ]);
 
-  const firstRecordNumber =
-    sensorPage.totalElements
-      ? pageIndex * PAGE_SIZE + 1
-      : 0;
+  const banGhiDau = trangCamBien.totalElements
+    ? trangHienTai * PAGE_SIZE + 1
+    : 0;
 
-  const lastRecordNumber =
-    sensorPage.totalElements
-      ? firstRecordNumber +
-      sensorPage.content.length -
-      1
-      : 0;
+  const banGhiCuoi = trangCamBien.totalElements
+    ? banGhiDau + trangCamBien.content.length - 1
+    : 0;
 
   return (
     <section className="page data-page">
@@ -212,24 +190,18 @@ export default function DataSensor() {
         <div className="query-top-row">
           <form
             className="search-controls query-search-controls"
-            onSubmit={handleSearch}
+            onSubmit={xuLyTimKiem}
           >
             <label className="query-control query-search-input">
               Tìm kiếm
-
               <input
-                value={searchInput}
-                onChange={(event) =>
-                  setSearchInput(event.target.value)
-                }
+                value={tuKhoa}
+                onChange={(event) => setTuKhoa(event.target.value)}
                 placeholder="ID, loại cảm biến, giá trị hoặc thời gian"
               />
             </label>
 
-            <button
-              className="primary-button"
-              type="submit"
-            >
+            <button className="primary-button" type="submit">
               Tìm kiếm
             </button>
           </form>
@@ -237,18 +209,12 @@ export default function DataSensor() {
           <div className="sort-controls">
             <label className="query-control query-order-control">
               Thứ tự
-
               <select
-                value={sortOrder}
-                onChange={handleSortOrderChange}
+                value={thuTuSapXep}
+                onChange={doiThuTuSapXep}
               >
-                <option value="ASC">
-                  Tăng dần
-                </option>
-
-                <option value="DESC">
-                  Giảm dần
-                </option>
+                <option value="ASC">Tăng dần</option>
+                <option value="DESC">Giảm dần</option>
               </select>
             </label>
           </div>
@@ -261,14 +227,13 @@ export default function DataSensor() {
             <div className="range-controls">
               <label>
                 <span>Từ</span>
-
                 <input
                   aria-label="Từ thời điểm"
                   placeholder={DATE_TIME_FORMAT}
-                  value={rangeInput.fromTime}
+                  value={khoangThoiGian.fromTime}
                   onChange={(event) =>
-                    setRangeInput({
-                      ...rangeInput,
+                    setKhoangThoiGian({
+                      ...khoangThoiGian,
                       fromTime: event.target.value,
                     })
                   }
@@ -277,14 +242,13 @@ export default function DataSensor() {
 
               <label>
                 <span>Đến</span>
-
                 <input
                   aria-label="Đến thời điểm"
                   placeholder={DATE_TIME_FORMAT}
-                  value={rangeInput.toTime}
+                  value={khoangThoiGian.toTime}
                   onChange={(event) =>
-                    setRangeInput({
-                      ...rangeInput,
+                    setKhoangThoiGian({
+                      ...khoangThoiGian,
                       toTime: event.target.value,
                     })
                   }
@@ -297,7 +261,7 @@ export default function DataSensor() {
             <button
               className="secondary-button"
               type="button"
-              onClick={handleClearRange}
+              onClick={xoaKhoangThoiGian}
             >
               Xóa lọc
             </button>
@@ -305,43 +269,33 @@ export default function DataSensor() {
             <button
               className="primary-button"
               type="button"
-              onClick={handleApplyRange}
+              onClick={apDungKhoangThoiGian}
             >
               Áp dụng
             </button>
           </div>
         </div>
 
-        {filterError && (
-          <p
-            className="query-error"
-            role="alert"
-          >
-            {filterError}
+        {loiBoLoc && (
+          <p className="query-error" role="alert">
+            {loiBoLoc}
           </p>
         )}
       </section>
 
-      {errorMessage && (
-        <p
-          className="query-error"
-          role="alert"
-        >
-          {errorMessage}{" "}
-
-          <button
-            type="button"
-            onClick={refreshPage}
-          >
+      {thongBaoLoi && (
+        <p className="query-error" role="alert">
+          {thongBaoLoi}{" "}
+          <button type="button" onClick={taiLaiTrang}>
             Thử lại
           </button>
         </p>
       )}
 
       <p className="result-info">
-        {isLoading
+        {dangTai
           ? "Đang tải..."
-          : `Hiển thị ${firstRecordNumber}-${lastRecordNumber} trên tổng số ${sensorPage.totalElements} bản ghi`}
+          : `Hiển thị ${banGhiDau}-${banGhiCuoi} trên tổng số ${trangCamBien.totalElements} bản ghi`}
       </p>
 
       <div className="table-container">
@@ -356,38 +310,23 @@ export default function DataSensor() {
           </thead>
 
           <tbody>
-            {sensorPage.content.length > 0 ? (
-              sensorPage.content.map((record) => (
+            {trangCamBien.content.length > 0 ? (
+              trangCamBien.content.map((record) => (
                 <tr key={record.id}>
                   <td>{record.id}</td>
-
                   <td>
-                    {SENSOR_NAMES[
-                      record.sensorType
-                    ] || record.sensorType}
+                    {SENSOR_NAMES[record.sensorType] || record.sensorType}
                   </td>
-
                   <td>
-                    {formatValue(record.value)}{" "}
-                    {record.unit}
+                    {formatValue(record.value)} {record.unit}
                   </td>
-
-                  <td>
-                    {formatDateTime(
-                      record.recordedAt,
-                    )}
-                  </td>
+                  <td>{formatDateTime(record.recordedAt)}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="4"
-                  className="empty-table-cell"
-                >
-                  {isLoading
-                    ? "Đang tải..."
-                    : "Không tìm thấy dữ liệu."}
+                <td colSpan="4" className="empty-table-cell">
+                  {dangTai ? "Đang tải..." : "Không tìm thấy dữ liệu."}
                 </td>
               </tr>
             )}
@@ -396,11 +335,9 @@ export default function DataSensor() {
       </div>
 
       <Pagination
-        currentPage={pageIndex + 1}
-        totalPages={sensorPage.totalPages}
-        onPageChange={(pageNumber) =>
-          setPageIndex(pageNumber - 1)
-        }
+        currentPage={trangHienTai + 1}
+        totalPages={trangCamBien.totalPages}
+        onPageChange={(soTrang) => setTrangHienTai(soTrang - 1)}
         label="Phân trang dữ liệu cảm biến"
       />
     </section>

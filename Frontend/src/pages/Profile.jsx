@@ -51,129 +51,115 @@ const PROJECT_LINKS = [
   { label: "Báo cáo", field: "reportUrl" },
 ];
 
-function createProfileForm(profile) {
-  const formValues = {};
+function taoFormHoSo(profile) {
+  const form = {};
 
   for (const field of FORM_FIELDS) {
-    formValues[field.name] =
-      profile[field.name] || "";
+    form[field.name] = profile[field.name] || "";
   }
 
-  formValues.avatarUrl =
-    profile.avatarUrl || "";
+  form.avatarUrl = profile.avatarUrl || "";
 
-  return formValues;
+  return form;
 }
 
-function createProfileUpdate(formValues) {
-  const update = {};
+function taoDuLieuCapNhat(form) {
+  const duLieu = {};
 
   for (const field of FORM_FIELDS) {
-    const value =
-      formValues[field.name].trim();
-
-    update[field.name] =
-      field.required
-        ? value
-        : value || null;
+    const value = form[field.name].trim();
+    duLieu[field.name] = field.required ? value : value || null;
   }
 
-  update.avatarUrl =
-    formValues.avatarUrl.trim() || null;
+  duLieu.avatarUrl = form.avatarUrl.trim() || null;
 
-  return update;
+  return duLieu;
 }
 
 export default function Profile() {
-  const [profile, setProfile] = useState(null);
-  const [formValues, setFormValues] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [notice, setNotice] = useState("");
+  const [hoSo, setHoSo] = useState(null);
+  const [formHoSo, setFormHoSo] = useState({});
+  const [dangChinhSua, setDangChinhSua] = useState(false);
+  const [dangTai, setDangTai] = useState(true);
+  const [dangLuu, setDangLuu] = useState(false);
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
+  const [thongBao, setThongBao] = useState("");
 
-  async function loadProfile() {
-    setIsLoading(true);
+  // Tải hồ sơ
+  async function taiHoSo() {
+    setDangTai(true);
 
     try {
       const result = await requestApi("/profile");
 
-      setProfile(result);
-      setErrorMessage("");
+      setHoSo(result);
+      setThongBaoLoi("");
     } catch (error) {
-      setErrorMessage(
+      setThongBaoLoi(
         error.status
           ? "Không tải được hồ sơ."
           : "Không thể kết nối máy chủ.",
       );
     } finally {
-      setIsLoading(false);
+      setDangTai(false);
     }
   }
 
-  function handleEdit() {
-    setFormValues(
-      createProfileForm(profile),
-    );
-
-    setErrorMessage("");
-    setNotice("");
-    setIsEditing(true);
+  function batDauChinhSua() {
+    setFormHoSo(taoFormHoSo(hoSo));
+    setThongBaoLoi("");
+    setThongBao("");
+    setDangChinhSua(true);
   }
 
-  function handleCancelEdit() {
-    setIsEditing(false);
-    setErrorMessage("");
+  function huyChinhSua() {
+    setDangChinhSua(false);
+    setThongBaoLoi("");
   }
 
-  function handleFieldChange(name, value) {
-    setFormValues((currentValues) => ({
-      ...currentValues,
+  function thayDoiTruong(name, value) {
+    setFormHoSo((formHienTai) => ({
+      ...formHienTai,
       [name]: value,
     }));
   }
 
-  async function handleSave(event) {
+  // Lưu hồ sơ
+  async function luuHoSo(event) {
     event.preventDefault();
-
-    setErrorMessage("");
-    setIsSaving(true);
+    setThongBaoLoi("");
+    setDangLuu(true);
 
     try {
       const result = await requestApi("/profile", {
         method: "PUT",
-        body: JSON.stringify(
-          createProfileUpdate(formValues),
-        ),
+        body: JSON.stringify(taoDuLieuCapNhat(formHoSo)),
       });
 
-      setProfile(result);
-      setIsEditing(false);
-      setNotice("Đã lưu hồ sơ.");
+      setHoSo(result);
+      setDangChinhSua(false);
+      setThongBao("Đã lưu hồ sơ.");
     } catch (error) {
       if (error.status === 409) {
-        setErrorMessage(
-          "Email hoặc mã sinh viên đã được sử dụng.",
-        );
+        setThongBaoLoi("Email hoặc mã sinh viên đã được sử dụng.");
       } else if (error.status === 400) {
-        setErrorMessage(
+        setThongBaoLoi(
           "Dữ liệu không hợp lệ. Kiểm tra mã sinh viên, email và các URL.",
         );
       } else {
-        setErrorMessage(
+        setThongBaoLoi(
           error.status
             ? "Không lưu được hồ sơ."
             : "Không thể kết nối máy chủ.",
         );
       }
     } finally {
-      setIsSaving(false);
+      setDangLuu(false);
     }
   }
 
   useEffect(() => {
-    void loadProfile();
+    void taiHoSo();
   }, []);
 
   return (
@@ -183,92 +169,62 @@ export default function Profile() {
           <h1>Hồ sơ</h1>
         </header>
 
-        {isLoading && (
-          <p>Đang tải hồ sơ...</p>
-        )}
+        {dangTai && <p>Đang tải hồ sơ...</p>}
 
-        {!profile && errorMessage && (
-          <p
-            className="profile-form-error"
-            role="alert"
-          >
-            {errorMessage}{" "}
-            <button
-              type="button"
-              onClick={loadProfile}
-            >
+        {!hoSo && thongBaoLoi && (
+          <p className="profile-form-error" role="alert">
+            {thongBaoLoi}{" "}
+            <button type="button" onClick={taiHoSo}>
               Thử lại
             </button>
           </p>
         )}
 
-        {profile && (
-          isEditing ? (
-            <form
-              className="profile-form"
-              onSubmit={handleSave}
-            >
+        {hoSo &&
+          (dangChinhSua ? (
+            <form className="profile-form" onSubmit={luuHoSo}>
               <div className="profile-avatar-edit">
                 <img
-                  src={
-                    formValues.avatarUrl ||
-                    defaultAvatar
-                  }
+                  src={formHoSo.avatarUrl || defaultAvatar}
                   alt="Xem trước ảnh đại diện"
                   className="profile-avatar"
                 />
 
-                <label htmlFor="avatar-url">
-                  URL ảnh đại diện HTTPS
-                </label>
+                <label htmlFor="avatar-url">URL ảnh đại diện HTTPS</label>
 
                 <input
                   id="avatar-url"
                   name="avatarUrl"
                   type="url"
-                  value={formValues.avatarUrl}
+                  value={formHoSo.avatarUrl}
                   onChange={(event) =>
-                    handleFieldChange(
-                      "avatarUrl",
-                      event.target.value,
-                    )
+                    thayDoiTruong("avatarUrl", event.target.value)
                   }
                   placeholder="https://..."
                 />
 
-                <small>
-                  Chỉ hỗ trợ URL ảnh HTTPS; chưa tải ảnh từ máy.
-                </small>
+                <small>Chỉ hỗ trợ URL ảnh HTTPS; chưa tải ảnh từ máy.</small>
               </div>
 
               {FORM_FIELDS.map((field) => (
-                <label
-                  className="profile-form-group"
-                  key={field.name}
-                >
+                <label className="profile-form-group" key={field.name}>
                   {field.label}
 
                   <input
                     name={field.name}
                     type={field.type}
-                    value={formValues[field.name]}
+                    value={formHoSo[field.name]}
                     required={field.required}
                     onChange={(event) =>
-                      handleFieldChange(
-                        field.name,
-                        event.target.value,
-                      )
+                      thayDoiTruong(field.name, event.target.value)
                     }
                   />
                 </label>
               ))}
 
-              {errorMessage && (
-                <p
-                  className="profile-form-error"
-                  role="alert"
-                >
-                  {errorMessage}
+              {thongBaoLoi && (
+                <p className="profile-form-error" role="alert">
+                  {thongBaoLoi}
                 </p>
               )}
 
@@ -276,8 +232,8 @@ export default function Profile() {
                 <button
                   className="secondary-button"
                   type="button"
-                  disabled={isSaving}
-                  onClick={handleCancelEdit}
+                  disabled={dangLuu}
+                  onClick={huyChinhSua}
                 >
                   Hủy
                 </button>
@@ -285,11 +241,9 @@ export default function Profile() {
                 <button
                   className="primary-button"
                   type="submit"
-                  disabled={isSaving}
+                  disabled={dangLuu}
                 >
-                  {isSaving
-                    ? "Đang lưu..."
-                    : "Lưu thay đổi"}
+                  {dangLuu ? "Đang lưu..." : "Lưu thay đổi"}
                 </button>
               </div>
             </form>
@@ -297,10 +251,7 @@ export default function Profile() {
             <>
               <div className="profile-avatar-container">
                 <img
-                  src={
-                    profile.avatarUrl ||
-                    defaultAvatar
-                  }
+                  src={hoSo.avatarUrl || defaultAvatar}
                   alt="Ảnh đại diện"
                   className="profile-avatar"
                 />
@@ -311,23 +262,17 @@ export default function Profile() {
 
                 <div className="profile-row">
                   <span>Họ và tên</span>
-                  <strong>
-                    {profile.fullName}
-                  </strong>
+                  <strong>{hoSo.fullName}</strong>
                 </div>
 
                 <div className="profile-row">
                   <span>Mã sinh viên</span>
-                  <strong>
-                    {profile.studentCode}
-                  </strong>
+                  <strong>{hoSo.studentCode}</strong>
                 </div>
 
                 <div className="profile-row">
                   <span>Email</span>
-                  <strong>
-                    {profile.email}
-                  </strong>
+                  <strong>{hoSo.email}</strong>
                 </div>
               </section>
 
@@ -335,37 +280,33 @@ export default function Profile() {
                 <h2>Liên kết đồ án</h2>
 
                 <div className="profile-link-list">
-                  {PROJECT_LINKS.map(
-                    ({ label, field }) =>
-                      profile[field] ? (
-                        <a
-                          key={field}
-                          className="profile-link"
-                          href={profile[field]}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {label}
-                        </a>
-                      ) : (
-                        <span
-                          key={field}
-                          className="profile-link disabled"
-                          title="Chưa thiết lập"
-                        >
-                          {label}
-                        </span>
-                      ),
+                  {PROJECT_LINKS.map(({ label, field }) =>
+                    hoSo[field] ? (
+                      <a
+                        key={field}
+                        className="profile-link"
+                        href={hoSo[field]}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {label}
+                      </a>
+                    ) : (
+                      <span
+                        key={field}
+                        className="profile-link disabled"
+                        title="Chưa thiết lập"
+                      >
+                        {label}
+                      </span>
+                    ),
                   )}
                 </div>
               </section>
 
-              {notice && (
-                <p
-                  className="profile-save-notice"
-                  role="status"
-                >
-                  {notice}
+              {thongBao && (
+                <p className="profile-save-notice" role="status">
+                  {thongBao}
                 </p>
               )}
 
@@ -373,14 +314,13 @@ export default function Profile() {
                 <button
                   className="primary-button profile-edit-button"
                   type="button"
-                  onClick={handleEdit}
+                  onClick={batDauChinhSua}
                 >
                   Chỉnh sửa hồ sơ
                 </button>
               </div>
             </>
-          )
-        )}
+          ))}
       </article>
     </section>
   );

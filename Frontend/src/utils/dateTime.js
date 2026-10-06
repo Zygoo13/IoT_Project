@@ -1,6 +1,6 @@
 export const DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
 
-const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
+const dinhDangThoiGian = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Asia/Ho_Chi_Minh",
   day: "2-digit",
   month: "2-digit",
@@ -23,9 +23,7 @@ export function formatDateTime(value) {
     return "Không hợp lệ";
   }
 
-  return dateTimeFormatter
-    .format(date)
-    .replace(",", "");
+  return dinhDangThoiGian.format(date).replace(",", "");
 }
 
 // Chuyển thời gian nhập từ form sang UTC
@@ -38,44 +36,30 @@ export function parseDateTime(value) {
     return null;
   }
 
-  const day = Number(match[1]);
-  const month = Number(match[2]);
-  const year = Number(match[3]);
-  const hour = Number(match[4]);
-  const minute = Number(match[5]);
-  const second = Number(match[6]);
+  const ngay = Number(match[1]);
+  const thang = Number(match[2]);
+  const nam = Number(match[3]);
+  const gio = Number(match[4]);
+  const phut = Number(match[5]);
+  const giay = Number(match[6]);
 
   const date = new Date(
-    Date.UTC(
-      year,
-      month - 1,
-      day,
-      hour - 7,
-      minute,
-      second,
-    ),
+    Date.UTC(nam, thang - 1, ngay, gio - 7, phut, giay),
   );
 
-  return formatDateTime(date) === value
-    ? date
-    : null;
+  return formatDateTime(date) === value ? date : null;
 }
 
-// Kiểm tra khoảng thời gian nhập vào
+// Kiểm tra khoảng thời gian
 export function getDateRangeError(fromTime, toTime) {
-  const fromDate = fromTime
-    ? parseDateTime(fromTime)
-    : null;
+  const tuNgay = fromTime ? parseDateTime(fromTime) : null;
+  const denNgay = toTime ? parseDateTime(toTime) : null;
 
-  const toDate = toTime
-    ? parseDateTime(toTime)
-    : null;
-
-  if ((fromTime && !fromDate) || (toTime && !toDate)) {
+  if ((fromTime && !tuNgay) || (toTime && !denNgay)) {
     return `Nhập thời gian theo định dạng ${DATE_TIME_FORMAT}.`;
   }
 
-  if (fromDate && toDate && fromDate > toDate) {
+  if (tuNgay && denNgay && tuNgay > denNgay) {
     return "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc.";
   }
 

@@ -1,6 +1,6 @@
 const TOKEN_STORAGE_KEY = "iot-jwt";
 
-// Lấy JWT hiện tại và loại bỏ token đã hết hạn
+// Lấy JWT và kiểm tra thời hạn
 export function getAccessToken() {
   const token = localStorage.getItem(TOKEN_STORAGE_KEY);
 
@@ -9,12 +9,8 @@ export function getAccessToken() {
   }
 
   try {
-    const encodedPayload = token
-      .split(".")[1]
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-
-    const payload = JSON.parse(atob(encodedPayload));
+    const payloadMaHoa = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(atob(payloadMaHoa));
 
     if (!payload.exp || payload.exp * 1000 <= Date.now()) {
       clearAccessToken();
@@ -56,10 +52,10 @@ export async function requestApi(path, options = {}) {
     headers,
   });
 
-  const responseBody = await response.json().catch(() => null);
+  const duLieuTraVe = await response.json().catch(() => null);
 
   if (response.ok) {
-    return responseBody;
+    return duLieuTraVe;
   }
 
   if (response.status === 401 && path !== "/auth/login") {
@@ -67,26 +63,24 @@ export async function requestApi(path, options = {}) {
     window.location.replace("/login");
   }
 
-  const error = new Error(
-    responseBody?.message || `HTTP ${response.status}`,
-  );
+  const error = new Error(duLieuTraVe?.message || `HTTP ${response.status}`);
 
   error.status = response.status;
-  error.code = responseBody?.code;
-  error.requestId = responseBody?.requestId;
+  error.code = duLieuTraVe?.code;
+  error.requestId = duLieuTraVe?.requestId;
 
   throw error;
 }
 
 // Tạo query string và bỏ qua giá trị trống
 export function buildQueryString(parameters) {
-  const searchParameters = new URLSearchParams();
+  const query = new URLSearchParams();
 
   for (const [name, value] of Object.entries(parameters)) {
     if (value !== "" && value !== null && value !== undefined) {
-      searchParameters.set(name, value);
+      query.set(name, value);
     }
   }
 
-  return searchParameters.toString();
+  return query.toString();
 }

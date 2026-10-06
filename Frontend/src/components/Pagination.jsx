@@ -6,59 +6,42 @@ export default function Pagination({
   onPageChange,
   label,
 }) {
-  const [pageInput, setPageInput] = useState(String(currentPage));
-  const [errorMessage, setErrorMessage] = useState("");
+  const [oNhapTrang, setONhapTrang] = useState(String(currentPage));
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
 
-  const inputId = `${label
-    .toLowerCase()
-    .replaceAll(" ", "-")}-input`;
+  const idNhapTrang = `${label.toLowerCase().replaceAll(" ", "-")}-input`;
 
-  function handlePageSubmit(event) {
+  function xuLyNhapTrang(event) {
     event.preventDefault();
 
-    const pageNumber = Number(pageInput);
+    const soTrang = Number(oNhapTrang);
+    const trangKhongHopLe =
+      !Number.isInteger(soTrang) || soTrang < 1 || soTrang > totalPages;
 
-    const isInvalidPage =
-      !Number.isInteger(pageNumber) ||
-      pageNumber < 1 ||
-      pageNumber > totalPages;
-
-    if (isInvalidPage) {
-      setErrorMessage(
-        `Nhập số trang từ 1 đến ${totalPages}.`,
-      );
+    if (trangKhongHopLe) {
+      setThongBaoLoi(`Nhập số trang từ 1 đến ${totalPages}.`);
       return;
     }
 
-    setErrorMessage("");
-    onPageChange(pageNumber);
+    setThongBaoLoi("");
+    onPageChange(soTrang);
   }
 
   useEffect(() => {
-    setPageInput(
-      String(totalPages ? currentPage : 0),
-    );
-    setErrorMessage("");
+    setONhapTrang(String(totalPages ? currentPage : 0));
+    setThongBaoLoi("");
   }, [currentPage, totalPages]);
 
-  const isFirstPage =
-    totalPages === 0 ||
-    currentPage === 1;
-
-  const isLastPage =
-    totalPages === 0 ||
-    currentPage === totalPages;
+  const laTrangDau = totalPages === 0 || currentPage === 1;
+  const laTrangCuoi = totalPages === 0 || currentPage === totalPages;
 
   return (
     <div className="pagination-area">
-      <nav
-        className="pagination"
-        aria-label={label}
-      >
+      <nav className="pagination" aria-label={label}>
         <button
           className="page-button"
           type="button"
-          disabled={isFirstPage}
+          disabled={laTrangDau}
           onClick={() => onPageChange(1)}
         >
           Trang đầu
@@ -67,31 +50,22 @@ export default function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={isFirstPage}
-          onClick={() =>
-            onPageChange(currentPage - 1)
-          }
+          disabled={laTrangDau}
+          onClick={() => onPageChange(currentPage - 1)}
         >
           Trước
         </button>
 
-        <form
-          className="page-jump"
-          onSubmit={handlePageSubmit}
-        >
-          <label htmlFor={inputId}>
-            Trang
-          </label>
+        <form className="page-jump" onSubmit={xuLyNhapTrang}>
+          <label htmlFor={idNhapTrang}>Trang</label>
 
           <input
-            id={inputId}
+            id={idNhapTrang}
             inputMode="numeric"
-            value={pageInput}
+            value={oNhapTrang}
             disabled={totalPages === 0}
-            onChange={(event) =>
-              setPageInput(event.target.value)
-            }
-            aria-invalid={Boolean(errorMessage)}
+            onChange={(event) => setONhapTrang(event.target.value)}
+            aria-invalid={Boolean(thongBaoLoi)}
           />
 
           <span>/ {totalPages}</span>
@@ -108,10 +82,8 @@ export default function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={isLastPage}
-          onClick={() =>
-            onPageChange(currentPage + 1)
-          }
+          disabled={laTrangCuoi}
+          onClick={() => onPageChange(currentPage + 1)}
         >
           Sau
         </button>
@@ -119,21 +91,16 @@ export default function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={isLastPage}
-          onClick={() =>
-            onPageChange(totalPages)
-          }
+          disabled={laTrangCuoi}
+          onClick={() => onPageChange(totalPages)}
         >
           Trang cuối
         </button>
       </nav>
 
-      {errorMessage && (
-        <p
-          className="pagination-error"
-          role="alert"
-        >
-          {errorMessage}
+      {thongBaoLoi && (
+        <p className="pagination-error" role="alert">
+          {thongBaoLoi}
         </p>
       )}
     </div>
