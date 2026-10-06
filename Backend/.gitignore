@@ -1,0 +1,9 @@
+target/
+.env
+.mosquitto-test.conf
+.mosquitto-test.pw
+*.log
+.idea/
+.settings/
+.classpath
+.project

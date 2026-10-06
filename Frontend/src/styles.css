@@ -1678,6 +1678,25 @@ body,
 }
 
 /* Giao diện gọn, ít trang trí và thống nhất giữa các trang. */
+.delivery-state {
+  display: block;
+  margin-top: 4px;
+  color: var(--slate-500);
+  font-size: 12px;
+}
+
+.profile-avatar-edit input {
+  width: min(100%, 320px);
+  padding: 10px 12px;
+  border: 1px solid var(--slate-300);
+  border-radius: 8px;
+}
+
+.profile-save-notice {
+  color: #15803d;
+  font-size: 14px;
+}
+
 .profile-card,
 .sensor-card,
 .chart-section,

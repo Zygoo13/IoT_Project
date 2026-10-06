@@ -1,263 +1,97 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import defaultAvatar from "../assets/avatar.jpg";
-import { profile } from "../data/mockData";
+import { api } from "../services/api";
 
-const PROFILE_STORAGE_KEY = "profile";
-const MAX_AVATAR_SIZE = 2 * 1024 * 1024;
-const ALLOWED_AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const fields = ["fullName", "studentCode", "email", "githubUrl", "figmaUrl", "apiDocsUrl", "reportUrl", "avatarUrl"];
+const links = [
+  { label: "GitHub", field: "githubUrl" }, { label: "Figma", field: "figmaUrl" },
+  { label: "Tài liệu API", field: "apiDocsUrl" }, { label: "Báo cáo", field: "reportUrl" },
+];
 
-function isValidEmail(value) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
-
-function getInitialProfile() {
-  const savedProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
-
-  if (!savedProfile) {
-    return profile;
-  }
-
-  try {
-    const parsedProfile = JSON.parse(savedProfile);
-    const { avatar: legacyAvatar, ...savedProfileData } = parsedProfile;
-
-    return {
-      ...profile,
-      ...savedProfileData,
-      fullName: parsedProfile.fullName === "Your Name" ? profile.fullName : parsedProfile.fullName,
-      studentCode: parsedProfile.studentCode === "Your Student Code" ? profile.studentCode : parsedProfile.studentCode,
-      email: parsedProfile.email === "your-email@example.com" ? profile.email : parsedProfile.email,
-      avatarUrl: parsedProfile.avatarUrl || legacyAvatar || profile.avatarUrl,
-    };
-  } catch {
-    return profile;
-  }
-}
-
-function Profile() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState(getInitialProfile);
-  const [formData, setFormData] = useState(profileData);
+export default function Profile() {
+  const [profile, setProfile] = useState(null);
+  const [form, setForm] = useState({});
+  const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
 
-  const projectLinks = [
-    { label: "GitHub", url: profileData.githubUrl },
-    { label: "Figma", url: profileData.figmaUrl },
-    { label: "Tài liệu API", url: profileData.apiDocsUrl },
-    { label: "Báo cáo", url: profileData.reportUrl },
-  ];
-
-  function handleEdit() {
-    setFormData({ ...profileData });
-    setError("");
-    setIsEditing(true);
-  }
-
-  function handleChange(event) {
-    const { name, value } = event.target;
-
-    setFormData((current) => ({
-      ...current,
-      [name]: value,
-    }));
-  }
-
-  function handleAvatarChange(event) {
-    const file = event.target.files[0];
-
-    if (!file) {
-      return;
-    }
-
-    if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
-      setError("Chỉ chấp nhận ảnh JPG, PNG hoặc WebP.");
-      event.target.value = "";
-      return;
-    }
-
-    if (file.size > MAX_AVATAR_SIZE) {
-      setError("Ảnh đại diện không được lớn hơn 2 MB.");
-      event.target.value = "";
-      return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      setFormData((current) => ({
-        ...current,
-        avatarUrl: reader.result,
-      }));
-      setError("");
-    };
-
-    reader.onerror = () => setError("Không thể đọc ảnh đã chọn.");
-    reader.readAsDataURL(file);
-  }
-
-  function handleSave(event) {
-    event.preventDefault();
-
-    const updatedProfile = {
-      ...formData,
-      fullName: formData.fullName.trim(),
-      studentCode: formData.studentCode.trim(),
-      email: formData.email.trim(),
-      githubUrl: formData.githubUrl.trim(),
-      figmaUrl: formData.figmaUrl.trim(),
-      apiDocsUrl: formData.apiDocsUrl.trim(),
-      reportUrl: formData.reportUrl.trim(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    if (!updatedProfile.fullName || !updatedProfile.studentCode || !updatedProfile.email) {
-      setError("Vui lòng nhập đầy đủ các thông tin bắt buộc.");
-      return;
-    }
-
-    if (!isValidEmail(updatedProfile.email)) {
-      setError("Địa chỉ email không hợp lệ.");
-      return;
-    }
-
+  async function load() {
+    setLoading(true);
     try {
-      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updatedProfile));
-      setProfileData(updatedProfile);
-      setError("");
-      setIsEditing(false);
-    } catch {
-      setError("Không thể lưu hồ sơ trên trình duyệt này.");
-    }
+      const result = await api("/profile");
+      setProfile(result); setError("");
+    } catch (problem) {
+      setError(problem.status ? "Không tải được hồ sơ." : "Không thể kết nối Backend.");
+    } finally { setLoading(false); }
+  }
+  useEffect(() => { void load(); }, []);
+
+  function beginEdit() {
+    setForm(Object.fromEntries(fields.map((field) => [field, profile[field] || ""])));
+    setError(""); setNotice(""); setEditing(true);
   }
 
-  function handleCancel() {
-    setFormData({ ...profileData });
-    setError("");
-    setIsEditing(false);
+  async function save(event) {
+    event.preventDefault();
+    setError(""); setSaving(true);
+    const body = Object.fromEntries(fields.map((field) => [field,
+      ["fullName", "studentCode", "email"].includes(field) ? form[field].trim() : form[field].trim() || null]));
+    try {
+      const result = await api("/profile", { method: "PUT", body: JSON.stringify(body) });
+      setProfile(result); setEditing(false); setNotice("Đã lưu hồ sơ vào Backend.");
+    } catch (problem) {
+      setError(problem.status === 409 ? "Email hoặc mã sinh viên đã được sử dụng." :
+        problem.status === 400 ? "Dữ liệu không hợp lệ. Kiểm tra mã sinh viên, email và các URL." :
+          problem.status ? "Không lưu được hồ sơ." : "Không thể kết nối Backend.");
+    } finally { setSaving(false); }
   }
 
   return (
-    <section className="page profile-page">
-      <article className="profile-card">
-        <header className="profile-header">
-          <h1>Hồ sơ</h1>
-          <p>Thông tin cá nhân và liên kết đồ án.</p>
-        </header>
-
-        {isEditing ? (
-          <form className="profile-form" onSubmit={handleSave}>
-            <div className="profile-avatar-edit">
-              <img src={formData.avatarUrl || defaultAvatar} alt="Xem trước ảnh đại diện" className="profile-avatar" />
-              <label htmlFor="profile-avatar">Ảnh đại diện</label>
-              <input
-                id="profile-avatar"
-                className="profile-file-input"
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleAvatarChange}
-              />
-              <small>Ảnh JPG, PNG hoặc WebP, tối đa 2 MB. Bản mock lưu ảnh trên trình duyệt.</small>
-            </div>
-
-            <label className="profile-form-group">
-              Họ và tên *
-              <input name="fullName" value={formData.fullName} onChange={handleChange} required />
-            </label>
-
-            <label className="profile-form-group">
-              Mã sinh viên *
-              <input name="studentCode" value={formData.studentCode} onChange={handleChange} required />
-            </label>
-
-            <label className="profile-form-group">
-              Email *
-              <input name="email" type="email" value={formData.email} onChange={handleChange} required />
-            </label>
-
-            <label className="profile-form-group">
-              Liên kết GitHub
-              <input name="githubUrl" type="url" value={formData.githubUrl} onChange={handleChange} />
-            </label>
-
-            <label className="profile-form-group">
-              Liên kết Figma
-              <input name="figmaUrl" type="url" value={formData.figmaUrl} onChange={handleChange} />
-            </label>
-
-            <label className="profile-form-group">
-              Liên kết tài liệu API
-              <input name="apiDocsUrl" type="url" value={formData.apiDocsUrl} onChange={handleChange} />
-            </label>
-
-            <label className="profile-form-group">
-              Liên kết báo cáo
-              <input name="reportUrl" type="url" value={formData.reportUrl} onChange={handleChange} />
-            </label>
-
-            {error && (
-              <p className="profile-form-error" role="alert">
-                {error}
-              </p>
-            )}
-
-            <div className="profile-form-actions">
-              <button className="secondary-button" type="button" onClick={handleCancel}>
-                Hủy
-              </button>
-              <button className="primary-button" type="submit">
-                Lưu thay đổi
-              </button>
-            </div>
-          </form>
-        ) : (
-          <>
-            <div className="profile-avatar-container">
-              <img src={profileData.avatarUrl || defaultAvatar} alt="Ảnh đại diện" className="profile-avatar" />
-            </div>
-
-            <section className="profile-info">
-              <h2>Thông tin cá nhân</h2>
-              <div className="profile-row">
-                <span>Họ và tên</span>
-                <strong>{profileData.fullName}</strong>
-              </div>
-              <div className="profile-row">
-                <span>Mã sinh viên</span>
-                <strong>{profileData.studentCode}</strong>
-              </div>
-              <div className="profile-row">
-                <span>Email</span>
-                <strong>{profileData.email}</strong>
-              </div>
-            </section>
-
-            <section className="profile-links">
-              <h2>Liên kết đồ án</h2>
-              <div className="profile-link-list">
-                {projectLinks.map((link) =>
-                  link.url && link.url !== "#" ? (
-                    <a key={link.label} className="profile-link" href={link.url} target="_blank" rel="noreferrer">
-                      {link.label}
-                    </a>
-                  ) : (
-                    <span key={link.label} className="profile-link disabled">
-                      {link.label} - Chưa thiết lập
-                    </span>
-                  ),
-                )}
-              </div>
-            </section>
-
-            <div className="profile-view-actions">
-              <button className="primary-button profile-edit-button" type="button" onClick={handleEdit}>
-                Chỉnh sửa hồ sơ
-              </button>
-            </div>
-          </>
-        )}
-      </article>
-    </section>
+    <section className="page profile-page"><article className="profile-card">
+      <header className="profile-header"><h1>Hồ sơ</h1><p>Thông tin cá nhân và liên kết đồ án.</p></header>
+      {loading && <p>Đang tải hồ sơ...</p>}
+      {!profile && error && <p className="profile-form-error" role="alert">{error} <button type="button" onClick={load}>Thử lại</button></p>}
+      {profile && (editing ? (
+        <form className="profile-form" onSubmit={save}>
+          <div className="profile-avatar-edit">
+            <img src={form.avatarUrl || defaultAvatar} alt="Xem trước ảnh đại diện" className="profile-avatar" />
+            <label htmlFor="avatar-url">URL ảnh đại diện HTTPS</label>
+            <input id="avatar-url" name="avatarUrl" type="url" value={form.avatarUrl}
+              onChange={(event) => setForm({ ...form, avatarUrl: event.target.value })} placeholder="https://..." />
+            <small>Backend lưu URL ảnh; chưa hỗ trợ tải tệp ảnh lên.</small>
+          </div>
+          {[
+            ["fullName", "Họ và tên *", "text"], ["studentCode", "Mã sinh viên *", "text"],
+            ["email", "Email *", "email"], ["githubUrl", "Liên kết GitHub", "url"],
+            ["figmaUrl", "Liên kết Figma", "url"], ["apiDocsUrl", "Liên kết tài liệu API", "url"],
+            ["reportUrl", "Liên kết báo cáo", "url"],
+          ].map(([name, label, type]) => <label className="profile-form-group" key={name}>{label}
+            <input name={name} type={type} value={form[name]} required={["fullName", "studentCode", "email"].includes(name)}
+              onChange={(event) => setForm({ ...form, [name]: event.target.value })} />
+          </label>)}
+          {error && <p className="profile-form-error" role="alert">{error}</p>}
+          <div className="profile-form-actions">
+            <button className="secondary-button" type="button" disabled={saving} onClick={() => { setEditing(false); setError(""); }}>Hủy</button>
+            <button className="primary-button" type="submit" disabled={saving}>{saving ? "Đang lưu..." : "Lưu thay đổi"}</button>
+          </div>
+        </form>
+      ) : <>
+        <div className="profile-avatar-container"><img src={profile.avatarUrl || defaultAvatar} alt="Ảnh đại diện" className="profile-avatar" /></div>
+        <section className="profile-info"><h2>Thông tin cá nhân</h2>
+          <div className="profile-row"><span>Họ và tên</span><strong>{profile.fullName}</strong></div>
+          <div className="profile-row"><span>Mã sinh viên</span><strong>{profile.studentCode}</strong></div>
+          <div className="profile-row"><span>Email</span><strong>{profile.email}</strong></div>
+        </section>
+        <section className="profile-links"><h2>Liên kết đồ án</h2><div className="profile-link-list">
+          {links.map(({ label, field }) => profile[field] ?
+            <a key={field} className="profile-link" href={profile[field]} target="_blank" rel="noreferrer">{label}</a> :
+            <span key={field} className="profile-link disabled">{label} - Chưa thiết lập</span>)}
+        </div></section>
+        {notice && <p className="profile-save-notice" role="status">{notice}</p>}
+        <div className="profile-view-actions"><button className="primary-button profile-edit-button" type="button" onClick={beginEdit}>Chỉnh sửa hồ sơ</button></div>
+      </>)}
+    </article></section>
   );
 }
-
-export default Profile;

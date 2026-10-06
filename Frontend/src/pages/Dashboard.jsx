@@ -1,278 +1,164 @@
-import { useEffect, useState } from "react";
-import {
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import DeviceControl from "../components/DeviceControl";
 import SensorCard from "../components/SensorCard";
-import { dashboardPoints, devices as mockDevices, sensors } from "../data/mockData";
+import { api, query } from "../services/api";
+import { onRealtime } from "../services/realtime";
 import { formatDateTime } from "../utils/dateTime";
 
-const HARDWARE_OFFLINE_THRESHOLD = 30_000;
-const DEVICE_COMMAND_TIMEOUT = 10_000;
-const MOCK_CONFIRMATION_DELAY = 700;
-const DEVICE_STORAGE_KEY = "device-statuses";
-const MOCK_TELEMETRY_ENABLED = true;
-const MOCK_DEVICE_CONFIRMATIONS = true;
-const MOCK_BACKEND_AVAILABLE = true;
-const MOCK_REALTIME_CONNECTED = true;
+const sensors = [
+  { code: "DHT11_TEMP", title: "Nhiệt độ DHT11", field: "temperature", unit: "°C" },
+  { code: "DHT11_HUM", title: "Độ ẩm DHT11", field: "humidity", unit: "%RH" },
+  { code: "LDR_LIGHT", title: "Ánh sáng LDR LM393", field: "light", unit: "lux" },
+];
 
-function loadSavedDevices() {
-  try {
-    const savedStatuses = JSON.parse(localStorage.getItem(DEVICE_STORAGE_KEY) || "{}");
-
-    return mockDevices.map((device) => ({
-      ...device,
-      status: savedStatuses[device.code] || device.status,
-    }));
-  } catch {
-    return mockDevices;
-  }
-}
-
-function saveDeviceStatuses(devices) {
-  const statuses = Object.fromEntries(devices.map((device) => [device.code, device.status]));
-
-  try {
-    localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(statuses));
-  } catch {
-    // The mock still works when browser storage is unavailable; only reload restore is skipped.
-  }
-}
-
-function createMockChartPoint(lastId) {
-  return {
-    id: lastId + 1,
-    temperature: Number((25 + Math.random() * 10).toFixed(1)),
-    humidity: Math.round(50 + Math.random() * 40),
-    light: Math.round(200 + Math.random() * 600),
-    recordedAt: new Date().toLocaleTimeString("en-GB", { hour12: false }),
-  };
-}
-
-function Dashboard() {
-  const [chartPoints, setChartPoints] = useState(dashboardPoints);
-  const [devices, setDevices] = useState(() =>
-    mockDevices.map((device) => ({ ...device, status: "UNKNOWN" })),
-  );
+export default function Dashboard() {
+  const [dashboard, setDashboard] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [realtime, setRealtime] = useState("CONNECTING");
   const [commandStates, setCommandStates] = useState({});
-  const [lastTelemetryAt, setLastTelemetryAt] = useState(null);
-  const [hardwareState, setHardwareState] = useState("CHECKING");
-  const hardwareOffline = hardwareState === "OFFLINE";
-  const latestPoint = chartPoints[chartPoints.length - 1];
+  const commandStatesRef = useRef(commandStates);
+  const timers = useRef(new Set());
 
-  useEffect(() => {
-    if (!MOCK_BACKEND_AVAILABLE) {
-      return undefined;
+  const loadDashboard = useCallback(async () => {
+    try {
+      const data = await api("/dashboard");
+      setDashboard(data);
+      setError("");
+    } catch (problem) {
+      setError(problem.status ? "Không tải được Dashboard." : "Không thể kết nối Backend.");
+    } finally {
+      setLoading(false);
     }
-
-    // Mock the Dashboard REST load. Production will load these confirmed states from Backend/Database.
-    const timer = setTimeout(() => setDevices(loadSavedDevices()), 300);
-    return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    // Mock a new presentation point every 2 seconds.
-    // Later this can be replaced by STOMP over native WebSocket.
-    const interval = setInterval(() => {
-      if (!MOCK_BACKEND_AVAILABLE || !MOCK_REALTIME_CONNECTED || !MOCK_TELEMETRY_ENABLED) {
-        return;
+  useEffect(() => { void loadDashboard(); }, [loadDashboard]);
+  useEffect(() => { commandStatesRef.current = commandStates; }, [commandStates]);
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+
+  async function reconcileRequest(deviceCode, requestId) {
+    try {
+      const page = await api(`/action-history?${query({ searchField: "ID", search: requestId, page: 0, size: 1 })}`);
+      const row = page.content.find((item) => item.id === requestId);
+      if (!row) return;
+      if (row.deliveryState === "CONFIRMED") {
+        setCommandStates((current) => current[deviceCode]?.requestId === requestId
+          ? { ...current, [deviceCode]: { requestId, pending: false, type: "success", message: "Thiết bị đã phản hồi." } } : current);
+        void loadDashboard();
+      } else if (row.deliveryState === "TIMEOUT") {
+        setCommandStates((current) => current[deviceCode]?.requestId === requestId
+          ? { ...current, [deviceCode]: { requestId, pending: false, type: "error", message: "Thiết bị không phản hồi. Giữ trạng thái đã xác nhận." } } : current);
       }
-
-      setLastTelemetryAt(Date.now());
-      setHardwareState("ONLINE");
-      setChartPoints((currentPoints) => {
-        const lastPoint = currentPoints[currentPoints.length - 1];
-        const newPoint = createMockChartPoint(lastPoint ? lastPoint.id : 1000);
-
-        return [...currentPoints, newPoint].slice(-15);
-      });
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (!MOCK_BACKEND_AVAILABLE || !MOCK_REALTIME_CONNECTED) {
-      return undefined;
-    }
-
-    const timer = setTimeout(() => setHardwareState("OFFLINE"), HARDWARE_OFFLINE_THRESHOLD);
-    return () => clearTimeout(timer);
-  }, [lastTelemetryAt]);
-
-  function handleDeviceControl(deviceCode, action) {
-    const requestId = Date.now();
-    const actionLabel = action === "ON" ? "bật" : "tắt";
-
-    setCommandStates((current) => ({
-      ...current,
-      [deviceCode]: {
-        requestId,
-        pending: true,
-        action,
-        message: `Đang gửi lệnh ${actionLabel}...`,
-        type: "pending",
-      },
-    }));
-
-    const timeout = setTimeout(() => {
-      setCommandStates((current) => {
-        if (current[deviceCode]?.requestId !== requestId) {
-          return current;
-        }
-
-        return {
-          ...current,
-          [deviceCode]: {
-            ...current[deviceCode],
-            pending: false,
-            message: "Thiết bị không phản hồi. Giữ nguyên trạng thái trước đó.",
-            type: "error",
-          },
-        };
-      });
-    }, DEVICE_COMMAND_TIMEOUT);
-
-    // Set MOCK_DEVICE_CONFIRMATIONS to false to see the 10-second timeout state.
-    if (!MOCK_DEVICE_CONFIRMATIONS) {
-      return;
-    }
-
-    // Mock a valid ESP32 confirmation. The confirmed badge changes only here.
-    setTimeout(() => {
-      clearTimeout(timeout);
-      setDevices((currentDevices) => {
-        const confirmedDevices = currentDevices.map((device) =>
-          device.code === deviceCode ? { ...device, status: action } : device,
-        );
-
-        saveDeviceStatuses(confirmedDevices);
-        return confirmedDevices;
-      });
-
-      setCommandStates((current) => {
-        if (current[deviceCode]?.requestId !== requestId) {
-          return current;
-        }
-
-        return {
-          ...current,
-          [deviceCode]: {
-            ...current[deviceCode],
-            pending: false,
-            message: "Đã cập nhật trạng thái.",
-            type: "success",
-          },
-        };
-      });
-    }, MOCK_CONFIRMATION_DELAY);
+    } catch { /* REST sẽ được tải lại khi kết nối trở lại. */ }
   }
+
+  useEffect(() => onRealtime((topic, event) => {
+    if (topic === "connected") {
+      setRealtime("CONNECTED");
+      void loadDashboard();
+      Object.entries(commandStatesRef.current).forEach(([code, state]) => {
+        if (state.pending && state.requestId) void reconcileRequest(code, state.requestId);
+      });
+    } else if (topic === "disconnected") {
+      setRealtime("DISCONNECTED");
+    } else if (topic === "sensors") {
+      setDashboard((current) => {
+        if (!current || !current.chart[event.sensorCode]) return current;
+        const previous = current.latest[event.sensorCode];
+        if (previous && new Date(previous.recordedAt) > new Date(event.recordedAt)) return current;
+        const points = current.chart[event.sensorCode];
+        const duplicate = points.some((point) => point.recordedAt === event.recordedAt && Number(point.value) === Number(event.value));
+        return {
+          ...current,
+          latest: { ...current.latest, [event.sensorCode]: { ...event, stale: false } },
+          chart: { ...current.chart, [event.sensorCode]: duplicate ? points : [...points, { value: event.value, recordedAt: event.recordedAt }].slice(-15) },
+        };
+      });
+    } else if (topic === "hardware") {
+      void loadDashboard(); // Backend tính lại stale của từng sensor.
+    } else if (topic === "devices") {
+      setDashboard((current) => current ? {
+        ...current, devices: current.devices.map((device) => device.code === event.deviceCode
+          ? { ...device, status: event.status } : device),
+      } : current);
+      setCommandStates((current) => current[event.deviceCode]?.requestId === event.requestId
+        ? { ...current, [event.deviceCode]: { requestId: event.requestId, pending: false, type: "success", message: "Thiết bị đã phản hồi." } }
+        : current);
+    } else if (topic === "notifications" && event.type === "DEVICE_TIMEOUT") {
+      setCommandStates((current) => current[event.deviceCode]?.requestId === event.requestId && !current[event.deviceCode]?.publishFailed
+        ? { ...current, [event.deviceCode]: { requestId: event.requestId, pending: false, type: "error", message: "Thiết bị không phản hồi. Giữ trạng thái đã xác nhận." } }
+        : current);
+    }
+  }), [loadDashboard]);
+
+  async function handleDeviceControl(deviceCode, action) {
+    const device = dashboard?.devices.find((item) => item.code === deviceCode);
+    if (!device) return;
+    setCommandStates((current) => ({ ...current, [deviceCode]: { pending: true, requestId: null, type: "pending", message: "Đang gửi lệnh..." } }));
+    try {
+      const result = await api(`/devices/${device.id}/actions`, { method: "POST", body: JSON.stringify({ action }) });
+      setCommandStates((current) => ({ ...current, [deviceCode]: {
+        requestId: result.requestId, pending: true, type: "pending", message: `Yêu cầu #${result.requestId} đã được nhận. Đang chờ xác nhận.`,
+      } }));
+      void reconcileRequest(deviceCode, result.requestId); // Bắt kịp phản hồi MQTT đến trước HTTP 202.
+      const timer = setTimeout(() => { void reconcileRequest(deviceCode, result.requestId); timers.current.delete(timer); }, 11000);
+      timers.current.add(timer);
+    } catch (problem) {
+      setCommandStates((current) => ({ ...current, [deviceCode]: {
+        pending: false, requestId: problem.requestId || null, type: "error",
+        publishFailed: problem.code === "MQTT_PUBLISH_FAILED",
+        message: problem.code === "MQTT_PUBLISH_FAILED"
+          ? `Yêu cầu #${problem.requestId} đã lưu nhưng không gửi được qua MQTT.`
+          : "Không gửi được lệnh. Vui lòng thử lại.",
+      } }));
+    }
+  }
+
+  const chartRows = useMemo(() => {
+    if (!dashboard) return [];
+    return sensors.flatMap((sensor) => (dashboard.chart[sensor.code] || []).map((point) => ({
+      recordedAt: point.recordedAt, [sensor.field]: Number(point.value),
+    }))).sort((a, b) => new Date(a.recordedAt) - new Date(b.recordedAt));
+  }, [dashboard]);
+  const hardware = dashboard?.hardware;
+  const hardwareState = hardware?.status || "CHECKING";
 
   return (
     <section className="page dashboard">
-      <header className="page-header">
-        <h1>Tổng quan</h1>
-        <p>Theo dõi môi trường và điều khiển thiết bị.</p>
-      </header>
-
-      {!MOCK_BACKEND_AVAILABLE && (
-        <div className="system-alert backend-alert" role="alert">
-          <strong>Không thể kết nối máy chủ</strong>
-          <span>Chưa tải được dữ liệu. Hãy thử lại khi máy chủ hoạt động.</span>
-        </div>
-      )}
-
-      {!MOCK_REALTIME_CONNECTED && (
-        <div className="system-alert realtime-alert" role="alert">
-          <strong>Mất kết nối dữ liệu trực tiếp</strong>
-          <span>Dữ liệu mới đang tạm dừng. Các giá trị cũ vẫn được giữ lại.</span>
-        </div>
-      )}
-
-      <div className={`hardware-status ${hardwareState.toLowerCase()}`} role={hardwareOffline ? "alert" : "status"}>
-        {hardwareState === "CHECKING" && (
-          <>
-            <strong>Đang kiểm tra phần cứng</strong>
-            <span>Chưa nhận được dữ liệu mới.</span>
-          </>
-        )}
-        {hardwareState === "ONLINE" && (
-          <>
-            <strong>Phần cứng đang hoạt động</strong>
-            <span>Cập nhật lần cuối: {formatDateTime(lastTelemetryAt)}</span>
-          </>
-        )}
-        {hardwareState === "OFFLINE" && (
-          <>
-            <strong>Không nhận được dữ liệu từ phần cứng</strong>
-            <span>Đã quá 30 giây. Các giá trị bên dưới là dữ liệu cũ. Lần cuối: {lastTelemetryAt ? formatDateTime(lastTelemetryAt) : "Chưa có"}</span>
-          </>
-        )}
+      <header className="page-header"><h1>Tổng quan</h1><p>Theo dõi môi trường và điều khiển thiết bị.</p></header>
+      {error && <div className="system-alert backend-alert" role="alert"><strong>{error}</strong><button type="button" onClick={loadDashboard}>Thử lại</button></div>}
+      {realtime === "DISCONNECTED" && <div className="system-alert realtime-alert" role="status">Mất kết nối dữ liệu trực tiếp. Đang nối lại; dữ liệu sẽ được tải lại từ REST.</div>}
+      <div className={`hardware-status ${hardwareState.toLowerCase()}`} role="status">
+        <strong>{hardwareState === "ONLINE" ? "Phần cứng đang hoạt động" : hardwareState === "OFFLINE" ? "Không nhận được dữ liệu từ phần cứng" : "Đang kiểm tra phần cứng"}</strong>
+        <span>Cập nhật lần cuối: {formatDateTime(hardware?.lastSeenAt)}</span>
       </div>
-
       <div className="sensor-grid">
-        {sensors.map((sensor) => (
-          <SensorCard
-            key={sensor.code}
-            title={sensor.name}
-            value={latestPoint?.[sensor.field]}
-            unit={sensor.unit}
-            stale={hardwareOffline}
-          />
-        ))}
+        {sensors.map((sensor) => <SensorCard key={sensor.code} title={sensor.title}
+          value={dashboard?.latest[sensor.code]?.value ?? null}
+          unit={dashboard?.latest[sensor.code]?.unit || sensor.unit}
+          stale={dashboard?.latest[sensor.code]?.stale || false} />)}
       </div>
-
       <section className="chart-section">
-        <div className="section-heading">
-          <h2>Biểu đồ môi trường</h2>
-          {/* <p>15 lần đo gần nhất</p> */}
-        </div>
-        {chartPoints.length === 0 ? (
-          <p>Chưa có dữ liệu</p>
-        ) : (
-          <div className="chart-container">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartPoints} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
-                <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="recordedAt" minTickGap={30} tick={{ fill: "#64748b", fontSize: 12 }} />
-                <YAxis tick={{ fill: "#64748b", fontSize: 12 }} />
-                <Tooltip />
-                <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
-                <Line type="monotone" dataKey="temperature" stroke="#f59e0b" strokeWidth={2.5} dot={false} name="Nhiệt độ" />
-                <Line type="monotone" dataKey="humidity" stroke="#2563eb" strokeWidth={2.5} dot={false} name="Độ ẩm" />
-                <Line type="monotone" dataKey="light" stroke="#10b981" strokeWidth={2.5} dot={false} name="Ánh sáng" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="section-heading"><h2>Biểu đồ môi trường</h2></div>
+        {loading ? <p>Đang tải...</p> : chartRows.length === 0 ? <p>Chưa có dữ liệu</p> : (
+          <div className="chart-container"><ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartRows} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+              <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="recordedAt" tickFormatter={(value) => formatDateTime(value).slice(11)} minTickGap={30} />
+              <YAxis /><Tooltip labelFormatter={formatDateTime} /><Legend />
+              <Line type="monotone" dataKey="temperature" connectNulls stroke="#f59e0b" dot={false} name="Nhiệt độ" />
+              <Line type="monotone" dataKey="humidity" connectNulls stroke="#2563eb" dot={false} name="Độ ẩm" />
+              <Line type="monotone" dataKey="light" connectNulls stroke="#10b981" dot={false} name="Ánh sáng" />
+            </LineChart>
+          </ResponsiveContainer></div>
         )}
       </section>
-
-      <section className="device-section">
-        <div className="section-heading">
-          {/* <h2>Điều khiển thiết bị</h2>
-          <p>Bật hoặc tắt từng đèn LED.</p> */}
-        </div>
-        <div className="device-grid">
-          {devices.map((device) => (
-            <DeviceControl
-              key={device.code}
-              device={device}
-              commandState={commandStates[device.code]}
-              hardwareOffline={hardwareOffline}
-              onControl={handleDeviceControl}
-            />
-          ))}
-        </div>
+      <section className="device-section"><div className="section-heading" />
+        <div className="device-grid">{(dashboard?.devices || []).map((device) =>
+          <DeviceControl key={device.code} device={device} commandState={commandStates[device.code]}
+            hardwareOffline={hardwareState === "OFFLINE"} onControl={handleDeviceControl} />)}</div>
       </section>
     </section>
   );
 }
-
-export default Dashboard;
