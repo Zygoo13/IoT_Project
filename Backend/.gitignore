@@ -1,5 +1,6 @@
 target/
 .env
+.demo-data-manifest.json
 .mosquitto-test.conf
 .mosquitto-test.pw
 *.log

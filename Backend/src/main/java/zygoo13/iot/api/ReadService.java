@@ -1,12 +1,17 @@
 package zygoo13.iot.api;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +44,9 @@ import zygoo13.iot.repository.SensorDataRepository;
 
 @Service
 public class ReadService {
+    private static final ZoneId DISPLAY_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
+    private static final DateTimeFormatter DISPLAY_DATE = DateTimeFormatter.ofPattern("dd/MM/uuuu");
+    private static final DateTimeFormatter DISPLAY_TIME = DateTimeFormatter.ofPattern("dd/MM/uuuu HH:mm:ss");
     private static final List<String> SENSOR_CODES = List.of("DHT11_TEMP", "DHT11_HUM", "LDR_LIGHT");
     private static final Map<String, String> SENSOR_SORT = Map.of(
             "ID", "id", "SENSOR_TYPE", "sensor.type", "VALUE", "value", "TIME", "recordedAt");
@@ -96,6 +104,7 @@ public class ReadService {
             List<Predicate> predicates = new ArrayList<>();
             if (options.searchField() != null) {
                 switch (options.searchField()) {
+                    case "ALL" -> predicates.add(sensorSearch(root, cb, query.search()));
                     case "ID" -> predicates.add(cb.equal(root.get("id"), positiveId(query.search())));
                     case "SENSOR_TYPE" -> predicates.add(cb.greaterThan(
                             cb.locate(cb.upper(root.get("sensor").get("type")), upper(query.search())), 0));
@@ -134,6 +143,7 @@ public class ReadService {
             List<Predicate> predicates = new ArrayList<>();
             if (options.searchField() != null) {
                 switch (options.searchField()) {
+                    case "ALL" -> predicates.add(historySearch(root, cb, query.search()));
                     case "ID" -> predicates.add(cb.equal(root.get("id"), positiveId(query.search())));
                     case "DEVICE" -> predicates.add(cb.greaterThan(
                             cb.locate(cb.upper(root.get("device").get("code")), upper(query.search())), 0));
@@ -173,12 +183,12 @@ public class ReadService {
         }
         boolean hasField = query.searchField() != null;
         boolean hasSearch = query.search() != null;
-        if (hasField != hasSearch || hasField &&
-                (query.searchField().isBlank() || query.search().isBlank())) {
-            throw badQuery("searchField and search must be provided together");
+        if (hasField && !hasSearch || hasSearch && query.search().isBlank()
+                || hasField && query.searchField().isBlank()) {
+            throw badQuery("search requires a value; searchField also requires search");
         }
-        String field = hasField ? upper(query.searchField()) : null;
-        if (field != null && !searchFields.contains(field)) {
+        String field = hasField ? upper(query.searchField()) : hasSearch ? "ALL" : null;
+        if (field != null && !field.equals("ALL") && !searchFields.contains(field)) {
             throw badQuery("Unsupported searchField");
         }
         String sortField = upper(query.sortBy());
@@ -212,6 +222,95 @@ public class ReadService {
             throw badQuery("Unsupported " + name);
         }
         return normalized;
+    }
+
+    private Predicate sensorSearch(Root<SensorData> root, CriteriaBuilder cb, String search) {
+        String pattern = likePattern(search);
+        List<Predicate> matches = new ArrayList<>();
+        matches.add(contains(cb, root.get("id").as(String.class), pattern));
+        matches.add(contains(cb, root.get("sensor").get("code"), pattern));
+        matches.add(contains(cb, root.get("sensor").get("name"), pattern));
+        matches.add(contains(cb, root.get("sensor").get("type"), pattern));
+        matches.add(contains(cb, root.get("sensor").get("unit"), pattern));
+        matches.add(contains(cb, root.get("value").as(String.class), pattern));
+        matches.add(contains(cb, root.get("recordedAt").as(String.class), pattern));
+        String term = upper(search);
+        if ("NHIỆT ĐỘ".contains(term) && term.length() >= 2) {
+            matches.add(cb.equal(root.get("sensor").get("type"), "TEMPERATURE"));
+        }
+        if ("ĐỘ ẨM".contains(term) && term.length() >= 2) {
+            matches.add(cb.equal(root.get("sensor").get("type"), "HUMIDITY"));
+        }
+        if ("ÁNH SÁNG".contains(term) && term.length() >= 2) {
+            matches.add(cb.equal(root.get("sensor").get("type"), "LIGHT"));
+        }
+        addDisplayTimeMatch(matches, root.get("recordedAt"), cb, search);
+        return cb.or(matches.toArray(Predicate[]::new));
+    }
+
+    private Predicate historySearch(Root<ActionHistory> root, CriteriaBuilder cb, String search) {
+        String pattern = likePattern(search);
+        List<Predicate> matches = new ArrayList<>();
+        matches.add(contains(cb, root.get("id").as(String.class), pattern));
+        matches.add(contains(cb, root.get("device").get("code"), pattern));
+        matches.add(contains(cb, root.get("device").get("name"), pattern));
+        matches.add(contains(cb, root.get("action"), pattern));
+        matches.add(contains(cb, root.get("status"), pattern));
+        matches.add(contains(cb, root.get("createdAt").as(String.class), pattern));
+        matches.add(contains(cb, root.get("confirmedAt").as(String.class), pattern));
+        String term = upper(search);
+        if ("BẬT".contains(term) && term.length() >= 2) {
+            matches.add(cb.or(cb.equal(root.get("action"), "ON"), cb.equal(root.get("status"), "ON")));
+        }
+        if ("TẮT".contains(term) && term.length() >= 2) {
+            matches.add(cb.or(cb.equal(root.get("action"), "OFF"), cb.equal(root.get("status"), "OFF")));
+        }
+        LocalDateTime timeoutCutoff = LocalDateTime.now(ZoneOffset.UTC).minusSeconds(10);
+        if (term.length() >= 2 && ("ĐÃ XÁC NHẬN".contains(term) || "CONFIRMED".contains(term))) {
+            matches.add(cb.isNotNull(root.get("confirmedAt")));
+        }
+        if (term.length() >= 2 && ("KHÔNG PHẢN HỒI".contains(term) || "TIMEOUT".contains(term))) {
+            matches.add(cb.and(cb.isNull(root.get("confirmedAt")),
+                    cb.lessThanOrEqualTo(root.get("createdAt"), timeoutCutoff)));
+        }
+        if (term.length() >= 2 && ("ĐANG CHỜ".contains(term) || "PENDING".contains(term))) {
+            matches.add(cb.and(cb.isNull(root.get("confirmedAt")),
+                    cb.greaterThan(root.get("createdAt"), timeoutCutoff)));
+        }
+        addDisplayTimeMatch(matches, root.get("createdAt"), cb, search);
+        addDisplayTimeMatch(matches, root.get("confirmedAt"), cb, search);
+        return cb.or(matches.toArray(Predicate[]::new));
+    }
+
+    private Predicate contains(CriteriaBuilder cb, Expression<String> field, String pattern) {
+        return cb.like(cb.upper(field), pattern, '\\');
+    }
+
+    private String likePattern(String search) {
+        return "%" + upper(search).replace("\\", "\\\\")
+                .replace("%", "\\%").replace("_", "\\_") + "%";
+    }
+
+    private void addDisplayTimeMatch(List<Predicate> matches, Expression<LocalDateTime> field,
+                                     CriteriaBuilder cb, String search) {
+        try {
+            LocalDateTime local;
+            LocalDateTime end;
+            if (search.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                local = LocalDate.parse(search, DISPLAY_DATE).atStartOfDay();
+                end = local.plusDays(1);
+            } else if (search.matches("\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}:\\d{2}")) {
+                local = LocalDateTime.parse(search, DISPLAY_TIME);
+                end = local.plusSeconds(1);
+            } else {
+                return;
+            }
+            LocalDateTime fromUtc = local.atZone(DISPLAY_ZONE).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+            LocalDateTime toUtc = end.atZone(DISPLAY_ZONE).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+            matches.add(cb.and(cb.greaterThanOrEqualTo(field, fromUtc), cb.lessThan(field, toUtc)));
+        } catch (DateTimeParseException ignored) {
+            // A text search can still match another field.
+        }
     }
 
     private LocalDateTime offsetTime(String value) {

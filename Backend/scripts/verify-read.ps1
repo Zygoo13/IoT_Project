@@ -113,6 +113,7 @@ try {
 
     $sensorFiltered = Json '/api/sensor-data?searchField=SENSOR_TYPE&search=temperature&from=2010-01-02T00%3A00%3A05Z&to=2010-01-02T00%3A00%3A09Z&sortBy=VALUE&order=ASC&size=2&page=1' $token
     Expect ((Json '/api/sensor-data?searchField=SENSOR_TYPE&search=temperature' $token).totalElements -eq 19) 'Sensor type search failed'
+    Expect ((Json '/api/sensor-data?search=temperature' $token).totalElements -eq 19) 'General sensor search failed'
     Expect ($sensorFiltered.totalElements -eq 5 -and $sensorFiltered.content.Count -eq 2) 'Sensor search/time/page count failed'
     Expect ($sensorFiltered.content[0].value -eq 27 -and $sensorFiltered.content[1].value -eq 28) 'Sensor sort before pagination failed'
     Expect ((Json "/api/sensor-data?searchField=ID&search=$sensorStart" $token).totalElements -eq 1) 'Sensor ID search failed'
@@ -128,6 +129,7 @@ try {
     Expect ($historyFiltered.content[0].id -eq ($historyStart + 8) -and $historyFiltered.content[1].id -eq ($historyStart + 10)) 'History sort before pagination failed'
     Expect ((Json "/api/action-history?searchField=ID&search=$historyStart" $token).totalElements -eq 1) 'History ID search failed'
     Expect ((Json '/api/action-history?searchField=DEVICE&search=led1' $token).totalElements -eq 19) 'History DEVICE search failed'
+    Expect ((Json '/api/action-history?search=led1' $token).totalElements -eq 19) 'General history search failed'
     Expect ((Json '/api/action-history?device=LED2&action=ON&status=OFF' $token).totalElements -eq 3) 'History filters failed'
     foreach ($sort in @('ID','DEVICE','ACTION','STATUS','TIME')) { $null = Json "/api/action-history?sortBy=$sort" $token }
     $states = @($historyPage0.content + $historyPage1.content | ForEach-Object { $_.deliveryState })
@@ -139,7 +141,7 @@ try {
         '/api/sensor-data?size=0', '/api/sensor-data?size=21',
         '/api/sensor-data?sortBy=DEVICE', '/api/sensor-data?order=SIDEWAYS',
         '/api/sensor-data?searchField=DEVICE&search=LED1',
-        '/api/sensor-data?search=25', '/api/sensor-data?searchField=ID',
+        '/api/sensor-data?search=%20', '/api/sensor-data?searchField=ID',
         '/api/sensor-data?searchField=ID&search=bad',
         '/api/sensor-data?searchField=VALUE&search=bad',
         '/api/sensor-data?searchField=TIME&search=bad',

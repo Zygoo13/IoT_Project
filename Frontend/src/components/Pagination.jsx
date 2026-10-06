@@ -16,9 +16,9 @@ function Pagination({
     .replaceAll(" ", "-")}-input`;
 
   useEffect(() => {
-    setPageInput(String(currentPage));
+    setPageInput(String(totalPages ? currentPage : 0));
     setError("");
-  }, [currentPage]);
+  }, [currentPage, totalPages]);
 
   function handleGo(event) {
     event.preventDefault();
@@ -40,10 +40,6 @@ function Pagination({
     onPageChange(pageNumber);
   }
 
-  if (totalPages === 0) {
-    return null;
-  }
-
   return (
     <div className="pagination-area">
       <nav
@@ -53,7 +49,7 @@ function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={currentPage === 1}
+          disabled={totalPages === 0 || currentPage === 1}
           onClick={() => onPageChange(1)}
         >
           Trang đầu
@@ -62,7 +58,7 @@ function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={currentPage === 1}
+          disabled={totalPages === 0 || currentPage === 1}
           onClick={() =>
             onPageChange(currentPage - 1)
           }
@@ -82,6 +78,7 @@ function Pagination({
             id={inputId}
             inputMode="numeric"
             value={pageInput}
+            disabled={totalPages === 0}
             onChange={(event) =>
               setPageInput(event.target.value)
             }
@@ -93,6 +90,7 @@ function Pagination({
           <button
             className="page-button"
             type="submit"
+            disabled={totalPages === 0}
           >
             Đến
           </button>
@@ -101,7 +99,7 @@ function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={currentPage === totalPages}
+          disabled={totalPages === 0 || currentPage === totalPages}
           onClick={() =>
             onPageChange(currentPage + 1)
           }
@@ -112,7 +110,7 @@ function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={currentPage === totalPages}
+          disabled={totalPages === 0 || currentPage === totalPages}
           onClick={() =>
             onPageChange(totalPages)
           }

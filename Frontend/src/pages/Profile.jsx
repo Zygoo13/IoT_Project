@@ -23,7 +23,7 @@ export default function Profile() {
       const result = await api("/profile");
       setProfile(result); setError("");
     } catch (problem) {
-      setError(problem.status ? "Không tải được hồ sơ." : "Không thể kết nối Backend.");
+      setError(problem.status ? "Không tải được hồ sơ." : "Không thể kết nối máy chủ.");
     } finally { setLoading(false); }
   }
   useEffect(() => { void load(); }, []);
@@ -40,17 +40,17 @@ export default function Profile() {
       ["fullName", "studentCode", "email"].includes(field) ? form[field].trim() : form[field].trim() || null]));
     try {
       const result = await api("/profile", { method: "PUT", body: JSON.stringify(body) });
-      setProfile(result); setEditing(false); setNotice("Đã lưu hồ sơ vào Backend.");
+      setProfile(result); setEditing(false); setNotice("Đã lưu hồ sơ.");
     } catch (problem) {
       setError(problem.status === 409 ? "Email hoặc mã sinh viên đã được sử dụng." :
         problem.status === 400 ? "Dữ liệu không hợp lệ. Kiểm tra mã sinh viên, email và các URL." :
-          problem.status ? "Không lưu được hồ sơ." : "Không thể kết nối Backend.");
+          problem.status ? "Không lưu được hồ sơ." : "Không thể kết nối máy chủ.");
     } finally { setSaving(false); }
   }
 
   return (
     <section className="page profile-page"><article className="profile-card">
-      <header className="profile-header"><h1>Hồ sơ</h1><p>Thông tin cá nhân và liên kết đồ án.</p></header>
+      <header className="profile-header"><h1>Hồ sơ</h1></header>
       {loading && <p>Đang tải hồ sơ...</p>}
       {!profile && error && <p className="profile-form-error" role="alert">{error} <button type="button" onClick={load}>Thử lại</button></p>}
       {profile && (editing ? (
@@ -60,7 +60,7 @@ export default function Profile() {
             <label htmlFor="avatar-url">URL ảnh đại diện HTTPS</label>
             <input id="avatar-url" name="avatarUrl" type="url" value={form.avatarUrl}
               onChange={(event) => setForm({ ...form, avatarUrl: event.target.value })} placeholder="https://..." />
-            <small>Backend lưu URL ảnh; chưa hỗ trợ tải tệp ảnh lên.</small>
+            <small>Chỉ hỗ trợ URL ảnh HTTPS; chưa tải ảnh từ máy.</small>
           </div>
           {[
             ["fullName", "Họ và tên *", "text"], ["studentCode", "Mã sinh viên *", "text"],
@@ -87,7 +87,7 @@ export default function Profile() {
         <section className="profile-links"><h2>Liên kết đồ án</h2><div className="profile-link-list">
           {links.map(({ label, field }) => profile[field] ?
             <a key={field} className="profile-link" href={profile[field]} target="_blank" rel="noreferrer">{label}</a> :
-            <span key={field} className="profile-link disabled">{label} - Chưa thiết lập</span>)}
+            <span key={field} className="profile-link disabled" title="Chưa thiết lập">{label}</span>)}
         </div></section>
         {notice && <p className="profile-save-notice" role="status">{notice}</p>}
         <div className="profile-view-actions"><button className="primary-button profile-edit-button" type="button" onClick={beginEdit}>Chỉnh sửa hồ sơ</button></div>

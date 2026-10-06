@@ -15,7 +15,7 @@ export default function Login() {
     event.preventDefault();
     setError("");
     if (!username.trim() || !password) {
-      setError("Vui lòng nhập tên đăng nhập và mật khẩu.");
+      setError("Nhập tên đăng nhập và mật khẩu.");
       return;
     }
     setLoading(true);
@@ -27,7 +27,7 @@ export default function Login() {
       navigate("/dashboard", { replace: true });
     } catch (problem) {
       setError(problem.status === 401 ? "Tên đăng nhập hoặc mật khẩu không đúng." :
-        problem.status ? "Không thể đăng nhập. Vui lòng thử lại." : "Không thể kết nối Backend.");
+        problem.status ? "Đăng nhập thất bại. Thử lại." : "Không thể kết nối máy chủ.");
     } finally {
       setLoading(false);
     }
@@ -38,7 +38,6 @@ export default function Login() {
       <section className="login-card">
         <p className="login-eyebrow">Hệ thống giám sát môi trường</p>
         <h1>Đăng nhập</h1>
-        <p>Đăng nhập để xem dữ liệu và điều khiển thiết bị.</p>
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="username">Tên đăng nhập</label>
@@ -50,7 +49,7 @@ export default function Login() {
           </div>
           {error && <p className="login-error" role="alert">{error}</p>}
           <button className="login-button" type="submit" disabled={loading}>
-            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            {loading ? "Đang đăng nhập..." : "Login"}
           </button>
         </form>
       </section>

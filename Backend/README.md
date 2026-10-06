@@ -15,6 +15,35 @@ chưa có; không thêm SensorData hoặc ActionHistory. `POST /api/auth/login` 
 từ `iot/sensor/data`, gửi lệnh tới `iot/device/command` và nhận xác nhận ở
 `iot/device/status`. STOMP chạy qua WebSocket gốc `/ws`, không dùng SockJS.
 
+## Dữ liệu trình diễn BTH3 (chỉ chạy theo lệnh)
+
+Sau khi MySQL Docker đã chạy và `Backend/.env` đã được cấu hình cục bộ, từ thư
+mục `Backend` chạy:
+
+```powershell
+pwsh -NoProfile -File scripts/demo-data.ps1 load
+pwsh -NoProfile -File scripts/demo-data.ps1 devices
+pwsh -NoProfile -File scripts/demo-data.ps1 status
+pwsh -NoProfile -File scripts/demo-data.ps1 clean
+```
+
+`load` tạo **dữ liệu demo, không phải số đo hay xác nhận thực tế từ ESP32**:
+54 `SensorData` (18 điểm cho mỗi Sensor) và 28 `ActionHistory` (14 cho mỗi LED,
+gồm bản ghi đã xác nhận và chưa xác nhận). Thời điểm reading được đặt hơn 30
+phút trước lúc nạp để Hardware vẫn `OFFLINE` khi không có telemetry thật. Lux
+demo nằm trong khoảng 5–195; 15 điểm gần nhất dùng khoảng 29–90 để cả ba
+đường có biến thiên thấy được trên một trục tung chung. History demo kết thúc
+với LED1 ON và LED2 OFF. `load` không đổi `Device.status`. Chỉ lệnh `devices`
+riêng mới đặt trạng thái DB thành LED1 ON, LED2 OFF cho buổi demo; đây không
+phải phản hồi từ ESP32. Script không chạy khi Backend khởi động và không thêm bảng.
+Chạy `load` lần nữa chỉ kiểm tra các hàng đã nạp. `clean` so khớp ID cùng toàn
+bộ giá trị của từng hàng với manifest cục bộ `Backend/.demo-data-manifest.json`
+rồi chỉ xóa đúng các hàng đó. Manifest được Git bỏ qua; giữ file này cho đến
+khi dọn demo. Nếu một hàng đã bị sửa/xóa, script dừng thay vì xóa hàng khác.
+`clean` không hoàn tác trạng thái Device do lệnh `devices` đặt.
+Có thể chọn container MySQL khác bằng `IOT_DEMO_MYSQL_CONTAINER`. Không đưa
+`.env` hoặc manifest lên Git.
+
 ## Môi trường đã kiểm tra ngày 05/10/2026
 
 - Windows PowerShell; JDK 17.0.18 và JDK 25.0.2 có trên máy. `JAVA_HOME` hiện
@@ -25,7 +54,7 @@ từ `iot/sensor/data`, gửi lệnh tới `iot/device/command` và nhận xác 
 - Docker Desktop đã khởi động. Container thử nghiệm `iot_backend_mysql_20261005`
   dùng MySQL 8.0.46 trên `127.0.0.1:3307`; MySQL client có trong MySQL
   Workbench. Mosquitto 2.1.2 đã được thử với broker cục bộ chỉ lắng nghe loopback.
-- `Frontend` là React/Vite và hiện dùng mock. Backend không sửa thư mục đó.
+- `Frontend` là React/Vite và gọi Backend thật qua REST/STOMP.
 
 ## Cấu hình cục bộ
 
@@ -132,10 +161,12 @@ Invoke-RestMethod "$base/api/action-history?device=LED1&action=ON&page=0&size=20
 ```
 
 `page` bắt đầu từ 0, `size` mặc định 20 và phải trong 1..20. Hai bảng trả
-`content,page,size,totalElements,totalPages`. Data Sensor cho Search/Sort
-`ID,SENSOR_TYPE,VALUE,TIME`; Action History cho Search `ID,DEVICE`, Sort
-`ID,DEVICE,ACTION,STATUS,TIME`, lọc `device,action,status`. `searchField` và
-`search` phải đi cùng. `from`/`to` nhận ISO 8601 có offset (ví dụ
+`content,page,size,totalElements,totalPages`. Frontend dùng một ô `search`
+chung cho các cột của từng bảng, được lọc ở MySQL trước khi phân trang. Tham
+số `searchField` cũ vẫn dùng được khi đi cùng `search`: Data Sensor cho Search
+`ID,SENSOR_TYPE,VALUE,TIME`; Action History cho Search `ID,DEVICE`. Sort gồm
+`ID,SENSOR_TYPE,VALUE,TIME` hoặc `ID,DEVICE,ACTION,STATUS,TIME`; History lọc
+`device,action,status`. `from`/`to` nhận ISO 8601 có offset (ví dụ
 `2026-10-05T13:00:00Z`), bao gồm hai đầu; frontend đổi từ giờ hiển thị
 `Asia/Ho_Chi_Minh` sang timestamp có offset trước khi gửi. Query sai trả
 `400 {"code":"BAD_QUERY","message":"..."}`.

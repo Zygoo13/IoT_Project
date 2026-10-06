@@ -6,15 +6,12 @@ import { DATE_TIME_FORMAT, formatDateTime, parseDateTime } from "../utils/dateTi
 
 const emptyPage = { content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 };
 const emptyFilters = { device: "", action: "", status: "", fromTime: "", toTime: "" };
-const deliveryLabels = { PENDING: "Đang chờ", TIMEOUT: "Không phản hồi", CONFIRMED: "Đã xác nhận" };
 
 export default function ActionHistory() {
   const [page, setPage] = useState(0);
   const [data, setData] = useState(emptyPage);
-  const [searchField, setSearchField] = useState("ID");
   const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState(null);
-  const [sortBy, setSortBy] = useState("TIME");
+  const [search, setSearch] = useState("");
   const [order, setOrder] = useState("DESC");
   const [filterInput, setFilterInput] = useState(emptyFilters);
   const [filters, setFilters] = useState(emptyFilters);
@@ -30,8 +27,8 @@ export default function ActionHistory() {
   useEffect(() => {
     let cancelled = false;
     const params = {
-      page, size: 20, sortBy, order,
-      ...(search ? { searchField: search.field, search: search.value } : {}),
+      page, size: 20, sortBy: "ID", order,
+      ...(search ? { search } : {}),
       device: filters.device, action: filters.action, status: filters.status,
       ...(filters.fromTime ? { from: parseDateTime(filters.fromTime)?.toISOString() } : {}),
       ...(filters.toTime ? { to: parseDateTime(filters.toTime)?.toISOString() } : {}),
@@ -45,15 +42,15 @@ export default function ActionHistory() {
       }
     }).catch((problem) => {
       if (!cancelled) setError(problem.status === 400 ? problem.message :
-        problem.status ? "Không tải được lịch sử điều khiển." : "Không thể kết nối Backend.");
+        problem.status ? "Không tải được lịch sử điều khiển." : "Không thể kết nối máy chủ.");
     }).finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [page, search, filters, sortBy, order, reload]);
+  }, [page, search, filters, order, reload]);
 
   function handleSearch(event) {
     event.preventDefault();
     const value = searchInput.trim();
-    setSearch(value ? { field: searchField, value } : null); setPage(0);
+    setSearch(value); setPage(0);
   }
 
   function applyFilters() {
@@ -77,28 +74,17 @@ export default function ActionHistory() {
 
   return (
     <section className="page history-page">
-      <header className="page-header"><h1>Lịch sử điều khiển</h1><p>Xem các lệnh đã gửi và trạng thái thiết bị được ghi nhận.</p></header>
+      <header className="page-header"><h1>Lịch sử điều khiển</h1></header>
       <section className="query-panel" aria-label="Bộ lọc lịch sử điều khiển">
         <div className="query-top-row">
           <form className="search-controls query-search-controls" onSubmit={handleSearch}>
-            <label className="query-control query-search-field">Tìm theo
-              <select value={searchField} onChange={(event) => setSearchField(event.target.value)}>
-                <option value="ID">ID</option><option value="DEVICE">Thiết bị</option>
-              </select>
-            </label>
-            <label className="query-control query-search-input">Từ khóa
-              <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="Nhập nội dung cần tìm" />
+            <label className="query-control query-search-input">Tìm kiếm
+              <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)}
+                placeholder="ID, thiết bị, lệnh, trạng thái hoặc thời gian" />
             </label>
             <button className="primary-button" type="submit">Tìm kiếm</button>
           </form>
           <div className="sort-controls">
-            <label className="query-control">Sắp xếp theo
-              <select value={sortBy} onChange={(event) => { setSortBy(event.target.value); setPage(0); }}>
-                <option value="ID">ID</option><option value="DEVICE">Thiết bị</option>
-                <option value="ACTION">Lệnh</option><option value="STATUS">Trạng thái</option>
-                <option value="TIME">Thời gian</option>
-              </select>
-            </label>
             <label className="query-control query-order-control">Thứ tự
               <select value={order} onChange={(event) => { setOrder(event.target.value); setPage(0); }}>
                 <option value="ASC">Tăng dần</option><option value="DESC">Giảm dần</option>
@@ -142,9 +128,7 @@ export default function ActionHistory() {
         <tbody>{data.content.length ? data.content.map((record) => <tr key={record.id}>
           <td>{record.id}</td><td>{record.deviceCode}</td>
           <td><span className={`action-badge ${record.action === "ON" ? "is-on" : "is-off"}`}>{record.action === "ON" ? "BẬT" : "TẮT"}</span></td>
-          <td><span className={`status-badge ${record.status === "ON" ? "is-on" : "is-off"}`}>{record.status === "ON" ? "BẬT" : "TẮT"}</span>
-            <small className="delivery-state">{deliveryLabels[record.deliveryState]}{record.confirmedAt ? ` · ${formatDateTime(record.confirmedAt)}` : ""}</small>
-          </td>
+          <td><span className={`status-badge ${record.status === "ON" ? "is-on" : "is-off"}`}>{record.status === "ON" ? "BẬT" : "TẮT"}</span></td>
           <td>{formatDateTime(record.createdAt)}</td>
         </tr>) : <tr><td colSpan="5" className="empty-table-cell">{loading ? "Đang tải..." : "Không tìm thấy dữ liệu."}</td></tr>}</tbody>
       </table></div>

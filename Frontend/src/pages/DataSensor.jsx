@@ -3,6 +3,7 @@ import Pagination from "../components/Pagination";
 import { api, query } from "../services/api";
 import { onRealtime } from "../services/realtime";
 import { DATE_TIME_FORMAT, formatDateTime, parseDateTime } from "../utils/dateTime";
+import { formatValue } from "../utils/formatValue";
 
 const emptyPage = { content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 };
 const emptyRange = { fromTime: "", toTime: "" };
@@ -11,10 +12,8 @@ const sensorNames = { TEMPERATURE: "Nhiệt độ", HUMIDITY: "Độ ẩm", LIGH
 export default function DataSensor() {
   const [page, setPage] = useState(0);
   const [data, setData] = useState(emptyPage);
-  const [searchField, setSearchField] = useState("ID");
   const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState(null);
-  const [sortBy, setSortBy] = useState("TIME");
+  const [search, setSearch] = useState("");
   const [order, setOrder] = useState("DESC");
   const [rangeInput, setRangeInput] = useState(emptyRange);
   const [range, setRange] = useState(emptyRange);
@@ -30,8 +29,8 @@ export default function DataSensor() {
   useEffect(() => {
     let cancelled = false;
     const params = {
-      page, size: 20, sortBy, order,
-      ...(search ? { searchField: search.field, search: search.value } : {}),
+      page, size: 20, sortBy: "ID", order,
+      ...(search ? { search } : {}),
       ...(range.fromTime ? { from: parseDateTime(range.fromTime)?.toISOString() } : {}),
       ...(range.toTime ? { to: parseDateTime(range.toTime)?.toISOString() } : {}),
     };
@@ -44,15 +43,15 @@ export default function DataSensor() {
       }
     }).catch((problem) => {
       if (!cancelled) setError(problem.status === 400 ? problem.message :
-        problem.status ? "Không tải được dữ liệu cảm biến." : "Không thể kết nối Backend.");
+        problem.status ? "Không tải được dữ liệu cảm biến." : "Không thể kết nối máy chủ.");
     }).finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [page, search, range, sortBy, order, reload]);
+  }, [page, search, range, order, reload]);
 
   function handleSearch(event) {
     event.preventDefault();
     const value = searchInput.trim();
-    setSearch(value ? { field: searchField, value } : null);
+    setSearch(value);
     setPage(0);
   }
 
@@ -77,30 +76,17 @@ export default function DataSensor() {
 
   return (
     <section className="page data-page">
-      <header className="page-header"><h1>Dữ liệu cảm biến</h1><p>Tra cứu các lần đo đã lưu.</p></header>
+      <header className="page-header"><h1>Dữ liệu cảm biến</h1></header>
       <section className="query-panel" aria-label="Bộ lọc dữ liệu cảm biến">
         <div className="query-top-row">
           <form className="search-controls query-search-controls" onSubmit={handleSearch}>
-            <label className="query-control query-search-field">Tìm theo
-              <select value={searchField} onChange={(event) => setSearchField(event.target.value)}>
-                <option value="ID">ID</option><option value="SENSOR_TYPE">Loại cảm biến</option>
-                <option value="VALUE">Giá trị</option><option value="TIME">Thời gian</option>
-              </select>
-            </label>
-            <label className="query-control query-search-input">Từ khóa
+            <label className="query-control query-search-input">Tìm kiếm
               <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)}
-                placeholder={searchField === "TIME" ? "Ngày UTC yyyy-MM-dd hoặc ISO 8601" :
-                  searchField === "SENSOR_TYPE" ? "TEMPERATURE / HUMIDITY / LIGHT" : "Nhập nội dung cần tìm"} />
+                placeholder="ID, loại cảm biến, giá trị hoặc thời gian" />
             </label>
             <button className="primary-button" type="submit">Tìm kiếm</button>
           </form>
           <div className="sort-controls">
-            <label className="query-control">Sắp xếp theo
-              <select value={sortBy} onChange={(event) => { setSortBy(event.target.value); setPage(0); }}>
-                <option value="ID">ID</option><option value="SENSOR_TYPE">Loại cảm biến</option>
-                <option value="VALUE">Giá trị</option><option value="TIME">Thời gian</option>
-              </select>
-            </label>
             <label className="query-control query-order-control">Thứ tự
               <select value={order} onChange={(event) => { setOrder(event.target.value); setPage(0); }}>
                 <option value="ASC">Tăng dần</option><option value="DESC">Giảm dần</option>
@@ -130,7 +116,7 @@ export default function DataSensor() {
         <thead><tr><th>ID</th><th>Loại cảm biến</th><th>Giá trị</th><th>Thời gian</th></tr></thead>
         <tbody>{data.content.length ? data.content.map((record) => <tr key={record.id}>
           <td>{record.id}</td><td>{sensorNames[record.sensorType] || record.sensorType}</td>
-          <td>{record.value} {record.unit}</td><td>{formatDateTime(record.recordedAt)}</td>
+          <td>{formatValue(record.value)} {record.unit}</td><td>{formatDateTime(record.recordedAt)}</td>
         </tr>) : <tr><td colSpan="4" className="empty-table-cell">{loading ? "Đang tải..." : "Không tìm thấy dữ liệu."}</td></tr>}</tbody>
       </table></div>
       <Pagination currentPage={page + 1} totalPages={data.totalPages} onPageChange={(next) => setPage(next - 1)} label="Phân trang dữ liệu cảm biến" />

@@ -1678,12 +1678,6 @@ body,
 }
 
 /* Giao diện gọn, ít trang trí và thống nhất giữa các trang. */
-.delivery-state {
-  display: block;
-  margin-top: 4px;
-  color: var(--slate-500);
-  font-size: 12px;
-}
 
 .profile-avatar-edit input {
   width: min(100%, 320px);
@@ -1740,4 +1734,456 @@ body,
 .page h1,
 .login-card h1 {
   font-size: clamp(26px, 2vw, 31px);
+}
+
+/* BTH3: proportions and typography from the five submitted wireframes. */
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+  background: #fff;
+}
+
+body { background: #fff; }
+button { font-weight: 400; }
+
+.login-page { background: #fff; }
+.login-card {
+  width: min(100%, 650px);
+  min-height: 665px;
+  padding: 60px 78px;
+  border: 1px solid #222;
+  border-radius: 0;
+  box-shadow: none;
+  text-align: center;
+}
+.login-eyebrow {
+  margin: 0 0 64px !important;
+  color: #5082c7 !important;
+  font-size: clamp(24px, 2.6vw, 38px) !important;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.2;
+  text-transform: none;
+  white-space: nowrap;
+}
+.login-card h1 {
+  color: #111;
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.login-form {
+  gap: 30px;
+  margin-top: 52px;
+  text-align: left;
+}
+.form-group { gap: 12px; }
+.form-group label {
+  color: #111;
+  font-size: 23px;
+  font-weight: 400;
+}
+.form-group input {
+  height: 43px;
+  border: 1px solid #222;
+  border-radius: 0;
+  font-size: 20px;
+}
+.login-error { margin: -12px 0; color: #a32121 !important; }
+.login-button {
+  justify-self: center;
+  width: 235px;
+  min-height: 43px;
+  margin-top: 36px;
+  border: 1px solid #222;
+  border-radius: 0;
+  background: #6794ed;
+  color: #111;
+  font-size: 22px;
+}
+.login-button:hover { background: #5483df; }
+
+.sidebar {
+  background: #454545;
+  color: #fff;
+}
+.sidebar-title {
+  gap: 16px;
+  padding: 12px 8px 62px;
+  font-size: clamp(26px, 2.2vw, 40px);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.sidebar-title small { color: #fff; font-size: clamp(17px, 1.35vw, 24px); font-weight: 400; white-space: nowrap; }
+.navigation { gap: 22px; }
+.nav-link {
+  padding: 13px 18px;
+  border-radius: 0;
+  color: #fff;
+  font-size: clamp(16px, 1.3vw, 23px);
+  font-weight: 400;
+}
+.nav-link:hover { background: #5d6a70; }
+.nav-link.active { background: #3e7eaa; }
+.nav-link.active { box-shadow: none; }
+.logout-button {
+  width: calc(100% - 36px);
+  margin: auto 18px 12px;
+  border: 1px solid #fff;
+  border-radius: 0;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 400;
+}
+
+.page h1 {
+  color: #111;
+  font-size: clamp(30px, 2.4vw, 42px);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.profile-card, .sensor-card, .chart-section, .device-card,
+.query-panel, .table-container, .hardware-status {
+  border: 1px solid #333;
+  border-radius: 0;
+  box-shadow: none;
+}
+.primary-button, .secondary-button, .page-button,
+.query-panel input, .query-panel select, .profile-link,
+.profile-form-group input, .profile-avatar-edit input {
+  border-radius: 0;
+}
+.primary-button { border: 1px solid #222; background: #61b0f5; color: #111; }
+.primary-button:hover { background: #499bdf; }
+.secondary-button { border: 1px solid #222; color: #111; }
+.query-panel { padding: 24px 26px; }
+.query-top-row { border-bottom: 0; padding-bottom: 0; }
+.query-control, .range-controls label, .filter-group legend {
+  color: #111;
+  font-size: 19px;
+  font-weight: 400;
+}
+.range-controls label span { color: #111; font-size: 16px; font-weight: 400; }
+.query-panel input, .query-panel select {
+  min-height: 45px;
+  border-color: #222;
+  color: #111;
+  font-size: 18px;
+}
+.query-panel .primary-button, .query-panel .secondary-button { min-height: 45px; font-size: 18px; }
+.query-filter-row { margin-top: 32px; }
+.result-info { color: #444 !important; }
+.table-container { min-height: min(47vh, 580px); }
+.data-table th, .data-table td {
+  padding: 16px 20px;
+  border-bottom: 0;
+  color: #111;
+  font-size: 19px;
+}
+.data-table th {
+  border-bottom: 1px solid #333;
+  background: #fff;
+  color: #111;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.data-table tbody tr:hover { background: #f7faff; }
+.empty-table-cell { color: #555 !important; }
+.page-button, .page-jump input {
+  border: 1px solid #222;
+  border-radius: 0;
+  color: #111;
+  font-size: 18px;
+}
+.page-button:hover:not(:disabled), .page-button.active { background: #61b0f5; color: #111; }
+.page-jump { color: #111; font-size: 18px; }
+
+.profile-card {
+  width: min(100%, 860px);
+  min-height: 720px;
+  padding: 24px 66px 46px;
+}
+.profile-header { margin-bottom: 20px; }
+.profile-avatar {
+  width: 280px;
+  height: 190px;
+  border: 0;
+  border-radius: 18px;
+  box-shadow: none;
+}
+.profile-card h2 { color: #111; font-size: 23px; font-weight: 400; }
+.profile-info, .profile-links { margin-top: 28px; }
+.profile-row { grid-template-columns: 230px 1fr; padding: 10px 0; border-bottom: 0; }
+.profile-row span, .profile-row strong { color: #111; font-size: 20px; font-weight: 400; }
+.profile-link-list { justify-content: space-around; gap: 14px; }
+.profile-link, .profile-link.disabled {
+  border: 1px solid #222;
+  padding: 8px 12px;
+  color: #111;
+  font-size: 17px;
+  font-weight: 400;
+}
+.profile-link.disabled { color: #555; }
+.profile-view-actions { margin-top: 72px; }
+.profile-edit-button { border-color: #31c6ef; background: #fff; font-size: 21px; }
+.profile-edit-button:hover { background: #e9f9ff; }
+
+@media (min-width: 769px) {
+  .sidebar { width: clamp(240px, 16.4vw, 310px); padding: 28px 20px 20px; }
+  .main-content { padding: 48px clamp(36px, 4vw, 76px); background: #fff; }
+  .page-header { margin-bottom: 22px; }
+  .dashboard-heading-row { display: grid; grid-template-columns: minmax(230px, 0.35fr) minmax(0, 1fr); gap: 24px; align-items: center; margin-bottom: 46px; }
+  .dashboard-heading-row .page-header { margin: 0; }
+  .dashboard-heading-row .hardware-status { margin: 0; }
+  .dashboard .sensor-card { min-height: 170px; padding: 24px 28px; }
+  .dashboard .sensor-card p { color: #111; font-size: 22px; font-weight: 400; }
+  .dashboard .sensor-value { color: #111; font-size: 38px; font-weight: 400; }
+  .dashboard .chart-section, .dashboard .device-section { margin-top: 56px; }
+  .dashboard .chart-section { min-height: 350px; padding: 30px; }
+  .dashboard .chart-container { height: 255px; }
+  .dashboard .chart-section > p { min-height: 245px; display: grid; place-items: center; }
+  .dashboard .device-card { min-height: 185px; padding: 23px 30px; }
+  .dashboard .device-card h3 { color: #111; font-size: 23px; font-weight: 400; }
+  .dashboard .device-status { color: #111; font-size: 20px; }
+  .dashboard .device-actions { margin-top: 18px; }
+  .dashboard .device-actions button { min-width: 80px; border: 1px solid #222; border-radius: 0; color: #111; font-size: 20px; font-weight: 400; }
+  .dashboard .device-actions .on-button { background: #9cebae; }
+  .dashboard .device-actions .off-button { background: #f18282; }
+  .dashboard .device-status-badge { background: transparent; color: #d11; font-size: 19px; font-weight: 400; }
+  .dashboard .device-status-badge.is-on { color: #16b957; }
+  .hardware-status { min-height: 53px; padding: 10px 14px; font-size: 20px; }
+  .hardware-status span { color: #111; }
+  .hardware-status.offline { background: #fff; color: #c55216; }
+  .hardware-status.online { color: #16b957; }
+}
+
+@media (max-width: 768px) {
+  .sidebar { width: 100%; padding: 18px; }
+  .sidebar-title { padding: 0 0 16px; font-size: 26px; }
+  .sidebar-title small { font-size: 17px; }
+  .navigation { gap: 5px; }
+  .nav-link { font-size: 15px; padding: 9px 10px; }
+  .logout-button { width: auto; margin: 14px 0 0; font-size: 16px; }
+  .main-content { padding: 22px 16px 36px; }
+  .dashboard-heading-row { display: grid; gap: 12px; margin-bottom: 18px; }
+  .dashboard-heading-row .page-header, .dashboard-heading-row .hardware-status { margin: 0; }
+  .dashboard .sensor-grid, .dashboard .device-grid { gap: 12px; }
+  .dashboard .sensor-card, .dashboard .device-card { padding: 16px; }
+  .dashboard .chart-section { min-height: 250px; }
+  .query-panel { padding: 16px; }
+  .query-control, .range-controls label, .filter-group legend { font-size: 15px; }
+  .query-panel input, .query-panel select { font-size: 15px; }
+  .table-container { min-height: 300px; }
+  .profile-card { min-height: 0; padding: 20px; }
+  .profile-avatar { width: min(100%, 280px); }
+  .profile-row { grid-template-columns: 130px minmax(0, 1fr); }
+  .profile-row span, .profile-row strong { font-size: 15px; }
+  .profile-link-list { justify-content: flex-start; }
+  .profile-view-actions { margin-top: 30px; }
+}
+
+@media (max-width: 480px) {
+  .login-card { min-height: 0; padding: 36px 22px; }
+  .login-eyebrow { margin-bottom: 36px !important; font-size: 21px !important; white-space: normal; }
+  .login-card h1 { font-size: 30px; }
+  .login-form { margin-top: 36px; gap: 20px; }
+  .form-group label { font-size: 18px; }
+  .login-button { margin-top: 15px; }
+  .profile-row { grid-template-columns: 1fr; }
+  .query-filter-row { margin-top: 18px; }
+  .range-controls { grid-template-columns: 1fr; }
+  .pagination-area .pagination { gap: 4px; }
+  .page-jump {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    width: 100%;
+  }
+  .page-jump input { width: 100%; min-width: 0; }
+  .page-button { min-width: 0; padding: 6px 8px; font-size: 14px; }
+  .empty-table-cell { text-align: left !important; }
+}
+
+/* Keep the submitted desktop arrangement within an ordinary laptop viewport. */
+.dashboard .sensor-grid,
+.dashboard .device-grid { gap: 16px; }
+.dashboard .sensor-card,
+.dashboard .sensor-card:nth-child(2),
+.dashboard .sensor-card:nth-child(3) {
+  min-width: 0;
+  border: 1px solid #333;
+  overflow: hidden;
+}
+.dashboard .sensor-value {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: 1.15;
+}
+.dashboard .sensor-value span { display: inline; white-space: nowrap; }
+.dashboard .device-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 58px;
+  align-items: center;
+  gap: 16px;
+}
+.device-card-content { min-width: 0; }
+.device-bulb {
+  width: 54px;
+  height: 68px;
+  justify-self: end;
+  flex: none;
+  background: transparent;
+}
+.device-bulb .bulb-outline,
+.device-bulb .bulb-base {
+  fill: none;
+  stroke: #4b5563;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.device-bulb .bulb-glow { fill: #e5e7eb; }
+.device-bulb.is-on .bulb-outline,
+.device-bulb.is-on .bulb-base { stroke: #b77905; }
+.device-bulb.is-on .bulb-glow { fill: #ffe480; }
+
+.query-panel select {
+  appearance: none;
+  padding-right: 42px;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='m1 1 6 6 6-6' fill='none' stroke='%23111' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 14px 9px;
+}
+
+@media (min-width: 769px) {
+  .main-content { padding: 28px clamp(24px, 3vw, 54px); }
+  .dashboard-heading-row { margin-bottom: 24px; }
+  .dashboard .sensor-card { min-height: 116px; padding: 18px 22px; }
+  .dashboard .sensor-card p { margin-bottom: 10px; font-size: clamp(16px, 1.2vw, 20px); }
+  .dashboard .sensor-value { font-size: clamp(27px, 2vw, 35px); }
+  .dashboard .chart-section,
+  .dashboard .device-section { margin-top: 26px; }
+  .dashboard .chart-section { min-height: 252px; padding: 22px 26px; }
+  .dashboard .chart-section .section-heading { margin-bottom: 10px; }
+  .dashboard .chart-container { height: 188px; }
+  .dashboard .chart-section > p { min-height: 183px; margin: 0; }
+  .dashboard .device-card { min-height: 158px; padding: 18px 22px; }
+  .dashboard .device-actions { margin-top: 14px; }
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+  .dashboard-heading-row { grid-template-columns: 1fr; gap: 10px; }
+  .dashboard .sensor-grid { gap: 10px; }
+  .dashboard .sensor-card { min-height: 104px; padding: 13px 15px; }
+  .dashboard .chart-section { min-height: 220px; padding: 18px 22px; }
+  .dashboard .chart-container { height: 165px; }
+  .dashboard .chart-section > p { min-height: 158px; }
+  .dashboard .device-card { min-height: 146px; }
+  .dashboard .device-card { grid-template-columns: minmax(0, 1fr) 44px; padding: 16px; }
+  .device-bulb { width: 42px; height: 54px; }
+}
+
+@media (max-width: 768px) {
+  .dashboard .sensor-card { min-height: 100px; }
+  .dashboard .device-card { grid-template-columns: minmax(0, 1fr) 42px; }
+  .device-bulb { width: 40px; height: 52px; }
+}
+
+/* One search input covers the whole result set; sorting remains separate. */
+.query-search-controls { grid-template-columns: minmax(200px, 1fr) max-content; }
+.chart-section .section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.chart-note { color: #64748b; font-size: 12px; text-align: right; }
+
+/* Button colors communicate the action without black text on bright fills. */
+.login-button,
+.primary-button {
+  border-color: #1d4ed8;
+  background: #2563eb;
+  color: #fff;
+}
+.login-button:hover,
+.primary-button:hover { border-color: #1e40af; background: #1d4ed8; color: #fff; }
+.dashboard .device-actions .on-button,
+.device-actions .on-button { border-color: #166534; background: #15803d; color: #fff; }
+.dashboard .device-actions .off-button,
+.device-actions .off-button { border-color: #991b1b; background: #b91c1c; color: #fff; }
+.dashboard .device-actions .on-button:hover:not(:disabled),
+.device-actions .on-button:hover:not(:disabled) { background: #166534; }
+.dashboard .device-actions .off-button:hover:not(:disabled),
+.device-actions .off-button:hover:not(:disabled) { background: #991b1b; }
+.primary-button:focus-visible,
+.login-button:focus-visible,
+.device-actions button:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+.page-button.active { border-color: #1d4ed8; background: #2563eb; color: #fff; }
+.profile-edit-button { border-color: #2563eb; color: #1d4ed8; }
+.profile-edit-button:hover { background: #eff6ff; }
+
+@media (max-width: 600px) {
+  .chart-section .section-heading { display: block; }
+  .chart-note { display: block; margin-top: 4px; text-align: left; }
+}
+
+/* Visible axes need more room than the earlier decorative sparkline. */
+.dashboard .chart-container { height: 242px; }
+.dashboard .chart-section { min-height: 310px; }
+.dashboard .chart-section > p { min-height: 235px; }
+.hardware-status.offline {
+  border-color: #d97706;
+  background: #fffbeb;
+  color: #9a3412;
+}
+.hardware-status.online {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  color: #166534;
+}
+.hardware-status.checking { border-color: #94a3b8; }
+
+.sort-controls { display: block; width: 140px; }
+.history-page .data-table td { vertical-align: middle; }
+
+.profile-link-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.profile-link,
+.profile-link.disabled {
+  display: grid;
+  min-height: 46px;
+  place-items: center;
+  padding: 8px 10px;
+  border: 1px solid #94a3b8;
+  background: #fff;
+  color: #1d4ed8;
+  font-size: 16px;
+  text-align: center;
+}
+.profile-link:hover { border-color: #2563eb; background: #eff6ff; }
+.profile-link.disabled { border-color: #cbd5e1; background: #f8fafc; color: #64748b; }
+.primary-button.profile-edit-button {
+  min-height: 46px;
+  padding: 9px 20px;
+  border: 1px solid #1d4ed8;
+  background: #2563eb;
+  color: #fff;
+  font-size: 18px;
+}
+.primary-button.profile-edit-button:hover { background: #1d4ed8; color: #fff; }
+
+@media (max-width: 1100px) {
+  .dashboard .chart-container { height: 235px; }
+}
+@media (max-width: 600px) {
+  .sort-controls { width: 100%; }
+  .profile-link-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard .chart-container { height: 230px; }
 }
