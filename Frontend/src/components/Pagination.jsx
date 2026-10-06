@@ -1,30 +1,29 @@
 import { useEffect, useState } from "react";
 
-function Pagination({
+export default function Pagination({
   currentPage,
   totalPages,
   onPageChange,
   label,
 }) {
   const [pageInput, setPageInput] = useState(String(currentPage));
-
   const [errorMessage, setErrorMessage] = useState("");
 
   const inputId = `${label
     .toLowerCase()
     .replaceAll(" ", "-")}-input`;
 
-  // Kiểm tra số trang nhập trước khi yêu cầu page tải trang đó.
   function handlePageSubmit(event) {
     event.preventDefault();
 
     const pageNumber = Number(pageInput);
 
-    if (
+    const isInvalidPage =
       !Number.isInteger(pageNumber) ||
       pageNumber < 1 ||
-      pageNumber > totalPages
-    ) {
+      pageNumber > totalPages;
+
+    if (isInvalidPage) {
       setErrorMessage(
         `Nhập số trang từ 1 đến ${totalPages}.`,
       );
@@ -36,12 +35,19 @@ function Pagination({
   }
 
   useEffect(() => {
-    setPageInput(String(totalPages ? currentPage : 0));
+    setPageInput(
+      String(totalPages ? currentPage : 0),
+    );
     setErrorMessage("");
   }, [currentPage, totalPages]);
 
-  const isFirstPage = totalPages === 0 || currentPage === 1;
-  const isLastPage = totalPages === 0 || currentPage === totalPages;
+  const isFirstPage =
+    totalPages === 0 ||
+    currentPage === 1;
+
+  const isLastPage =
+    totalPages === 0 ||
+    currentPage === totalPages;
 
   return (
     <div className="pagination-area">
@@ -133,5 +139,3 @@ function Pagination({
     </div>
   );
 }
-
-export default Pagination;

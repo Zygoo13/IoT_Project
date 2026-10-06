@@ -1,7 +1,14 @@
 import { Navigate } from "react-router-dom";
+
 import { getAccessToken } from "../services/api";
 
-// Chặn các trang nghiệp vụ khi không có JWT còn hạn.
+// Chặn truy cập khi chưa đăng nhập
 export default function ProtectedRoute({ children }) {
-  return getAccessToken() ? children : <Navigate to="/login" replace />;
+  const token = getAccessToken();
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 }

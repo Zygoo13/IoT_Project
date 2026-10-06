@@ -1,7 +1,9 @@
 import { formatValue } from "../utils/formatValue";
 
-function SensorCard({ title, value, unit }) {
-  const hasValue = value !== undefined && value !== null;
+export default function SensorCard({ title, value, unit }) {
+  const hasValue =
+    value !== undefined &&
+    value !== null;
 
   return (
     <article className="sensor-card">
@@ -16,9 +18,6 @@ function SensorCard({ title, value, unit }) {
           "N/A"
         )}
       </strong>
-
     </article>
   );
 }
-
-export default SensorCard;
