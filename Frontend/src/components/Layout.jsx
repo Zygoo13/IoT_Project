@@ -1,41 +1,22 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
-import Sidebar from "./Sidebar";
 import { startRealtime, stopRealtime } from "../services/realtime";
+import Sidebar from "./Sidebar";
 
-function Layout() {
+export default function Layout() {
+  // Duy trì một kết nối realtime cho các trang sau đăng nhập.
   useEffect(() => {
     startRealtime();
     return stopRealtime;
   }, []);
+
   return (
     <div className="app-layout">
       <Sidebar />
-
       <main className="main-content">
         <Outlet />
       </main>
     </div>
   );
 }
-
-export default Layout;
-
-
-
-// import { Outlet } from "react-router-dom";
-// import Sidebar from "./Sidebar";
-
-// function Layout() {
-//   return (
-//     <div className="app-layout">
-//       <Sidebar />
-//       <main className="main-content">
-//         <Outlet />
-//       </main>
-//     </div>
-//   );
-// }
-
-// export default Layout;

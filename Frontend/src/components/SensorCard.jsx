@@ -1,14 +1,7 @@
 import { formatValue } from "../utils/formatValue";
 
-function SensorCard({
-  title,
-  value,
-  unit,
-  stale,
-}) {
-  const hasValue =
-    value !== undefined &&
-    value !== null;
+function SensorCard({ title, value, unit }) {
+  const hasValue = value !== undefined && value !== null;
 
   return (
     <article className="sensor-card">
@@ -24,11 +17,6 @@ function SensorCard({
         )}
       </strong>
 
-      {stale && (
-        <span className="stale-label">
-          Dữ liệu cũ
-        </span>
-      )}
     </article>
   );
 }

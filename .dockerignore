@@ -1,0 +1,16 @@
+.git
+.agents
+.codex
+Docs
+Hardware
+output
+tmp
+**/node_modules
+**/dist
+**/target
+**/.env
+**/.env.*
+**/.*.pw
+**/.mosquitto*
+**/.demo-data-manifest.json
+**/*.log

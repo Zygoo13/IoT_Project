@@ -1,5 +1,9 @@
 # Backend IoT
 
+Chạy cùng Frontend trong một container: xem [README gốc](../README.md).
+Container dùng MySQL/Mosquitto hiện có và cấu hình riêng cho địa chỉ Docker;
+không chạy đồng thời Backend Java cục bộ và Backend trong container.
+
 Khung Spring Boot cho bài BTH4, đặt ngang cấp `Frontend`. Nghiệp vụ lấy theo
 `Docs/TH1_IOT_V5.docx`; firmware đối chiếu `Docs/DemoB2.ino`. Xem
 `CONTRACT.md` trước khi thêm REST, MQTT hoặc WebSocket và xem

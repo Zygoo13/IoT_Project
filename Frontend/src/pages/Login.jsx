@@ -1,37 +1,38 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { api, getToken, saveToken } from "../services/api";
+import { requestApi, getAccessToken, saveAccessToken } from "../services/api";
 
 export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  if (getToken()) return <Navigate to="/dashboard" replace />;
-
+  // Đăng nhập qua API, lưu JWT và chuyển sang Dashboard khi thành công.
   async function handleSubmit(event) {
     event.preventDefault();
-    setError("");
+    setErrorMessage("");
     if (!username.trim() || !password) {
-      setError("Nhập tên đăng nhập và mật khẩu.");
+      setErrorMessage("Nhập tên đăng nhập và mật khẩu.");
       return;
     }
-    setLoading(true);
+    setIsLoading(true);
     try {
-      const result = await api("/auth/login", {
+      const result = await requestApi("/auth/login", {
         method: "POST", body: JSON.stringify({ username: username.trim(), password }),
       });
-      saveToken(result.token);
+      saveAccessToken(result.token);
       navigate("/dashboard", { replace: true });
-    } catch (problem) {
-      setError(problem.status === 401 ? "Tên đăng nhập hoặc mật khẩu không đúng." :
-        problem.status ? "Đăng nhập thất bại. Thử lại." : "Không thể kết nối máy chủ.");
+    } catch (error) {
+      if (error.status === 401) setErrorMessage("Tên đăng nhập hoặc mật khẩu không đúng.");
+      else setErrorMessage(error.status ? "Đăng nhập thất bại. Thử lại." : "Không thể kết nối máy chủ.");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }
+
+  if (getAccessToken()) return <Navigate to="/dashboard" replace />;
 
   return (
     <div className="login-page">
@@ -47,9 +48,9 @@ export default function Login() {
             <label htmlFor="password">Mật khẩu</label>
             <input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" />
           </div>
-          {error && <p className="login-error" role="alert">{error}</p>}
-          <button className="login-button" type="submit" disabled={loading}>
-            {loading ? "Đang đăng nhập..." : "Login"}
+          {errorMessage && <p className="login-error" role="alert">{errorMessage}</p>}
+          <button className="login-button" type="submit" disabled={isLoading}>
+            {isLoading ? "Đang đăng nhập..." : "Login"}
           </button>
         </form>
       </section>

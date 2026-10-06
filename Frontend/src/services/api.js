@@ -1,58 +1,63 @@
-const TOKEN_KEY = "iot-jwt";
+const TOKEN_STORAGE_KEY = "iot-jwt";
 
-export function getToken() {
-  const token = localStorage.getItem(TOKEN_KEY);
+// Lấy JWT của phiên hiện tại và loại bỏ token đã hết hạn.
+export function getAccessToken() {
+  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
   if (!token) return null;
+
   try {
-    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    const encodedPayload = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(atob(encodedPayload));
     if (!payload.exp || payload.exp * 1000 <= Date.now()) {
-      clearToken();
+      clearAccessToken();
       return null;
     }
     return token;
   } catch {
-    clearToken();
+    clearAccessToken();
     return null;
   }
 }
 
-export function saveToken(token) {
-  localStorage.setItem(TOKEN_KEY, token);
+export function saveAccessToken(token) {
+  localStorage.setItem(TOKEN_STORAGE_KEY, token);
 }
 
-export function clearToken() {
-  localStorage.removeItem(TOKEN_KEY);
+export function clearAccessToken() {
+  localStorage.removeItem(TOKEN_STORAGE_KEY);
 }
 
-export async function api(path, options = {}) {
-  const token = getToken();
-  const response = await fetch(`/api${path}`, {
-    ...options,
-    headers: {
-      ...(options.body ? { "Content-Type": "application/json" } : {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  });
-  const body = await response.json().catch(() => null);
-  if (!response.ok) {
-    if (response.status === 401 && path !== "/auth/login") {
-      clearToken();
-      window.location.replace("/login");
-    }
-    const error = new Error(body?.message || `HTTP ${response.status}`);
-    error.status = response.status;
-    error.code = body?.code;
-    error.requestId = body?.requestId;
-    throw error;
+// Gọi REST kèm Bearer JWT; xử lý lỗi API và phiên không còn hợp lệ.
+export async function requestApi(path, options = {}) {
+  const token = getAccessToken();
+  const headers = {};
+  if (options.body) headers["Content-Type"] = "application/json";
+  if (token) headers.Authorization = `Bearer ${token}`;
+  Object.assign(headers, options.headers);
+
+  const response = await fetch(`/api${path}`, { ...options, headers });
+  const responseBody = await response.json().catch(() => null);
+  if (response.ok) return responseBody;
+
+  if (response.status === 401 && path !== "/auth/login") {
+    clearAccessToken();
+    window.location.replace("/login");
   }
-  return body;
+
+  const error = new Error(responseBody?.message || `HTTP ${response.status}`);
+  error.status = response.status;
+  error.code = responseBody?.code;
+  error.requestId = responseBody?.requestId;
+  throw error;
 }
 
-export function query(params) {
-  const search = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== "" && value !== null && value !== undefined) search.set(key, value);
-  });
-  return search.toString();
+// Chuyển các điều kiện truy vấn thành query string, bỏ qua giá trị trống.
+export function buildQueryString(parameters) {
+  const searchParameters = new URLSearchParams();
+  for (const [name, value] of Object.entries(parameters)) {
+    if (value !== "" && value !== null && value !== undefined) {
+      searchParameters.set(name, value);
+    }
+  }
+  return searchParameters.toString();
 }

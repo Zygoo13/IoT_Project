@@ -1,78 +1,112 @@
 import { useEffect, useState } from "react";
+
 import Pagination from "../components/Pagination";
-import { api, query } from "../services/api";
+import { requestApi, buildQueryString } from "../services/api";
 import { onRealtime } from "../services/realtime";
-import { DATE_TIME_FORMAT, formatDateTime, parseDateTime } from "../utils/dateTime";
+import { DATE_TIME_FORMAT, formatDateTime, parseDateTime, getDateRangeError } from "../utils/dateTime";
 import { formatValue } from "../utils/formatValue";
 
-const emptyPage = { content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 };
-const emptyRange = { fromTime: "", toTime: "" };
-const sensorNames = { TEMPERATURE: "Nhiệt độ", HUMIDITY: "Độ ẩm", LIGHT: "Ánh sáng" };
+const PAGE_SIZE = 20;
+const EMPTY_PAGE = { content: [], page: 0, size: PAGE_SIZE, totalElements: 0, totalPages: 0 };
+const EMPTY_RANGE = { fromTime: "", toTime: "" };
+const SENSOR_NAMES = { TEMPERATURE: "Nhiệt độ", HUMIDITY: "Độ ẩm", LIGHT: "Ánh sáng" };
 
 export default function DataSensor() {
-  const [page, setPage] = useState(0);
-  const [data, setData] = useState(emptyPage);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [sensorPage, setSensorPage] = useState(EMPTY_PAGE);
   const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-  const [order, setOrder] = useState("DESC");
-  const [rangeInput, setRangeInput] = useState(emptyRange);
-  const [range, setRange] = useState(emptyRange);
+  const [appliedSearch, setAppliedSearch] = useState("");
+  const [sortOrder, setSortOrder] = useState("DESC");
+  const [rangeInput, setRangeInput] = useState(EMPTY_RANGE);
+  const [appliedRange, setAppliedRange] = useState(EMPTY_RANGE);
   const [filterError, setFilterError] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [reload, setReload] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshVersion, setRefreshVersion] = useState(0);
 
+  function refreshPage() {
+    setRefreshVersion((version) => version + 1);
+  }
+
+  // Áp dụng tìm kiếm và thứ tự sắp xếp, bắt đầu lại từ trang đầu.
+  function handleSearch(event) {
+    event.preventDefault();
+    setAppliedSearch(searchInput.trim());
+    setPageIndex(0);
+  }
+
+  function handleSortOrderChange(event) {
+    setSortOrder(event.target.value);
+    setPageIndex(0);
+  }
+
+  // Kiểm tra khoảng thời gian trước khi áp dụng bộ lọc.
+  function handleApplyRange() {
+    const rangeError = getDateRangeError(rangeInput.fromTime, rangeInput.toTime);
+    if (rangeError) {
+      setFilterError(rangeError);
+      return;
+    }
+    setFilterError("");
+    setAppliedRange({ ...rangeInput });
+    setPageIndex(0);
+  }
+
+  function handleClearRange() {
+    setRangeInput(EMPTY_RANGE);
+    setAppliedRange(EMPTY_RANGE);
+    setFilterError("");
+    setPageIndex(0);
+  }
+
+  // Tải lại bảng khi có sự kiện mới hoặc WebSocket kết nối lại.
   useEffect(() => onRealtime((topic) => {
-    if (topic === "sensors" || topic === "connected") setReload((value) => value + 1);
+    if (["sensors", "connected"].includes(topic)) refreshPage();
   }), []);
 
   useEffect(() => {
-    let cancelled = false;
-    const params = {
-      page, size: 20, sortBy: "ID", order,
-      ...(search ? { search } : {}),
-      ...(range.fromTime ? { from: parseDateTime(range.fromTime)?.toISOString() } : {}),
-      ...(range.toTime ? { to: parseDateTime(range.toTime)?.toISOString() } : {}),
-    };
-    setLoading(true);
-    setData(emptyPage);
-    api(`/sensor-data?${query(params)}`).then((result) => {
-      if (!cancelled) {
-        if (page > 0 && page >= result.totalPages) setPage(Math.max(0, result.totalPages - 1));
-        else { setData(result); setError(""); }
+    let isCancelled = false;
+
+    // Lấy một trang kết quả theo điều kiện tìm kiếm, lọc và sắp xếp hiện tại.
+    async function loadSensorPage() {
+      const parameters = {
+        page: pageIndex,
+        size: PAGE_SIZE,
+        sortBy: "ID",
+        order: sortOrder,
+        search: appliedSearch,
+        from: appliedRange.fromTime ? parseDateTime(appliedRange.fromTime)?.toISOString() : null,
+        to: appliedRange.toTime ? parseDateTime(appliedRange.toTime)?.toISOString() : null,
+      };
+      setIsLoading(true);
+      setSensorPage(EMPTY_PAGE);
+      try {
+        const result = await requestApi(`/sensor-data?${buildQueryString(parameters)}`);
+        if (isCancelled) return;
+        if (pageIndex > 0 && pageIndex >= result.totalPages) {
+          setPageIndex(Math.max(0, result.totalPages - 1));
+        } else {
+          setSensorPage(result);
+          setErrorMessage("");
+        }
+      } catch (error) {
+        if (isCancelled) return;
+        if (error.status === 400) setErrorMessage(error.message);
+        else setErrorMessage(error.status ? "Không tải được dữ liệu cảm biến." : "Không thể kết nối máy chủ.");
+      } finally {
+        if (!isCancelled) setIsLoading(false);
       }
-    }).catch((problem) => {
-      if (!cancelled) setError(problem.status === 400 ? problem.message :
-        problem.status ? "Không tải được dữ liệu cảm biến." : "Không thể kết nối máy chủ.");
-    }).finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [page, search, range, order, reload]);
-
-  function handleSearch(event) {
-    event.preventDefault();
-    const value = searchInput.trim();
-    setSearch(value);
-    setPage(0);
-  }
-
-  function applyRange() {
-    const from = rangeInput.fromTime ? parseDateTime(rangeInput.fromTime) : null;
-    const to = rangeInput.toTime ? parseDateTime(rangeInput.toTime) : null;
-    if ((rangeInput.fromTime && !from) || (rangeInput.toTime && !to)) {
-      setFilterError(`Nhập thời gian theo định dạng ${DATE_TIME_FORMAT}.`); return;
     }
-    if (from && to && from > to) {
-      setFilterError("Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc."); return;
-    }
-    setFilterError(""); setRange({ ...rangeInput }); setPage(0);
-  }
 
-  function clearRange() {
-    setRangeInput(emptyRange); setRange(emptyRange); setFilterError(""); setPage(0);
-  }
+    void loadSensorPage();
+    // Bỏ qua response cũ nếu người dùng đã đổi truy vấn hoặc rời trang.
+    return () => {
+      isCancelled = true;
+    };
+  }, [pageIndex, appliedSearch, appliedRange, sortOrder, refreshVersion]);
 
-  const first = data.totalElements ? page * 20 + 1 : 0;
-  const last = data.totalElements ? first + data.content.length - 1 : 0;
+  const firstRecordNumber = sensorPage.totalElements ? pageIndex * PAGE_SIZE + 1 : 0;
+  const lastRecordNumber = sensorPage.totalElements ? firstRecordNumber + sensorPage.content.length - 1 : 0;
 
   return (
     <section className="page data-page">
@@ -88,8 +122,9 @@ export default function DataSensor() {
           </form>
           <div className="sort-controls">
             <label className="query-control query-order-control">Thứ tự
-              <select value={order} onChange={(event) => { setOrder(event.target.value); setPage(0); }}>
-                <option value="ASC">Tăng dần</option><option value="DESC">Giảm dần</option>
+              <select value={sortOrder} onChange={handleSortOrderChange}>
+                <option value="ASC">Tăng dần</option>
+                <option value="DESC">Giảm dần</option>
               </select>
             </label>
           </div>
@@ -104,22 +139,50 @@ export default function DataSensor() {
             </div>
           </fieldset>
           <div className="filter-actions query-actions">
-            <button className="secondary-button" type="button" onClick={clearRange}>Xóa lọc</button>
-            <button className="primary-button" type="button" onClick={applyRange}>Áp dụng</button>
+            <button className="secondary-button" type="button" onClick={handleClearRange}>Xóa lọc</button>
+            <button className="primary-button" type="button" onClick={handleApplyRange}>Áp dụng</button>
           </div>
         </div>
         {filterError && <p className="query-error" role="alert">{filterError}</p>}
       </section>
-      {error && <p className="query-error" role="alert">{error} <button type="button" onClick={() => setReload((value) => value + 1)}>Thử lại</button></p>}
-      <p className="result-info">{loading ? "Đang tải..." : `Hiển thị ${first}-${last} trên tổng số ${data.totalElements} bản ghi`}</p>
-      <div className="table-container"><table className="data-table">
-        <thead><tr><th>ID</th><th>Loại cảm biến</th><th>Giá trị</th><th>Thời gian</th></tr></thead>
-        <tbody>{data.content.length ? data.content.map((record) => <tr key={record.id}>
-          <td>{record.id}</td><td>{sensorNames[record.sensorType] || record.sensorType}</td>
-          <td>{formatValue(record.value)} {record.unit}</td><td>{formatDateTime(record.recordedAt)}</td>
-        </tr>) : <tr><td colSpan="4" className="empty-table-cell">{loading ? "Đang tải..." : "Không tìm thấy dữ liệu."}</td></tr>}</tbody>
-      </table></div>
-      <Pagination currentPage={page + 1} totalPages={data.totalPages} onPageChange={(next) => setPage(next - 1)} label="Phân trang dữ liệu cảm biến" />
+      {errorMessage && <p className="query-error" role="alert">{errorMessage} <button type="button" onClick={refreshPage}>Thử lại</button></p>}
+      <p className="result-info">{isLoading ? "Đang tải..." : `Hiển thị ${firstRecordNumber}-${lastRecordNumber} trên tổng số ${sensorPage.totalElements} bản ghi`}</p>
+      <div className="table-container">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Loại cảm biến</th>
+              <th>Giá trị</th>
+              <th>Thời gian</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sensorPage.content.length > 0 ? (
+              sensorPage.content.map((record) => (
+                <tr key={record.id}>
+                  <td>{record.id}</td>
+                  <td>{SENSOR_NAMES[record.sensorType] || record.sensorType}</td>
+                  <td>{formatValue(record.value)} {record.unit}</td>
+                  <td>{formatDateTime(record.recordedAt)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="empty-table-cell">
+                  {isLoading ? "Đang tải..." : "Không tìm thấy dữ liệu."}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <Pagination
+        currentPage={pageIndex + 1}
+        totalPages={sensorPage.totalPages}
+        onPageChange={(pageNumber) => setPageIndex(pageNumber - 1)}
+        label="Phân trang dữ liệu cảm biến"
+      />
     </section>
   );
 }

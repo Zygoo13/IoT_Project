@@ -1,79 +1,42 @@
-function DeviceControl({
-  device,
-  commandState,
-  hardwareOffline,
-  onControl,
-}) {
+const STATUS_LABELS = {
+  ON: "Đang bật",
+  OFF: "Đang tắt",
+};
+
+// Card LED: hiển thị trạng thái đã xác nhận và tiến độ lệnh đang gửi.
+export default function DeviceControl({ device, commandState, hardwareOffline, onControl }) {
   const isUnknown = device.status === "UNKNOWN";
   const isPending = commandState?.pending;
-
-  const badgeClass =
-    device.status === "ON"
-      ? "device-status-badge is-on"
-      : device.status === "OFF"
-        ? "device-status-badge is-off"
-        : "device-status-badge is-unknown";
-
-  const statusLabel =
-    device.status === "ON"
-      ? "Đang bật"
-      : device.status === "OFF"
-        ? "Đang tắt"
-        : "Chưa xác định";
+  const statusLabel = STATUS_LABELS[device.status] || "Chưa xác định";
+  const statusClass = device.status === "ON" ? "is-on" : device.status === "OFF" ? "is-off" : "is-unknown";
+  const commandMessage = isUnknown ? "Chưa tải được trạng thái thiết bị." : commandState?.message;
 
   return (
     <article className="device-card">
       <div className="device-card-content">
-      <h3>{device.code === "LED1" ? "LED 1" : "LED 2"}</h3>
-
-      <p className="device-status">
-        Trạng thái:{" "}
-        <span className={badgeClass}>
-          {statusLabel}
-        </span>
-      </p>
-
-      {(isUnknown || commandState) && (
-        <p
-          className={`command-message ${commandState?.type || ""
-            }`}
-          aria-live="polite"
-        >
-          {isUnknown
-            ? "Chưa tải được trạng thái thiết bị."
-            : commandState.message}
+        <h3>{device.code === "LED1" ? "LED 1" : "LED 2"}</h3>
+        <p className="device-status">
+          Trạng thái:{" "}
+          <span className={`device-status-badge ${statusClass}`}>{statusLabel}</span>
         </p>
-      )}
-
-      {hardwareOffline && !isUnknown && (
-        <p className="device-offline-note">
-          Mất kết nối phần cứng.
-        </p>
-      )}
-
-      <div className="device-actions">
-        <button
-          className="on-button"
-          type="button"
-          disabled={isPending || isUnknown}
-          onClick={() =>
-            onControl(device.code, "ON")
-          }
-        >
-          ON
-        </button>
-
-        <button
-          className="off-button"
-          type="button"
-          disabled={isPending || isUnknown}
-          onClick={() =>
-            onControl(device.code, "OFF")
-          }
-        >
-          OFF
-        </button>
-      </div>
+        {(isUnknown || commandState) && (
+          <p className={`command-message ${commandState?.type || ""}`} aria-live="polite">
+            {commandMessage}
+          </p>
+        )}
+        {hardwareOffline && !isUnknown && (
+          <p className="device-offline-note">Mất kết nối phần cứng.</p>
+        )}
+        <div className="device-actions">
+          <button className="on-button" type="button" disabled={isPending || isUnknown}
+            onClick={() => onControl(device.code, "ON")}>
+            ON
+          </button>
+          <button className="off-button" type="button" disabled={isPending || isUnknown}
+            onClick={() => onControl(device.code, "OFF")}>
+            OFF
+          </button>
+        </div>
       </div>
       <svg className={`device-bulb ${device.status === "ON" ? "is-on" : "is-off"}`}
         viewBox="0 0 64 80" role="img" aria-label={`${device.code}: ${statusLabel}`}>
@@ -84,5 +47,3 @@ function DeviceControl({
     </article>
   );
 }
-
-export default DeviceControl;

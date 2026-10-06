@@ -1,76 +1,113 @@
 import { useEffect, useState } from "react";
-import Pagination from "../components/Pagination";
-import { api, query } from "../services/api";
-import { onRealtime } from "../services/realtime";
-import { DATE_TIME_FORMAT, formatDateTime, parseDateTime } from "../utils/dateTime";
 
-const emptyPage = { content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 };
-const emptyFilters = { device: "", action: "", status: "", fromTime: "", toTime: "" };
+import Pagination from "../components/Pagination";
+import { requestApi, buildQueryString } from "../services/api";
+import { onRealtime } from "../services/realtime";
+import { DATE_TIME_FORMAT, formatDateTime, parseDateTime, getDateRangeError } from "../utils/dateTime";
+
+const PAGE_SIZE = 20;
+const EMPTY_PAGE = { content: [], page: 0, size: PAGE_SIZE, totalElements: 0, totalPages: 0 };
+const EMPTY_FILTERS = { device: "", action: "", status: "", fromTime: "", toTime: "" };
 
 export default function ActionHistory() {
-  const [page, setPage] = useState(0);
-  const [data, setData] = useState(emptyPage);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [historyPage, setHistoryPage] = useState(EMPTY_PAGE);
   const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-  const [order, setOrder] = useState("DESC");
-  const [filterInput, setFilterInput] = useState(emptyFilters);
-  const [filters, setFilters] = useState(emptyFilters);
+  const [appliedSearch, setAppliedSearch] = useState("");
+  const [sortOrder, setSortOrder] = useState("DESC");
+  const [filterInput, setFilterInput] = useState(EMPTY_FILTERS);
+  const [appliedFilters, setAppliedFilters] = useState(EMPTY_FILTERS);
   const [filterError, setFilterError] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [reload, setReload] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshVersion, setRefreshVersion] = useState(0);
 
+  function refreshPage() {
+    setRefreshVersion((version) => version + 1);
+  }
+
+  // Áp dụng tìm kiếm và thứ tự sắp xếp, bắt đầu lại từ trang đầu.
+  function handleSearch(event) {
+    event.preventDefault();
+    setAppliedSearch(searchInput.trim());
+    setPageIndex(0);
+  }
+
+  function handleSortOrderChange(event) {
+    setSortOrder(event.target.value);
+    setPageIndex(0);
+  }
+
+  // Kiểm tra khoảng thời gian trước khi áp dụng bộ lọc.
+  function handleApplyFilters() {
+    const rangeError = getDateRangeError(filterInput.fromTime, filterInput.toTime);
+    if (rangeError) {
+      setFilterError(rangeError);
+      return;
+    }
+    setFilterError("");
+    setAppliedFilters({ ...filterInput });
+    setPageIndex(0);
+  }
+
+  function handleClearFilters() {
+    setFilterInput(EMPTY_FILTERS);
+    setAppliedFilters(EMPTY_FILTERS);
+    setFilterError("");
+    setPageIndex(0);
+  }
+
+  // Tải lại bảng khi có sự kiện mới hoặc WebSocket kết nối lại.
   useEffect(() => onRealtime((topic) => {
-    if (["connected", "devices", "notifications"].includes(topic)) setReload((value) => value + 1);
+    if (["connected", "devices", "notifications"].includes(topic)) refreshPage();
   }), []);
 
   useEffect(() => {
-    let cancelled = false;
-    const params = {
-      page, size: 20, sortBy: "ID", order,
-      ...(search ? { search } : {}),
-      device: filters.device, action: filters.action, status: filters.status,
-      ...(filters.fromTime ? { from: parseDateTime(filters.fromTime)?.toISOString() } : {}),
-      ...(filters.toTime ? { to: parseDateTime(filters.toTime)?.toISOString() } : {}),
-    };
-    setLoading(true);
-    setData(emptyPage);
-    api(`/action-history?${query(params)}`).then((result) => {
-      if (!cancelled) {
-        if (page > 0 && page >= result.totalPages) setPage(Math.max(0, result.totalPages - 1));
-        else { setData(result); setError(""); }
+    let isCancelled = false;
+
+    // Lấy một trang kết quả theo điều kiện tìm kiếm, lọc và sắp xếp hiện tại.
+    async function loadHistoryPage() {
+      const parameters = {
+        page: pageIndex,
+        size: PAGE_SIZE,
+        sortBy: "ID",
+        order: sortOrder,
+        search: appliedSearch,
+        device: appliedFilters.device,
+        action: appliedFilters.action,
+        status: appliedFilters.status,
+        from: appliedFilters.fromTime ? parseDateTime(appliedFilters.fromTime)?.toISOString() : null,
+        to: appliedFilters.toTime ? parseDateTime(appliedFilters.toTime)?.toISOString() : null,
+      };
+      setIsLoading(true);
+      setHistoryPage(EMPTY_PAGE);
+      try {
+        const result = await requestApi(`/action-history?${buildQueryString(parameters)}`);
+        if (isCancelled) return;
+        if (pageIndex > 0 && pageIndex >= result.totalPages) {
+          setPageIndex(Math.max(0, result.totalPages - 1));
+        } else {
+          setHistoryPage(result);
+          setErrorMessage("");
+        }
+      } catch (error) {
+        if (isCancelled) return;
+        if (error.status === 400) setErrorMessage(error.message);
+        else setErrorMessage(error.status ? "Không tải được lịch sử điều khiển." : "Không thể kết nối máy chủ.");
+      } finally {
+        if (!isCancelled) setIsLoading(false);
       }
-    }).catch((problem) => {
-      if (!cancelled) setError(problem.status === 400 ? problem.message :
-        problem.status ? "Không tải được lịch sử điều khiển." : "Không thể kết nối máy chủ.");
-    }).finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [page, search, filters, order, reload]);
-
-  function handleSearch(event) {
-    event.preventDefault();
-    const value = searchInput.trim();
-    setSearch(value); setPage(0);
-  }
-
-  function applyFilters() {
-    const from = filterInput.fromTime ? parseDateTime(filterInput.fromTime) : null;
-    const to = filterInput.toTime ? parseDateTime(filterInput.toTime) : null;
-    if ((filterInput.fromTime && !from) || (filterInput.toTime && !to)) {
-      setFilterError(`Nhập thời gian theo định dạng ${DATE_TIME_FORMAT}.`); return;
     }
-    if (from && to && from > to) {
-      setFilterError("Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc."); return;
-    }
-    setFilterError(""); setFilters({ ...filterInput }); setPage(0);
-  }
 
-  function clearFilters() {
-    setFilterInput(emptyFilters); setFilters(emptyFilters); setFilterError(""); setPage(0);
-  }
+    void loadHistoryPage();
+    // Bỏ qua response cũ nếu người dùng đã đổi truy vấn hoặc rời trang.
+    return () => {
+      isCancelled = true;
+    };
+  }, [pageIndex, appliedSearch, appliedFilters, sortOrder, refreshVersion]);
 
-  const first = data.totalElements ? page * 20 + 1 : 0;
-  const last = data.totalElements ? first + data.content.length - 1 : 0;
+  const firstRecordNumber = historyPage.totalElements ? pageIndex * PAGE_SIZE + 1 : 0;
+  const lastRecordNumber = historyPage.totalElements ? firstRecordNumber + historyPage.content.length - 1 : 0;
 
   return (
     <section className="page history-page">
@@ -86,8 +123,9 @@ export default function ActionHistory() {
           </form>
           <div className="sort-controls">
             <label className="query-control query-order-control">Thứ tự
-              <select value={order} onChange={(event) => { setOrder(event.target.value); setPage(0); }}>
-                <option value="ASC">Tăng dần</option><option value="DESC">Giảm dần</option>
+              <select value={sortOrder} onChange={handleSortOrderChange}>
+                <option value="ASC">Tăng dần</option>
+                <option value="DESC">Giảm dần</option>
               </select>
             </label>
           </div>
@@ -115,24 +153,60 @@ export default function ActionHistory() {
             <input placeholder={DATE_TIME_FORMAT} value={filterInput.toTime} onChange={(event) => setFilterInput({ ...filterInput, toTime: event.target.value })} />
           </label>
           <div className="filter-actions query-actions">
-            <button className="secondary-button" type="button" onClick={clearFilters}>Xóa lọc</button>
-            <button className="primary-button" type="button" onClick={applyFilters}>Áp dụng</button>
+            <button className="secondary-button" type="button" onClick={handleClearFilters}>Xóa lọc</button>
+            <button className="primary-button" type="button" onClick={handleApplyFilters}>Áp dụng</button>
           </div>
         </div>
         {filterError && <p className="query-error" role="alert">{filterError}</p>}
       </section>
-      {error && <p className="query-error" role="alert">{error} <button type="button" onClick={() => setReload((value) => value + 1)}>Thử lại</button></p>}
-      <p className="result-info">{loading ? "Đang tải..." : `Hiển thị ${first}-${last} trên tổng số ${data.totalElements} bản ghi`}</p>
-      <div className="table-container"><table className="data-table">
-        <thead><tr><th>ID</th><th>Thiết bị</th><th>Lệnh</th><th>Trạng thái</th><th>Thời gian</th></tr></thead>
-        <tbody>{data.content.length ? data.content.map((record) => <tr key={record.id}>
-          <td>{record.id}</td><td>{record.deviceCode}</td>
-          <td><span className={`action-badge ${record.action === "ON" ? "is-on" : "is-off"}`}>{record.action === "ON" ? "BẬT" : "TẮT"}</span></td>
-          <td><span className={`status-badge ${record.status === "ON" ? "is-on" : "is-off"}`}>{record.status === "ON" ? "BẬT" : "TẮT"}</span></td>
-          <td>{formatDateTime(record.createdAt)}</td>
-        </tr>) : <tr><td colSpan="5" className="empty-table-cell">{loading ? "Đang tải..." : "Không tìm thấy dữ liệu."}</td></tr>}</tbody>
-      </table></div>
-      <Pagination currentPage={page + 1} totalPages={data.totalPages} onPageChange={(next) => setPage(next - 1)} label="Phân trang lịch sử điều khiển" />
+      {errorMessage && <p className="query-error" role="alert">{errorMessage} <button type="button" onClick={refreshPage}>Thử lại</button></p>}
+      <p className="result-info">{isLoading ? "Đang tải..." : `Hiển thị ${firstRecordNumber}-${lastRecordNumber} trên tổng số ${historyPage.totalElements} bản ghi`}</p>
+      <div className="table-container">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Thiết bị</th>
+              <th>Lệnh</th>
+              <th>Trạng thái</th>
+              <th>Thời gian</th>
+            </tr>
+          </thead>
+          <tbody>
+            {historyPage.content.length > 0 ? (
+              historyPage.content.map((record) => (
+                <tr key={record.id}>
+                  <td>{record.id}</td>
+                  <td>{record.deviceCode}</td>
+                  <td>
+                    <span className={`action-badge ${record.action === "ON" ? "is-on" : "is-off"}`}>
+                      {record.action === "ON" ? "BẬT" : "TẮT"}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`status-badge ${record.status === "ON" ? "is-on" : "is-off"}`}>
+                      {record.status === "ON" ? "BẬT" : "TẮT"}
+                    </span>
+                  </td>
+                  <td>{formatDateTime(record.createdAt)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="empty-table-cell">
+                  {isLoading ? "Đang tải..." : "Không tìm thấy dữ liệu."}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <Pagination
+        currentPage={pageIndex + 1}
+        totalPages={historyPage.totalPages}
+        onPageChange={(pageNumber) => setPageIndex(pageNumber - 1)}
+        label="Phân trang lịch sử điều khiển"
+      />
     </section>
   );
 }

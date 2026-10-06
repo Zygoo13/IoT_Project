@@ -1,81 +1,117 @@
-import { getToken } from "./api";
+import { getAccessToken } from "./api";
 
+const TOPICS = ["sensors", "hardware", "devices", "notifications"];
+const RECONNECT_DELAY = 5000;
 const listeners = new Set();
-const topics = ["sensors", "hardware", "devices", "notifications"];
-let socket;
-let retryTimer;
-let active = false;
+let currentSocket;
+let reconnectTimer;
+let isActive = false;
 
-function emit(topic, data) {
-  listeners.forEach((listener) => listener(topic, data));
+function notifyListeners(topic, data) {
+  for (const listener of listeners) listener(topic, data);
 }
 
-function frame(command, headers = {}) {
-  return `${command}\n${Object.entries(headers).map(([key, value]) => `${key}:${value}`).join("\n")}\n\n\0`;
+// Tạo frame STOMP để gửi CONNECT và SUBSCRIBE.
+function createStompFrame(command, headers = {}) {
+  const headerLines = Object.entries(headers).map(([name, value]) => `${name}:${value}`);
+  return `${command}\n${headerLines.join("\n")}\n\n\0`;
 }
 
-function connect() {
-  const token = getToken();
-  if (!active || !token) return;
-  const url = `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`;
-  const ws = new WebSocket(url);
-  socket = ws;
-  let buffer = "";
-  ws.addEventListener("open", () => {
-    ws.send(frame("CONNECT", {
-      "accept-version": "1.2", host: location.hostname,
-      "heart-beat": "0,0", Authorization: `Bearer ${token}`,
+// Tách lệnh, header và nội dung từ frame STOMP nhận được.
+function parseStompFrame(rawFrame) {
+  const bodyStart = rawFrame.indexOf("\n\n");
+  const headerText = bodyStart < 0 ? rawFrame : rawFrame.slice(0, bodyStart);
+  const [command, ...headerLines] = headerText.split("\n");
+  const headers = {};
+  for (const line of headerLines) {
+    const separator = line.indexOf(":");
+    headers[line.slice(0, separator)] = line.slice(separator + 1);
+  }
+  return { command, headers, body: rawFrame.slice(bodyStart + 2) };
+}
+
+// Đăng ký topic sau CONNECTED và chuyển MESSAGE đến các trang đang nghe.
+function handleStompFrame(socket, rawFrame) {
+  const { command, headers, body } = parseStompFrame(rawFrame);
+  if (command === "CONNECTED") {
+    TOPICS.forEach((topic, index) => {
+      socket.send(createStompFrame("SUBSCRIBE", {
+        id: `topic-${index}`,
+        destination: `/topic/${topic}`,
+        ack: "auto",
+      }));
+    });
+    notifyListeners("connected", null);
+  } else if (command === "MESSAGE") {
+    const topic = headers.destination?.replace("/topic/", "");
+    if (!TOPICS.includes(topic)) return;
+    try {
+      notifyListeners(topic, JSON.parse(body));
+    } catch {
+      // Bỏ qua event sai JSON.
+    }
+  } else if (command === "ERROR") {
+    socket.close();
+  }
+}
+
+// Mở WebSocket, xác thực bằng JWT và lên lịch nối lại khi bị ngắt.
+function connectWebSocket() {
+  const token = getAccessToken();
+  if (!isActive || !token) return;
+
+  const protocol = location.protocol === "https:" ? "wss" : "ws";
+  const socket = new WebSocket(`${protocol}://${location.host}/ws`);
+  currentSocket = socket;
+  let receivedBuffer = "";
+
+  socket.addEventListener("open", () => {
+    socket.send(createStompFrame("CONNECT", {
+      "accept-version": "1.2",
+      host: location.hostname,
+      "heart-beat": "0,0",
+      Authorization: `Bearer ${token}`,
     }));
   });
-  ws.addEventListener("message", (message) => {
-    buffer += String(message.data);
-    let end;
-    while ((end = buffer.indexOf("\0")) !== -1) {
-      const raw = buffer.slice(0, end).replace(/^\n+/, "");
-      buffer = buffer.slice(end + 1);
-      if (!raw) continue;
-      const boundary = raw.indexOf("\n\n");
-      const lines = (boundary < 0 ? raw : raw.slice(0, boundary)).split("\n");
-      const headers = Object.fromEntries(lines.slice(1).map((line) => {
-        const colon = line.indexOf(":");
-        return [line.slice(0, colon), line.slice(colon + 1)];
-      }));
-      if (lines[0] === "CONNECTED") {
-        topics.forEach((topic, index) => ws.send(frame("SUBSCRIBE", {
-          id: `topic-${index}`, destination: `/topic/${topic}`, ack: "auto",
-        })));
-        emit("connected", null);
-      } else if (lines[0] === "MESSAGE") {
-        const topic = headers.destination?.replace("/topic/", "");
-        if (!topics.includes(topic)) continue;
-        try { emit(topic, JSON.parse(raw.slice(boundary + 2))); } catch { /* Bỏ qua event sai JSON. */ }
-      } else if (lines[0] === "ERROR") {
-        ws.close();
-      }
+
+  socket.addEventListener("message", (message) => {
+    receivedBuffer += String(message.data);
+    // Một lần nhận có thể chứa nhiều frame hoặc một phần frame STOMP.
+    let frameEnd = receivedBuffer.indexOf("\0");
+    while (frameEnd !== -1) {
+      const rawFrame = receivedBuffer.slice(0, frameEnd).replace(/^\n+/, "");
+      receivedBuffer = receivedBuffer.slice(frameEnd + 1);
+      if (rawFrame) handleStompFrame(socket, rawFrame);
+      frameEnd = receivedBuffer.indexOf("\0");
     }
   });
-  ws.addEventListener("close", () => {
-    if (socket !== ws) return;
-    emit("disconnected", null);
-    if (active && getToken()) retryTimer = setTimeout(connect, 5000);
+
+  socket.addEventListener("close", () => {
+    if (currentSocket !== socket) return;
+    notifyListeners("disconnected", null);
+    if (isActive && getAccessToken()) {
+      reconnectTimer = setTimeout(connectWebSocket, RECONNECT_DELAY);
+    }
   });
-  ws.addEventListener("error", () => ws.close());
+  socket.addEventListener("error", () => socket.close());
 }
 
+// Đăng ký hàm nhận sự kiện; trả về hàm hủy đăng ký khi rời trang.
 export function onRealtime(listener) {
   listeners.add(listener);
   return () => listeners.delete(listener);
 }
 
 export function startRealtime() {
-  if (active) return;
-  active = true;
-  connect();
+  if (isActive) return;
+  isActive = true;
+  connectWebSocket();
 }
 
+// Đóng kết nối và hủy lịch reconnect khi kết thúc phiên.
 export function stopRealtime() {
-  active = false;
-  clearTimeout(retryTimer);
-  socket?.close();
-  socket = undefined;
+  isActive = false;
+  clearTimeout(reconnectTimer);
+  currentSocket?.close();
+  currentSocket = undefined;
 }

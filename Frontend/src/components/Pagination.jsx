@@ -6,21 +6,16 @@ function Pagination({
   onPageChange,
   label,
 }) {
-  const [pageInput, setPageInput] =
-    useState(String(currentPage));
+  const [pageInput, setPageInput] = useState(String(currentPage));
 
-  const [error, setError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const inputId = `${label
     .toLowerCase()
     .replaceAll(" ", "-")}-input`;
 
-  useEffect(() => {
-    setPageInput(String(totalPages ? currentPage : 0));
-    setError("");
-  }, [currentPage, totalPages]);
-
-  function handleGo(event) {
+  // Kiểm tra số trang nhập trước khi yêu cầu page tải trang đó.
+  function handlePageSubmit(event) {
     event.preventDefault();
 
     const pageNumber = Number(pageInput);
@@ -30,15 +25,23 @@ function Pagination({
       pageNumber < 1 ||
       pageNumber > totalPages
     ) {
-      setError(
+      setErrorMessage(
         `Nhập số trang từ 1 đến ${totalPages}.`,
       );
       return;
     }
 
-    setError("");
+    setErrorMessage("");
     onPageChange(pageNumber);
   }
+
+  useEffect(() => {
+    setPageInput(String(totalPages ? currentPage : 0));
+    setErrorMessage("");
+  }, [currentPage, totalPages]);
+
+  const isFirstPage = totalPages === 0 || currentPage === 1;
+  const isLastPage = totalPages === 0 || currentPage === totalPages;
 
   return (
     <div className="pagination-area">
@@ -49,7 +52,7 @@ function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={totalPages === 0 || currentPage === 1}
+          disabled={isFirstPage}
           onClick={() => onPageChange(1)}
         >
           Trang đầu
@@ -58,7 +61,7 @@ function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={totalPages === 0 || currentPage === 1}
+          disabled={isFirstPage}
           onClick={() =>
             onPageChange(currentPage - 1)
           }
@@ -68,7 +71,7 @@ function Pagination({
 
         <form
           className="page-jump"
-          onSubmit={handleGo}
+          onSubmit={handlePageSubmit}
         >
           <label htmlFor={inputId}>
             Trang
@@ -82,7 +85,7 @@ function Pagination({
             onChange={(event) =>
               setPageInput(event.target.value)
             }
-            aria-invalid={Boolean(error)}
+            aria-invalid={Boolean(errorMessage)}
           />
 
           <span>/ {totalPages}</span>
@@ -99,7 +102,7 @@ function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={totalPages === 0 || currentPage === totalPages}
+          disabled={isLastPage}
           onClick={() =>
             onPageChange(currentPage + 1)
           }
@@ -110,7 +113,7 @@ function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={totalPages === 0 || currentPage === totalPages}
+          disabled={isLastPage}
           onClick={() =>
             onPageChange(totalPages)
           }
@@ -119,12 +122,12 @@ function Pagination({
         </button>
       </nav>
 
-      {error && (
+      {errorMessage && (
         <p
           className="pagination-error"
           role="alert"
         >
-          {error}
+          {errorMessage}
         </p>
       )}
     </div>
@@ -132,73 +135,3 @@ function Pagination({
 }
 
 export default Pagination;
-
-
-
-// import { useEffect, useState } from "react";
-
-// function Pagination({ currentPage, totalPages, onPageChange, label }) {
-//   const [pageInput, setPageInput] = useState(String(currentPage));
-//   const [error, setError] = useState("");
-//   const inputId = `${label.toLowerCase().replaceAll(" ", "-")}-input`;
-
-//   useEffect(() => {
-//     setPageInput(String(currentPage));
-//     setError("");
-//   }, [currentPage]);
-
-//   function handleGo(event) {
-//     event.preventDefault();
-//     const pageNumber = Number(pageInput);
-
-//     if (!Number.isInteger(pageNumber) || pageNumber < 1 || pageNumber > totalPages) {
-//       setError(`Nhập số trang từ 1 đến ${totalPages}.`);
-//       return;
-//     }
-
-//     setError("");
-//     onPageChange(pageNumber);
-//   }
-
-
-
-//   if (totalPages === 0) {
-//     return null;
-//   }
-
-//   return (
-//     <div className="pagination-area">
-//       <nav className="pagination" aria-label={label}>
-//         <button className="page-button" type="button" disabled={currentPage === 1} onClick={() => onPageChange(1)}>
-//           Trang đầu
-//         </button>
-//         <button className="page-button" type="button" disabled={currentPage === 1} onClick={() => onPageChange(currentPage - 1)}>
-//           Trước
-//         </button>
-
-//         <form className="page-jump" onSubmit={handleGo}>
-//           <label htmlFor={inputId}>Trang</label>
-//           <input
-//             id={inputId}
-//             inputMode="numeric"
-//             value={pageInput}
-//             onChange={(event) => setPageInput(event.target.value)}
-//             aria-invalid={Boolean(error)}
-//           />
-//           <span>/ {totalPages}</span>
-//           <button className="page-button" type="submit">Đến</button>
-//         </form>
-
-//         <button className="page-button" type="button" disabled={currentPage === totalPages} onClick={() => onPageChange(currentPage + 1)}>
-//           Sau
-//         </button>
-//         <button className="page-button" type="button" disabled={currentPage === totalPages} onClick={() => onPageChange(totalPages)}>
-//           Trang cuối
-//         </button>
-//       </nav>
-//       {error && <p className="pagination-error" role="alert">{error}</p>}
-//     </div>
-//   );
-// }
-
-// export default Pagination;

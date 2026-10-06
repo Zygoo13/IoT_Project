@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { clearToken } from "../services/api";
+import { clearAccessToken } from "../services/api";
 
 const navigationItems = [
   { to: "/dashboard", label: "Tổng quan" },
@@ -10,21 +10,22 @@ const navigationItems = [
 
 export default function Sidebar() {
   const navigate = useNavigate();
-  function logout() {
-    clearToken();
+  function handleLogout() {
+    clearAccessToken();
     navigate("/login", { replace: true });
   }
+
   return (
     <aside className="sidebar">
       <div className="sidebar-title"><span>Giám sát IoT</span><small>Môi trường và thiết bị</small></div>
       <nav className="navigation" aria-label="Điều hướng chính">
-        {navigationItems.map((item) => (
-          <NavLink key={item.to} to={item.to} className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
-            {item.label}
+        {navigationItems.map((navigationItem) => (
+          <NavLink key={navigationItem.to} to={navigationItem.to} className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+            {navigationItem.label}
           </NavLink>
         ))}
       </nav>
-      <button className="logout-button" type="button" onClick={logout}>Đăng xuất</button>
+      <button className="logout-button" type="button" onClick={handleLogout}>Đăng xuất</button>
     </aside>
   );
 }
