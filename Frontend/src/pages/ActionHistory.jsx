@@ -362,10 +362,10 @@ export default function ActionHistory() {
 
                   <td>
                     <span
-                      className={`status-badge ${record.status === "ON" ? "is-on" : "is-off"
+                      className={`action-badge ${record.action === "ON" ? "is-on" : "is-off"
                         }`}
                     >
-                      {record.status === "ON" ? "BẬT" : "TẮT"}
+                      {record.action === "ON" ? "BẬT" : "TẮT"}
                     </span>
                   </td>
 
