@@ -1,0 +1,14 @@
+[
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "color": "rgb(21, 128, 61)",
+    "padding": "0px",
+    "text": "Đang chờ xác nhận bật đèn."
+  },
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "color": "rgb(185, 28, 28)",
+    "padding": "0px",
+    "text": "Đang chờ xác nhận tắt đèn."
+  }
+]

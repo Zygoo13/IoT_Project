@@ -1,0 +1,86 @@
+{
+  "tests": [
+    {
+      "test": "Login user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile ownership user123",
+      "result": "PASS"
+    },
+    {
+      "test": "Login user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile ownership user124",
+      "result": "PASS"
+    },
+    {
+      "test": "Login user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile ownership user125",
+      "result": "PASS"
+    },
+    {
+      "test": "Wrong password rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Missing login fields rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/dashboard",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/sensor-data",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/action-history",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/profile",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid JWT rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Expired JWT rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Hardware ONLINE at test start",
+      "result": "FAIL"
+    }
+  ],
+  "commands": [],
+  "tokensSaved": false
+}

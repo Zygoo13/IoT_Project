@@ -1,0 +1,7 @@
+id	code	name	type	status	active
+1	LED1	LED1	LED	ON	1
+2	LED2	LED2	LED	ON	1
+id	code	name	type	unit	active
+1	DHT11_TEMP	Temperature Sensor	TEMPERATURE	�C	1
+2	DHT11_HUM	Humidity Sensor	HUMIDITY	%RH	1
+3	LDR_LIGHT	Light Sensor	LIGHT	lux	1

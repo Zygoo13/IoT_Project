@@ -1,0 +1,9 @@
+{
+  "startedAt": "2026-10-20T19:27:59.652Z",
+  "at": "2026-10-20T19:35:40.947Z",
+  "mqttConnected": true,
+  "stompConnected": true,
+  "mqttMessages": 432,
+  "stompMessages": 429,
+  "errors": []
+}

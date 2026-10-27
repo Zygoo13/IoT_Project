@@ -1,0 +1,12 @@
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.733 s -- in zygoo13.iot.api.HistoryUsersIntegrationTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  12.019 s
+[INFO] Finished at: 2026-10-27T17:39:03+07:00
+[INFO] ------------------------------------------------------------------------

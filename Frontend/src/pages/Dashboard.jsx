@@ -1,141 +1,38 @@
 import {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
 
-import {
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-
 import DeviceControl from "../components/DeviceControl";
+import EnvironmentChart from "../components/EnvironmentChart";
 import SensorCard from "../components/SensorCard";
 import { buildQueryString, requestApi } from "../services/api";
 import { onRealtime } from "../services/realtime";
 import { formatDateTime } from "../utils/dateTime";
-import { formatValue } from "../utils/formatValue";
+import { capNhatDashboardRealtime } from "../utils/dashboard";
 
 const SENSOR_DEFINITIONS = [
   {
     code: "DHT11_TEMP",
-    title: "Temperature",
+    title: "Nhiệt độ",
     field: "temperature",
     unit: "°C",
   },
   {
     code: "DHT11_HUM",
-    title: "Humidity",
+    title: "Độ ẩm",
     field: "humidity",
     unit: "%RH",
   },
   {
     code: "LDR_LIGHT",
-    title: "Light",
+    title: "Ánh sáng",
     field: "light",
     unit: "lux",
   },
 ];
-
-const CHART_UNITS = {
-  "Nhiệt độ": "°C",
-  "Độ ẩm": "%RH",
-  "Ánh sáng": "lux",
-};
-
-const dinhDangGioBieuDo = new Intl.DateTimeFormat("vi-VN", {
-  timeZone: "Asia/Ho_Chi_Minh",
-  hour: "2-digit",
-  minute: "2-digit",
-});
-
-function formatChartTime(value) {
-  return dinhDangGioBieuDo.format(new Date(value));
-}
-
-// Chuẩn bị dữ liệu cho biểu đồ
-function taoDuLieuBieuDo(dashboard) {
-  if (!dashboard) {
-    return [];
-  }
-
-  const duLieuTheoThoiGian = new Map();
-
-  for (const sensor of SENSOR_DEFINITIONS) {
-    const cacDiem = dashboard.chart[sensor.code] || [];
-
-    for (const point of cacDiem) {
-      const row = duLieuTheoThoiGian.get(point.recordedAt) || {
-        recordedAt: point.recordedAt,
-      };
-
-      row[sensor.field] = Number(point.value);
-      duLieuTheoThoiGian.set(point.recordedAt, row);
-    }
-  }
-
-  return Array.from(duLieuTheoThoiGian.values()).sort(
-    (first, second) =>
-      new Date(first.recordedAt) - new Date(second.recordedAt),
-  );
-}
-
-// Cập nhật dữ liệu cảm biến realtime
-function capNhatCamBienRealtime(dashboard, sensorEvent) {
-  if (!dashboard || !dashboard.chart[sensorEvent.sensorCode]) {
-    return dashboard;
-  }
-
-  const duLieuCu = dashboard.latest[sensorEvent.sensorCode];
-
-  if (
-    duLieuCu &&
-    new Date(duLieuCu.recordedAt) > new Date(sensorEvent.recordedAt)
-  ) {
-    return dashboard;
-  }
-
-  const cacDiem = dashboard.chart[sensorEvent.sensorCode];
-
-  const biTrung = cacDiem.some(
-    (point) =>
-      point.recordedAt === sensorEvent.recordedAt &&
-      Number(point.value) === Number(sensorEvent.value),
-  );
-
-  const cacDiemMoi = biTrung
-    ? cacDiem
-    : [
-      ...cacDiem,
-      {
-        value: sensorEvent.value,
-        recordedAt: sensorEvent.recordedAt,
-      },
-    ].slice(-15);
-
-  return {
-    ...dashboard,
-    latest: {
-      ...dashboard.latest,
-      [sensorEvent.sensorCode]: {
-        ...sensorEvent,
-        stale: false,
-      },
-    },
-    chart: {
-      ...dashboard.chart,
-      [sensorEvent.sensorCode]: cacDiemMoi,
-    },
-  };
-}
 
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
@@ -144,41 +41,58 @@ export default function Dashboard() {
   const [trangThaiKetNoi, setTrangThaiKetNoi] = useState("CONNECTING");
   const [trangThaiLenh, setTrangThaiLenh] = useState({});
 
+  const dashboardRequestRef = useRef(null);
   const trangThaiLenhRef = useRef(trangThaiLenh);
   const timerYeuCauRef = useRef(new Set());
 
-  // Tải dữ liệu Dashboard
-  const taiDashboard = useCallback(async () => {
-    try {
-      const result = await requestApi("/dashboard");
+  // Giữ các sự kiện đến trong lúc REST đang tải để không ghi đè dữ liệu mới.
+  const taiDashboard = useCallback(() => {
+    if (dashboardRequestRef.current) return dashboardRequestRef.current.promise;
 
-      setDashboard(result);
-      setThongBaoLoi("");
-    } catch (error) {
-      setThongBaoLoi(
-        error.status
-          ? "Không tải được tổng quan."
-          : "Không thể kết nối máy chủ.",
-      );
-    } finally {
-      setDangTai(false);
-    }
+    const request = { events: [], controller: new AbortController() };
+    dashboardRequestRef.current = request;
+    request.promise = requestApi("/dashboard", { signal: request.controller.signal })
+      .then((result) => {
+        if (request.controller.signal.aborted) return;
+        for (const { topic, event } of request.events) {
+          result = capNhatDashboardRealtime(result, topic, event);
+        }
+        setDashboard(result);
+        setThongBaoLoi("");
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError") {
+          setThongBaoLoi(error.status ? "Không tải được tổng quan." : "Không thể kết nối máy chủ.");
+        }
+      })
+      .finally(() => {
+        if (dashboardRequestRef.current === request) {
+          dashboardRequestRef.current = null;
+          setDangTai(false);
+        }
+      });
+    return request.promise;
   }, []);
 
   // Đánh dấu thiết bị đã phản hồi
-  const danhDauDaPhanHoi = useCallback((deviceCode, requestId) => {
+  const danhDauDaPhanHoi = useCallback((deviceCode, requestId, confirmedStatus) => {
     setTrangThaiLenh((trangThaiHienTai) => {
-      if (trangThaiHienTai[deviceCode]?.requestId !== requestId) {
+      const command = trangThaiHienTai[deviceCode];
+      if (command?.requestId !== requestId) {
         return trangThaiHienTai;
       }
 
+      const lenh = command.action === "ON" ? "bật" : "tắt";
+      const trangThai = confirmedStatus === "ON" ? "bật" : "tắt";
       return {
         ...trangThaiHienTai,
         [deviceCode]: {
-          requestId,
+          ...command,
           pending: false,
           type: "success",
-          message: "Thiết bị đã phản hồi.",
+          message: confirmedStatus === command.action
+            ? (confirmedStatus === "ON" ? "Đèn đã bật." : "Đèn đã tắt.")
+            : "Đã yêu cầu " + lenh + ", thiết bị báo " + trangThai + ".",
         },
       };
     });
@@ -191,7 +105,7 @@ export default function Dashboard() {
 
       if (
         command?.requestId !== requestId ||
-        command?.publishFailed
+        command?.publishFailed || command?.type === "success"
       ) {
         return trangThaiHienTai;
       }
@@ -199,10 +113,12 @@ export default function Dashboard() {
       return {
         ...trangThaiHienTai,
         [deviceCode]: {
-          requestId,
+          ...command,
           pending: false,
           type: "error",
-          message: "Thiết bị không phản hồi.",
+          message: command.action === "ON"
+            ? "Chưa nhận được phản hồi cho lệnh bật."
+            : "Chưa nhận được phản hồi cho lệnh tắt.",
         },
       };
     });
@@ -230,7 +146,7 @@ export default function Dashboard() {
         }
 
         if (history.deliveryState === "CONFIRMED") {
-          danhDauDaPhanHoi(deviceCode, requestId);
+          danhDauDaPhanHoi(deviceCode, requestId, history.status);
           void taiDashboard();
         } else if (history.deliveryState === "TIMEOUT") {
           danhDauHetThoiGian(deviceCode, requestId);
@@ -245,10 +161,20 @@ export default function Dashboard() {
   // Xử lý dữ liệu realtime
   const xuLyRealtime = useCallback(
     (topic, realtimeEvent) => {
+      if (["sensors", "hardware", "devices"].includes(topic)) {
+        dashboardRequestRef.current?.events.push({ topic, event: realtimeEvent });
+      }
       switch (topic) {
         case "connected": {
           setTrangThaiKetNoi("CONNECTED");
-          void taiDashboard();
+          const pendingRequest = dashboardRequestRef.current;
+          if (pendingRequest) {
+            void pendingRequest.promise.then(() => {
+              if (!pendingRequest.controller.signal.aborted) void taiDashboard();
+            });
+          } else {
+            void taiDashboard();
+          }
 
           for (const [deviceCode, command] of Object.entries(
             trangThaiLenhRef.current,
@@ -266,39 +192,19 @@ export default function Dashboard() {
           break;
         }
 
-        case "sensors": {
-          setDashboard((dashboardHienTai) =>
-            capNhatCamBienRealtime(dashboardHienTai, realtimeEvent),
-          );
-          break;
-        }
-
+        case "sensors":
         case "hardware": {
-          void taiDashboard();
+          setDashboard(current => capNhatDashboardRealtime(current, topic, realtimeEvent));
           break;
         }
 
         case "devices": {
-          setDashboard((dashboardHienTai) => {
-            if (!dashboardHienTai) {
-              return dashboardHienTai;
-            }
-
-            const devices = dashboardHienTai.devices.map((device) =>
-              device.code === realtimeEvent.deviceCode
-                ? { ...device, status: realtimeEvent.status }
-                : device,
-            );
-
-            return {
-              ...dashboardHienTai,
-              devices,
-            };
-          });
+          setDashboard(current => capNhatDashboardRealtime(current, topic, realtimeEvent));
 
           danhDauDaPhanHoi(
             realtimeEvent.deviceCode,
             realtimeEvent.requestId,
+            realtimeEvent.historyStatus,
           );
 
           break;
@@ -332,10 +238,11 @@ export default function Dashboard() {
     setTrangThaiLenh((trangThaiHienTai) => ({
       ...trangThaiHienTai,
       [deviceCode]: {
+        action,
         pending: true,
         requestId: null,
         type: "pending",
-        message: "Đang gửi lệnh...",
+        message: action === "ON" ? "Đang chờ xác nhận bật đèn." : "Đang chờ xác nhận tắt đèn.",
       },
     }));
 
@@ -348,10 +255,11 @@ export default function Dashboard() {
       setTrangThaiLenh((trangThaiHienTai) => ({
         ...trangThaiHienTai,
         [deviceCode]: {
+          action,
           requestId: result.requestId,
           pending: true,
           type: "pending",
-          message: "Đang chờ thiết bị phản hồi.",
+          message: action === "ON" ? "Đang chờ xác nhận bật đèn." : "Đang chờ xác nhận tắt đèn.",
         },
       }));
 
@@ -370,6 +278,7 @@ export default function Dashboard() {
       setTrangThaiLenh((trangThaiHienTai) => ({
         ...trangThaiHienTai,
         [deviceCode]: {
+          action,
           pending: false,
           requestId: error.requestId || null,
           type: "error",
@@ -384,6 +293,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     void taiDashboard();
+    return () => {
+      dashboardRequestRef.current?.controller.abort();
+      dashboardRequestRef.current = null;
+    };
   }, [taiDashboard]);
 
   useEffect(() => {
@@ -402,11 +315,6 @@ export default function Dashboard() {
     return onRealtime(xuLyRealtime);
   }, [xuLyRealtime]);
 
-  const duLieuBieuDo = useMemo(
-    () => taoDuLieuBieuDo(dashboard),
-    [dashboard],
-  );
-
   const phanCung = dashboard?.hardware;
   const trangThaiPhanCung = phanCung?.status || "CHECKING";
 
@@ -421,7 +329,7 @@ export default function Dashboard() {
     <section className="page dashboard">
       <div className="dashboard-heading-row">
         <header className="page-header">
-          <h1>Tổng quan</h1>
+          <h1>Dashboard</h1>
         </header>
 
         <div
@@ -457,111 +365,15 @@ export default function Dashboard() {
           <SensorCard
             key={sensor.code}
             title={sensor.title}
+            type={sensor.field}
             value={dashboard?.latest[sensor.code]?.value ?? null}
             unit={dashboard?.latest[sensor.code]?.unit || sensor.unit}
           />
         ))}
+
       </div>
 
-      <section className="chart-section">
-        <div className="section-heading">
-          <h2>Biểu đồ môi trường</h2>
-
-          <span className="chart-note">
-            Nhiệt độ (°C) · Độ ẩm (%RH) · Ánh sáng (lux)
-          </span>
-        </div>
-
-        {dangTai ? (
-          <p>Đang tải...</p>
-        ) : duLieuBieuDo.length === 0 ? (
-          <p>Chưa có dữ liệu</p>
-        ) : (
-          <div className="chart-container">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={duLieuBieuDo}
-                margin={{ top: 12, right: 6, left: 0, bottom: 8 }}
-              >
-                <CartesianGrid
-                  stroke="#e2e8f0"
-                  strokeDasharray="3 3"
-                  vertical={false}
-                />
-
-                <XAxis
-                  dataKey="recordedAt"
-                  tickFormatter={formatChartTime}
-                  minTickGap={32}
-                  tick={{ fontSize: 11 }}
-                  axisLine={{ stroke: "#64748b" }}
-                  tickLine={{ stroke: "#64748b" }}
-                />
-
-                <YAxis
-                  width={65}
-                  domain={[0, "auto"]}
-                  tickFormatter={formatValue}
-                  tick={{ fontSize: 10 }}
-                  axisLine={{ stroke: "#64748b" }}
-                  label={{
-                    value: "°C / %RH / lux",
-                    angle: -90,
-                    position: "insideLeft",
-                    style: { fontSize: 10 },
-                  }}
-                />
-
-                <Tooltip
-                  labelFormatter={formatDateTime}
-                  formatter={(value, name) => [
-                    `${formatValue(value)} ${CHART_UNITS[name] || ""}`,
-                    name,
-                  ]}
-                />
-
-                <Legend />
-
-                <Line
-                  type="monotone"
-                  dataKey="temperature"
-                  connectNulls
-                  stroke="#dc2626"
-                  strokeWidth={2.5}
-                  dot={false}
-                  activeDot
-                  name="Nhiệt độ"
-                  isAnimationActive={false}
-                />
-
-                <Line
-                  type="monotone"
-                  dataKey="humidity"
-                  connectNulls
-                  stroke="#2563eb"
-                  strokeWidth={2.5}
-                  dot={false}
-                  activeDot
-                  name="Độ ẩm"
-                  isAnimationActive={false}
-                />
-
-                <Line
-                  type="monotone"
-                  dataKey="light"
-                  connectNulls
-                  stroke="#d97706"
-                  strokeWidth={2.5}
-                  dot={false}
-                  activeDot
-                  name="Ánh sáng"
-                  isAnimationActive={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-      </section>
+      <EnvironmentChart chart={dashboard?.chart} loading={dangTai} />
 
       <section className="device-section">
         <div className="section-heading" />

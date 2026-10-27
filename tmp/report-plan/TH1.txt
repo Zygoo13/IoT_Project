@@ -1,0 +1,515 @@
+HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG
+KHOA CÔNG NGHỆ THÔNG TIN 1
+Đề tài: Hệ thống IoT giám sát môi trường và điều khiển thiết bị
+BÁO CÁO BÀI THỰC HÀNH 1
+[TABLE]
+    Giảng viên |     :      TS .  Nguyễn Quốc Uy
+    Môn học |     :      IoT và ứng dụng
+    Nhóm  lớp  |     :      10
+[/TABLE]
+[TABLE]
+    Họ và tên |     :      Hoàng Quốc Anh
+    Mã sinh viên |     :      B2 3 DCCN022
+ | 
+[/TABLE]
+Hà Nội – 2026
+I. Giới thiệu
+1. Đặt vấn đề
+Internet of Things (IoT) cho phép các thiết bị vật lý kết nối và trao đổi dữ liệu thông qua mạng, từ đó hỗ trợ việc thu thập thông tin, giám sát trạng thái và điều khiển thiết bị từ xa. IoT được ứng dụng rộng rãi trong nhiều hệ thống giám sát và điều khiển thông minh.
+Trong bài toán giám sát môi trường, các thông số như nhiệt độ, độ ẩm và ánh sáng thay đổi liên tục theo thời gian. Việc thu thập, lưu trữ và biểu diễn các dữ liệu này giúp người dùng theo dõi trạng thái môi trường một cách thuận tiện. Bên cạnh đó, khả năng điều khiển thiết bị thông qua giao diện web giúp tăng tính tương tác và khả năng quản lý hệ thống.
+Từ yêu cầu trên, đề tài “Hệ thống IoT giám sát môi trường và điều khiển thiết bị” được xây dựng nhằm kết hợp chức năng thu thập dữ liệu môi trường, giám sát trên giao diện web và điều khiển thiết bị trong một hệ thống thống nhất.
+2. Mục tiêu đề tài
+Mục tiêu của đề tài là thiết kế hệ thống IoT hỗ trợ giám sát dữ liệu môi trường và điều khiển thiết bị thông qua giao diện web.
+Các mục tiêu cụ thể bao gồm:
+Thu thập các thông số nhiệt độ, độ ẩm và ánh sáng từ môi trường.
+Lưu trữ và hiển thị dữ liệu cảm biến theo thời gian.
+Hỗ trợ tra cứu dữ liệu cảm biến và lịch sử hoạt động của hệ thống.
+Cho phép người dùng điều khiển hai thiết bị LED và cập nhật trạng thái thiết bị theo kết quả phản hồi.
+Kiểm soát quyền truy cập thông qua chức năng xác thực người dùng.
+Xây dựng hệ thống theo hướng có khả năng mở rộng thêm cảm biến và thiết bị.
+3. Phạm vi đề tài
+Đề tài tập trung xây dựng hệ thống giám sát ba đại lượng môi trường gồm nhiệt độ, độ ẩm và ánh sáng, đồng thời hỗ trợ điều khiển hai thiết bị LED.
+Trong phạm vi chức năng, hệ thống cung cấp:
+Đăng nhập vào hệ thống.
+Theo dõi nhiệt độ, độ ẩm và cường độ ánh sáng.
+Hiển thị dữ liệu cảm biến hiện tại trên Dashboard.
+Hiển thị biểu đồ thể hiện sự thay đổi của dữ liệu cảm biến theo thời gian.
+Tra cứu lịch sử dữ liệu cảm biến.
+Tìm kiếm, lọc, sắp xếp và phân trang dữ liệu.
+Điều khiển bật/tắt hai thiết bị LED.
+Hiển thị trạng thái của thiết bị.
+Lưu trữ và tra cứu lịch sử điều khiển.
+Xem và cập nhật thông tin cá nhân cùng các tài nguyên liên quan đến dự án.
+Hệ thống không bao gồm chức năng đăng ký tài khoản, quản lý nhiều người dùng, phân quyền theo nhiều vai trò hoặc cho phép người dùng tự thêm mới cảm biến và thiết bị thông qua giao diện.
+4. Đối tượng sử dụng
+Đối tượng sử dụng của hệ thống là User. Hệ thống sử dụng một tài khoản được cấu hình sẵn và không phân chia nhiều vai trò người dùng.
+Sau khi đăng nhập thành công, User có thể sử dụng các chức năng giám sát môi trường, điều khiển thiết bị, tra cứu dữ liệu và quản lý thông tin Profile theo phạm vi của hệ thống.
+II. Phân tích tổng quan hệ thống
+1. Mô tả tổng quan hệ thống
+Hệ thống IoT giám sát môi trường và điều khiển thiết bị được xây dựng nhằm thu thập, lưu trữ và hiển thị các thông số nhiệt độ, độ ẩm và ánh sáng, đồng thời cho phép người dùng điều khiển hai thiết bị LED thông qua giao diện web.
+Hệ thống gồm hai nhóm nghiệp vụ chính là giám sát môi trường và điều khiển thiết bị. Dữ liệu cảm biến được thu thập định kỳ, lưu trữ để phục vụ theo dõi và tra cứu, đồng thời được cập nhật lên giao diện theo thời gian thực. Các yêu cầu điều khiển của User được ghi nhận và trạng thái thiết bị chỉ được cập nhật khi hệ thống nhận được phản hồi xác nhận hợp lệ từ phần cứng.
+Ngoài ra, hệ thống hỗ trợ tra cứu lịch sử dữ liệu cảm biến, lịch sử điều khiển, xem và cập nhật thông tin cá nhân, đồng thời thông báo một số trạng thái bất thường trong quá trình hoạt động.
+2. Yêu cầu và quy tắc hệ thống
+2.1. Yêu cầu chức năng
+Hệ thống cần đáp ứng các nhóm chức năng chính sau:
+Đăng nhập và kiểm soát quyền truy cập vào hệ thống.
+Thu thập, lưu trữ và hiển thị dữ liệu nhiệt độ, độ ẩm và ánh sáng.
+Hiển thị dữ liệu mới nhất và biểu đồ theo thời gian trên Dashboard.
+Cập nhật dữ liệu và trạng thái hệ thống theo thời gian thực.
+Điều khiển bật/tắt LED1 và LED2, đồng thời ghi nhận lịch sử điều khiển.
+Phát hiện và thông báo khi phần cứng không gửi dữ liệu hoặc thiết bị không phản hồi yêu cầu điều khiển.
+Tra cứu dữ liệu cảm biến và lịch sử điều khiển với chức năng tìm kiếm, lọc, sắp xếp và phân trang.
+Xem và cập nhật thông tin cá nhân cùng các tài nguyên liên quan đến dự án.
+2.2. Yêu cầu phi chức năng
+Các yêu cầu phi chức năng chính gồm:
+Bảo mật: các chức năng nghiệp vụ chỉ được sử dụng sau khi User được xác thực.
+Tin cậy: dữ liệu và trạng thái thiết bị phải được cập nhật dựa trên thông tin hợp lệ từ hệ thống.
+Khả năng phục hồi: hệ thống giữ và khôi phục trạng thái đã được xác nhận gần nhất khi xảy ra gián đoạn.
+Khả năng sử dụng: thông tin, trạng thái xử lý và lỗi phải được hiển thị rõ ràng, dễ theo dõi.
+Hiệu năng: lượng dữ liệu hiển thị trên Dashboard và các trang tra cứu được giới hạn phù hợp để đảm bảo khả năng xử lý và hiển thị.
+2.3. Quy tắc nghiệp vụ
+Các quy tắc nghiệp vụ chính của hệ thống gồm:
+Hệ thống sử dụng một tài khoản User được cấu hình sẵn và không hỗ trợ đăng ký tài khoản mới.
+Dashboard hiển thị dữ liệu cảm biến mới nhất và tối đa 15 điểm dữ liệu gần nhất trên biểu đồ.
+Khi không nhận được dữ liệu từ phần cứng trong 30 giây, hệ thống thông báo Hardware Offline và giữ lại các giá trị gần nhất để người dùng tham chiếu.
+Data Sensor và Action History hiển thị tối đa 20 bản ghi trên mỗi trang.
+Mỗi thao tác ON hoặc OFF của User đều được ghi nhận vào lịch sử, kể cả khi yêu cầu trùng với trạng thái hiện tại.
+Action biểu diễn yêu cầu điều khiển của User; Status biểu diễn trạng thái thiết bị được xác nhận từ phần cứng.
+Hệ thống không tự thay đổi trạng thái thiết bị khi chưa nhận được phản hồi xác nhận.
+Nếu thiết bị không phản hồi trong thời gian chờ, trạng thái được xác nhận gần nhất vẫn được giữ nguyên và hệ thống thông báo cho User.
+User chỉ được chỉnh sửa các thông tin cá nhân được hệ thống cho phép.
+3. Thiết bị và công nghệ sử dụng
+Các thiết bị và công nghệ chính của hệ thống được tổng hợp như sau:
+[TABLE]
+Thành phần | Thiết bị/Công nghệ | Vai trò
+Bộ điều khiển | ESP32 DevKit V1 – ESP-WROOM-32 | Thu thập dữ liệu cảm biến, kết nối mạng và điều khiển thiết bị
+Firmware | Arduino Framework | Phát triển chương trình cho ESP32
+Nhiệt độ, độ ẩm | DHT11 3-pin | Đo nhiệt độ và độ ẩm
+Ánh sáng | LDR LM393 4-pin | Thu thập tín hiệu ánh sáng qua ngõ AO
+Thiết bị điều khiển | LED1, LED2 | Thiết bị bật/tắt
+Kết nối mạng | Wi-Fi | Kết nối ESP32 với Laptop/Server
+Giao tiếp IoT | MQTT | Trao đổi dữ liệu và lệnh giữa ESP32 và Backend
+MQTT Broker | Eclipse Mosquitto | Trung chuyển MQTT message
+Backend | Java, Spring Boot | Xử lý nghiệp vụ và cung cấp dịch vụ cho Frontend
+Cơ sở dữ liệu | MySQL | Lưu trữ dữ liệu của hệ thống
+Frontend | React | Xây dựng giao diện web
+Giao tiếp Frontend – Backend | REST API | Giao tiếp theo mô hình request/response
+Realtime | STOMP over WebSocket | Cập nhật dữ liệu và trạng thái theo thời gian thực
+Xác thực | JWT | Xác thực User và bảo vệ tài nguyên
+[/TABLE]
+4. Kiến trúc tổng thể hệ thống
+Hệ thống được tổ chức theo kiến trúc nhiều thành phần, kết hợp phần cứng IoT, giao tiếp mạng, Backend, cơ sở dữ liệu và giao diện web.
+Các thành phần chính của hệ thống gồm:
+Sensor: DHT11 cung cấp dữ liệu nhiệt độ và độ ẩm; LDR LM393 cung cấp dữ liệu ánh sáng.
+Device: gồm LED1 và LED2, được điều khiển bởi ESP32.
+ESP32: đọc dữ liệu cảm biến, điều khiển thiết bị và trao đổi dữ liệu với hệ thống qua MQTT.
+Router/Hotspot: cung cấp mạng Wi-Fi chung cho ESP32 và Laptop/Server.
+Eclipse Mosquitto: làm MQTT Broker, trung chuyển dữ liệu cảm biến, lệnh điều khiển và phản hồi trạng thái giữa ESP32 và Backend.
+Spring Boot Backend: xử lý nghiệp vụ, lưu trữ dữ liệu, giao tiếp MQTT và cung cấp REST API, WebSocket cho Frontend.
+MySQL: lưu trữ dữ liệu của hệ thống.
+React Frontend: cung cấp giao diện để User giám sát dữ liệu, điều khiển thiết bị và sử dụng các chức năng của hệ thống.
+Kiến trúc tổng thể của hệ thống được biểu diễn như sau:
+Hình 2.1. Kiến trúc tổng thể của hệ thống
+5. Thiết kế cơ sở dữ liệu
+5.1. Mô hình dữ liệu
+Hệ thống sử dụng MySQL để lưu trữ dữ liệu phục vụ xác thực người dùng, giám sát môi trường, điều khiển thiết bị và quản lý thông tin cá nhân.
+Cơ sở dữ liệu gồm năm bảng chính:
+User
+Sensor
+SensorData
+Device
+ActionHistory
+Trong đó, Sensor lưu thông tin mô tả các loại cảm biến; SensorData lưu các giá trị đo theo thời gian; Device lưu thông tin và trạng thái được xác nhận của thiết bị; ActionHistory lưu lịch sử các yêu cầu điều khiển của User.
+5.2. Sơ đồ quan hệ dữ liệu
+Các quan hệ chính giữa các bảng được xác định như sau:
+[TABLE]
+Bảng nguồn | Quan hệ | Bảng đích | Mô tả
+User | 1 – N | ActionHistory | Một User có thể thực hiện nhiều yêu cầu điều khiển
+Device | 1 – N | ActionHistory | Một Device có thể xuất hiện trong nhiều bản ghi lịch sử
+Sensor | 1 – N | SensorData | Một Sensor có thể có nhiều giá trị đo theo thời gian
+[/TABLE]
+Hình 2.2. Sơ đồ ERD
+5.3. Thiết kế các bảng dữ liệu
+Bảng User
+Bảng User lưu thông tin tài khoản và thông tin cá nhân của người sử dụng hệ thống.
+[TABLE]
+Thuộc tính | Kiểu dữ liệu | Ràng buộc | Mô tả
+id | BIGINT | PK, AUTO_INCREMENT | Mã người dùng
+username | VARCHAR(50) | NOT NULL, UNIQUE | Tên đăng nhập
+passwordHash | VARCHAR(255) | NOT NULL | Giá trị băm của mật khẩu
+fullName | VARCHAR(100) | NOT NULL | Họ và tên
+studentCode | VARCHAR(30) | NOT NULL, UNIQUE | Mã sinh viên
+email | VARCHAR(255) | NOT NULL, UNIQUE | Địa chỉ email
+githubUrl | VARCHAR(500) | NULL | Liên kết GitHub
+figmaUrl | VARCHAR(500) | NULL | Liên kết Figma
+apiDocsUrl | VARCHAR(500) | NULL | Liên kết API Docs
+reportUrl | VARCHAR(500) | NULL | Liên kết báo cáo
+avatarUrl | VARCHAR(500) | NULL | Đường dẫn ảnh đại diện
+createdAt | DATETIME | NOT NULL | Thời điểm tạo
+updatedAt | DATETIME | NOT NULL | Thời điểm cập nhật gần nhất
+[/TABLE]
+Bảng Sensor
+Bảng Sensor lưu thông tin mô tả các cảm biến logic được hệ thống quản lý.
+[TABLE]
+Thuộc tính | Kiểu dữ liệu | Ràng buộc | Mô tả
+id | BIGINT | PK, AUTO_INCREMENT | Mã Sensor
+code | VARCHAR(30) | NOT NULL, UNIQUE | Mã định danh Sensor
+name | VARCHAR(100) | NOT NULL | Tên Sensor
+type | VARCHAR(30) | NOT NULL | Loại đại lượng đo
+unit | VARCHAR(20) | NOT NULL | Đơn vị đo
+active | BOOLEAN | NOT NULL | Trạng thái kích hoạt
+createdAt | DATETIME | NOT NULL | Thời điểm tạo
+updatedAt | DATETIME | NOT NULL | Thời điểm cập nhật gần nhất
+[/TABLE]
+Các Sensor sử dụng trong hệ thống:
+[TABLE]
+Code | Name | Type | Unit
+DHT11_TEMP | Temperature Sensor | TEMPERATURE | °C
+DHT11_HUM | Humidity Sensor | HUMIDITY | %RH
+LDR_LIGHT | Light Sensor | LIGHT | lux
+[/TABLE]
+Bảng SensorData
+Bảng SensorData lưu các giá trị đo của Sensor theo thời gian.
+[TABLE]
+Thuộc tính | Kiểu dữ liệu | Ràng buộc | Mô tả
+id | BIGINT | PK, AUTO_INCREMENT | Mã dữ liệu
+sensorId | BIGINT | FK, NOT NULL | Sensor tạo ra dữ liệu
+value | DECIMAL(12,4) | NOT NULL | Giá trị đo
+recordedAt | DATETIME | NOT NULL | Thời điểm ghi nhận
+[/TABLE]
+Khóa ngoại:
+sensorId → Sensor.id
+Bảng Device
+Bảng Device lưu thông tin các thiết bị được điều khiển trong hệ thống.
+[TABLE]
+Thuộc tính | Kiểu dữ liệu | Ràng buộc | Mô tả
+id | BIGINT | PK, AUTO_INCREMENT | Mã Device
+code | VARCHAR(30) | NOT NULL, UNIQUE | Mã định danh Device
+name | VARCHAR(100) | NOT NULL | Tên thiết bị
+type | VARCHAR(30) | NOT NULL | Loại thiết bị
+status | VARCHAR(10) | NOT NULL | Trạng thái được xác nhận gần nhất
+active | BOOLEAN | NOT NULL | Trạng thái kích hoạt
+createdAt | DATETIME | NOT NULL | Thời điểm tạo
+updatedAt | DATETIME | NOT NULL | Thời điểm cập nhật gần nhất
+[/TABLE]
+Các Device sử dụng trong hệ thống:
+[TABLE]
+Code | Name | Type
+LED1 | LED1 | LED
+LED 2 | LED 2 | LED
+[/TABLE]
+Bảng ActionHistory
+Bảng ActionHistory lưu lịch sử các yêu cầu điều khiển thiết bị của User.
+[TABLE]
+Thuộc tính | Kiểu dữ liệu | Ràng buộc | Mô tả
+id | BIGINT | PK, AUTO_INCREMENT | Mã bản ghi lịch sử
+userId | BIGINT | FK, NOT NULL | User thực hiện thao tác
+deviceId | BIGINT | FK, NOT NULL | Device được điều khiển
+action | VARCHAR(10) | NOT NULL | Hành động User yêu cầu
+status | VARCHAR(10) | NOT NULL | Trạng thái thiết bị được ghi nhận
+createdAt | DATETIME | NOT NULL | Thời điểm ghi nhận yêu cầu
+confirmedAt | DATETIME | NULL | Thời điểm nhận xác nhận
+[/TABLE]
+Khóa ngoại:
+userId → User.id
+deviceId → Device.id
+Các ràng buộc dữ liệu chính:
+User.username, User.studentCode, User.email, Sensor.code và Device.code là duy nhất.
+SensorData.sensorId phải tham chiếu đến một Sensor hợp lệ.
+ActionHistory.userId và ActionHistory.deviceId phải tham chiếu đến các bản ghi tương ứng.
+ActionHistory.action, ActionHistory.status và Device.status sử dụng các giá trị ON hoặc OFF.
+confirmedAt có giá trị NULL khi yêu cầu điều khiển chưa nhận được phản hồi xác nhận.
+III. Phân tích chi tiết hệ thống
+1. Tổng quan phân tích
+Hệ thống có một đối tượng tương tác trực tiếp là User. User sử dụng giao diện web để thực hiện các chức năng của hệ thống sau khi đăng nhập thành công.
+Danh sách Use Case:
+[TABLE]
+Mã | Use Case | Mô tả
+UC01 | Đăng nhập | Theo dõi dữ liệu môi trường và trạng thái thiết bị
+UC02 | Xem Dashboard | Gửi yêu cầu bật/tắt và theo dõi trạng thái thiết bị
+UC03 | Điều khiển thiết bị | Xem và tra cứu dữ liệu môi trường
+UC04 | Tra cứu dữ liệu cảm biến | Xem và tra cứu dữ liệu môi trường
+UC05 | Tra cứu lịch sử điều khiển | Xem và tra cứu lịch sử điều khiển thiết bị
+UC06 | Xem và cập nhật Profile | Quản lý thông tin cá nhân và truy cập tài nguyên dự án
+[/TABLE]
+Hình 3.1. Sơ đồ Use Case tổng quát
+2. Đăng nhập
+2.1. Mô tả chức năng
+Chức năng Đăng nhập cho phép User xác thực bằng tài khoản đã được cấu hình sẵn trước khi truy cập các chức năng của hệ thống.
+User nhập Username và Password trên giao diện Login. Sau khi xác thực thành công, hệ thống cấp JWT và chuyển User đến Dashboard. Các chức năng nghiệp vụ phía sau yêu cầu JWT hợp lệ.
+2.2. Thiết kế giao diện
+Giao diện Login là màn hình được hiển thị khi User truy cập hệ thống mà chưa có trạng thái xác thực hợp lệ.
+Hình 3.2. Giao diện đăng nhập
+2.3. Đặc tả Use Case UC01 – Đăng nhập
+[TABLE]
+Thuộc tính | Nội dung
+Mã Use Case | UC01
+Tên Use Case | Đăng nhập
+Actor | User
+Mục tiêu | Xác thực User trước khi cho phép truy cập các chức năng của hệ thống
+Trigger | User thực hiện đăng nhập
+Tiền điều kiện | Tài khoản User đã được cấu hình trong hệ thống
+Hậu điều kiện | User được xác thực và có thể truy cập các chức năng được bảo vệ
+Luồng chính | User truy cập hệ thống. Hệ thống hiển thị màn hình đăng nhập. User nhập tên đăng nhập và mật khẩu. User chọn Đăng nhập. Hệ thống kiểm tra thông tin đăng nhập. Hệ thống xác thực User thành công. User được chuyển tới Dashboard.
+Luồng thay thế | A1 –  Thông tin đăng nhập không hợp lệ Hệ thống từ chối yêu cầu đăng nhập. Hệ thống hiển thị thông báo thông tin đăng nhập không hợp lệ. User tiếp tục ở màn hình đăng nhập và có thể nhập lại thông tin.
+Luồng ngoại lệ | E1 –  Không thể xử lý yêu cầu đăng nhập Hệ thống thông báo không thể thực hiện yêu cầu. User chưa được phép truy cập các chức năng nghiệp vụ. E2 – Phiên xác thực không hợp lệ hoặc hết hạn Hệ thống từ chối truy cập tài nguyên được bảo vệ. User được yêu cầu thực hiện đăng nhập lại.
+[/TABLE]
+2.4. Luồng hoạt động và Sequence Diagram
+Luồng xử lý đăng nhập:
+User nhập Username và Password trên giao diện Login.
+React Frontend gửi yêu cầu xác thực đến Spring Boot Backend.
+Backend kiểm tra thông tin tài khoản trong Database.
+Nếu hợp lệ, Backend cấp JWT và trả kết quả cho Frontend.
+Frontend lưu trạng thái xác thực và chuyển User đến Dashboard.
+Nếu xác thực thất bại, Backend trả lỗi và Frontend hiển thị thông báo trên giao diện Login.
+Hình 3.3. Sequence Diagram – Đăng nhập
+2.5. Thiết kế API
+Chức năng đăng nhập sử dụng REST API để Frontend gửi thông tin xác thực đến Backend.
+[TABLE]
+Method | Endpoint | Chức năng | Xác thực
+POST | /api/auth/login | Đăng nhập và cấp JWT | Không
+[/TABLE]
+Request:
+[TABLE]
+{   "username": "string",   "password": "string" }
+[/TABLE]
+Response thành công – 200 OK:
+[TABLE]
+{   "token": "JWT" }
+[/TABLE]
+Các trường hợp lỗi chính:
+[TABLE]
+HTTP Status | Trường hợp
+400 | Dữ liệu đăng nhập không hợp lệ
+401 | Thông tin đăng nhập không chính xác
+5xx | Backend hoặc dịch vụ không khả dụng
+[/TABLE]
+3. Dashboard
+3.1. Mô tả chức năng
+Dashboard là màn hình chính sau khi User đăng nhập, dùng để theo dõi nhiệt độ, độ ẩm, ánh sáng và trạng thái của LED1, LED2.
+Hệ thống hiển thị giá trị cảm biến mới nhất và tối đa 15 điểm dữ liệu gần nhất trên biểu đồ. Dữ liệu mới được cập nhật theo thời gian thực thông qua STOMP over WebSocket.
+Nếu không nhận được dữ liệu từ ESP32 trong 30 giây, hệ thống hiển thị trạng thái Hardware Offline và giữ lại các giá trị gần nhất.
+3.2. Thiết kế giao diện
+Giao diện Dashboard được thiết kế để hiển thị dữ liệu cảm biến, biểu đồ theo thời gian, trạng thái phần cứng và trạng thái LED1, LED2.
+Hình 3.4. Giao diện Dashboard
+3.3. Đặc tả Use Case UC02 – Xem Dashboard
+[TABLE]
+Thuộc tính | Nội dung
+Mã Use Case | UC02
+Tên Use Case | Xem Dashboard
+Actor | User
+Mục tiêu | Theo dõi dữ liệu môi trường, trạng thái phần cứng và trạng thái hiện tại của các thiết bị
+Trigger | User truy cập Dashboard
+Tiền điều kiện | User đã đăng nhập
+Hậu điều kiện | User xem được thông tin môi trường, trạng thái phần cứng và trạng thái thiết bị mà hệ thống đang ghi nhận
+Luồng chính | User truy cập Dashboard. Hệ thống hiển thị giá trị nhiệt độ, độ ẩm và cường độ ánh sáng gần nhất. Hệ thống hiển thị tối đa 15 điểm dữ liệu gần nhất trên biểu đồ. Hệ thống hiển thị trạng thái kết nối của phần cứng. Hệ thống hiển thị trạng thái được xác nhận gần nhất của LED1 và LED2. Khi có dữ liệu mới, hệ thống tự động cập nhật các thông tin tương ứng trên Dashboard. Khi trạng thái phần cứng hoặc thiết bị thay đổi, hệ thống cập nhật trạng thái hiển thị tương ứng.
+Luồng thay thế | A1 – Chưa có dữ liệu cảm biến Hệ thống chưa có dữ liệu cảm biến để hiển thị. Các giá trị cảm biến hiển thị N/A. Khu vực biểu đồ hiển thị trạng thái chưa có dữ liệu. Hệ thống tiếp tục chờ dữ liệu mới. Luồng thay thế A2 – Hardware Offline Hệ thống không nhận được dữ liệu hợp lệ từ phần cứng trong 30 giây. Hệ thống xác định trạng thái Hardware Offline. Hệ thống giữ lại các giá trị cảm biến gần nhất và đánh dấu là dữ liệu cũ. Hệ thống hiển thị thời điểm nhận dữ liệu gần nhất. Trạng thái được xác nhận của LED1 và LED2 được giữ nguyên. Khi phần cứng gửi dữ liệu trở lại, hệ thống chuyển về trạng thái Online và tiếp tục cập nhật Dashboard. Luồng thay thế A3 – User tải lại Dashboard User tải lại Dashboard. Hệ thống hiển thị lại dữ liệu cảm biến và trạng thái thiết bị được ghi nhận gần nhất. Dashboard tiếp tục cập nhật khi có dữ liệu mới.
+Luồng ngoại lệ | Luồng ngoại lệ E1 – Không thể tải dữ liệu Dashboard Hệ thống không thể lấy được dữ liệu cần thiết để hiển thị Dashboard. Hệ thống thông báo không thể tải dữ liệu. Luồng ngoại lệ E2 – Mất cập nhật thời gian thực Hệ thống tạm thời không thể nhận các cập nhật thời gian thực. Dashboard giữ lại dữ liệu đã hiển thị trước đó. Hệ thống thông báo trạng thái Realtime Disconnected. Khi kết nối được khôi phục, Dashboard tiếp tục nhận và hiển thị dữ liệu mới.
+[/TABLE]
+3.4. Luồng hoạt động và Sequence Diagram
+Luồng xử lý được thực hiện như sau:
+User mở Dashboard.
+Frontend gửi yêu cầu lấy dữ liệu Dashboard tới Backend kèm JWT.
+Backend truy vấn các giá trị Sensor mới nhất, tối đa 15 điểm dữ liệu biểu đồ, trạng thái Hardware và trạng thái LED1, LED2 từ Database.
+Backend trả dữ liệu Dashboard cho Frontend.
+Frontend hiển thị Dashboard và thiết lập kết nối STOMP over WebSocket.
+ESP32 đọc dữ liệu từ DHT11 và module cảm biến ánh sáng.
+ESP32 publish dữ liệu cảm biến tới MQTT Broker.
+MQTT Broker chuyển message tới Backend.
+Backend kiểm tra dữ liệu và lưu mỗi giá trị hợp lệ thành một bản ghi SensorData.
+Backend gửi dữ liệu mới tới Frontend thông qua STOMP over WebSocket.
+Frontend cập nhật các giá trị cảm biến và biểu đồ trên Dashboard.
+Nếu Backend không nhận được telemetry được chấp nhận từ ESP32 trong 30 giây, hệ thống xác định Hardware Offline và gửi trạng thái tương ứng tới Frontend.
+Hình 3.5. Sequence Diagram – Xem Dashboard
+3.5. Thiết kế API
+Dashboard sử dụng REST API để lấy dữ liệu ban đầu và STOMP over WebSocket để nhận dữ liệu cập nhật theo thời gian thực.
+[TABLE]
+Method | Endpoint | Chức năng | Xác thực
+GET | /api/dashboard | Lấy dữ liệu Dashboard | JWT
+[/TABLE]
+Dữ liệu trả về gồm:
+Giá trị Temperature, Humidity và Light mới nhất.
+Tối đa 15 điểm dữ liệu phục vụ biểu đồ.
+Trạng thái Hardware.
+Trạng thái LED1 và LED2.
+Các trường hợp lỗi chính:
+[TABLE]
+HTTP Status | Trường hợp
+401 Unauthorized | JWT bị thiếu, không hợp lệ hoặc đã hết hạn
+403 Forbidden | User không được phép truy cập tài nguyên
+5xx | Backend hoặc dịch vụ phụ thuộc không khả dụng
+[/TABLE]
+4. Điều khiển thiết bị
+4.1. Mô tả chức năng
+Chức năng điều khiển thiết bị cho phép User bật hoặc tắt LED1 và LED2 trên Dashboard.
+Mỗi yêu cầu ON/OFF đều được hệ thống ghi nhận vào lịch sử. Trạng thái thiết bị chỉ được cập nhật khi hệ thống nhận được phản hồi xác nhận từ ESP32. Trong thời gian chờ, giao diện hiển thị trạng thái đang xử lý và giữ nguyên trạng thái được xác nhận gần nhất.
+4.2. Đặc tả Use Case UC03 – Điều khiển thiết bị
+[TABLE]
+Thuộc tính | Nội dung
+Mã Use Case | UC03
+Tên Use Case | Điều khiển thiết bị
+Actor | User
+Mục tiêu | Cho phép User yêu cầu bật hoặc tắt thiết bị và theo dõi trạng thái thiết bị sau khi yêu cầu được xử lý
+Trigger | User chọn ON hoặc OFF cho một thiết bị
+Tiền điều kiện | User đã đăng nhập; thiết bị cần điều khiển tồn tại trong hệ thống
+Hậu điều kiện | Yêu cầu điều khiển được ghi nhận; trạng thái thiết bị được cập nhật khi hệ thống nhận được phản hồi xác nhận. Nếu chưa có xác nhận, trạng thái được xác nhận gần nhất được giữ nguyên
+Luồng chính | User lựa chọn LED1 hoặc LED2. User chọn trạng thái mong muốn ON hoặc OFF. Hệ thống tiếp nhận và ghi nhận yêu cầu điều khiển. Hệ thống thực hiện xử lý yêu cầu điều khiển. Hệ thống nhận kết quả xác nhận trạng thái thiết bị. Hệ thống cập nhật trạng thái thiết bị và lịch sử điều khiển tương ứng. Hệ thống hiển thị trạng thái mới cho User.
+Luồng thay thế | A1 –  User yêu cầu trạng thái giống trạng thái hiện tại Hệ thống vẫn ghi nhận một yêu cầu điều khiển mới. Hệ thống vẫn thực hiện yêu cầu và chờ xác nhận. Kết quả được xử lý theo luồng chính. A2 – Xác nhận đến muộn Yêu cầu trước đó đã hết thời gian chờ nhưng sau đó nhận được xác nhận hợp lệ. Hệ thống cập nhật bản ghi lịch sử tương ứng. Hệ thống chỉ cập nhật trạng thái thiết bị nếu không làm ghi đè một trạng thái mới hơn đã được xác nhận.
+Luồng ngoại lệ | E1 – Thiết bị không phản hồi Hệ thống không nhận được xác nhận trong thời gian chờ. Yêu cầu điều khiển vẫn được ghi nhận. Trạng thái được xác nhận gần nhất của thiết bị được giữ nguyên. Hệ thống thông báo Device not responding cho User. E2 –  Không thể thực hiện yêu cầu điều khiển Yêu cầu điều khiển đã được ghi nhận nhưng không thể được gửi hoặc xử lý thành công. Hệ thống không thay đổi trạng thái thiết bị. Hệ thống thông báo yêu cầu chưa được xác nhận.
+[/TABLE]
+4.3. Luồng hoạt động và Sequence Diagram
+Luồng xử lý được thực hiện như sau:
+User chọn ON hoặc OFF cho LED1 hoặc LED2.
+Frontend gửi yêu cầu điều khiển tới Backend kèm JWT.
+Backend kiểm tra Device và lấy trạng thái được xác nhận hiện tại.
+Backend tạo ActionHistory, trong đó status là trạng thái hiện tại và confirmedAt = NULL.
+ActionHistory.id được sử dụng làm requestId.
+Backend publish Device Command tới MQTT Broker.
+Backend trả kết quả tiếp nhận yêu cầu và requestId cho Frontend.
+MQTT Broker chuyển command tới ESP32.
+ESP32 thực hiện ON/OFF và publish Device Status kèm requestId.
+MQTT Broker chuyển Device Status tới Backend.
+Backend cập nhật Device.status, ActionHistory.status và confirmedAt.
+Backend gửi trạng thái đã xác nhận tới Frontend thông qua STOMP over WebSocket.
+Frontend cập nhật trạng thái thiết bị trên Dashboard.
+Nếu không nhận được xác nhận trong thời gian chờ, hệ thống giữ nguyên trạng thái đã xác nhận gần nhất và thông báo Device not responding.
+Hình 3.6. Sequence Diagram – Điều khiển thiết bị
+4.4. Thiết kế API
+Frontend sử dụng REST API để gửi yêu cầu điều khiển thiết bị.
+[TABLE]
+Method | Endpoint | Chức năng | Xác thực
+POST | /api/devices/{deviceId}/actions | Gửi yêu cầu ON/OFF | JWT
+[/TABLE]
+Request:
+[TABLE]
+{      "action": "ON"  }
+[/TABLE]
+Response:
+[TABLE]
+{      "requestId": 101,      "status": "ACCEPTED"  }
+[/TABLE]
+5. Data Sensor
+5.1. Mô tả chức năng
+Data Sensor cho phép User xem và tra cứu lịch sử dữ liệu cảm biến đã được lưu trong hệ thống.
+Mỗi bản ghi hiển thị một giá trị SensorData gồm ID, Loại cảm biến, Giá trị và Thời gian. Hệ thống hỗ trợ tìm kiếm, lọc theo khoảng thời gian, sắp xếp và phân trang với tối đa 20 bản ghi mỗi trang.
+5.2. Thiết kế giao diện
+Hình 3.7. Giao diện Data Sensor
+5.3. Đặc tả Use Case UC04 – Tra cứu dữ liệu cảm biến
+[TABLE]
+Thuộc tính | Nội dung
+Mã Use Case | UC04
+Tên Use Case | Tra cứu dữ liệu cảm biến
+Actor | User
+Mục tiêu | Xem và tra cứu lịch sử dữ liệu môi trường đã được lưu trữ
+Trigger | User truy cập trang Data Sensor
+Tiền điều kiện | User đã đăng nhập
+Hậu điều kiện | User xem được dữ liệu phù hợp với điều kiện tra cứu; dữ liệu hệ thống không bị thay đổi
+Luồng chính | User truy cập trang Data Sensor. Hệ thống hiển thị trang dữ liệu đầu tiên với tối đa 20 bản ghi. User xem dữ liệu được hiển thị.
+Luồng thay thế | A1 –  User thay đổi điều kiện tra cứu User thực hiện tìm kiếm, lọc theo  thời gian  hoặc thay đổi tiêu chí sắp xếp. Hệ thống xử lý các điều kiện được lựa chọn. Hệ thống đưa trang hiện tại về trang đầu tiên. Hệ thống hiển thị danh sách dữ liệu phù hợp. A 2  –  Không có dữ liệu phù hợp Hệ thống không tìm thấy bản ghi thỏa mãn điều kiện. Hệ thống hiển thị trạng thái không có dữ liệu phù hợp.
+Luồng ngoại lệ | E1 – Điều kiện thời gian không hợp lệ User nhập From/To sai định dạng hoặc From lớn hơn To. Hệ thống hiển thị thông báo lỗi. Điều kiện tra cứu trước đó được giữ nguyên.
+[/TABLE]
+5.4. Luồng hoạt động và Sequence Diagram
+Luồng xử lý được thực hiện như sau:
+User truy cập trang Data Sensor.
+Frontend gửi yêu cầu lấy dữ liệu tới Backend kèm JWT.
+Backend tiếp nhận các tham số tìm kiếm, From/To, sắp xếp và phân trang.
+Backend truy vấn SensorData kết hợp với Sensor.
+Backend thực hiện theo thứ tự Search → From/To → Sort → Pagination.
+Backend trả kết quả truy vấn cho Frontend.
+Frontend hiển thị danh sách dữ liệu cảm biến.
+Khi User thay đổi điều kiện tra cứu hoặc chuyển trang, Frontend gửi yêu cầu mới và cập nhật bảng dữ liệu.
+Hình 3.8. Sequence Diagram – Tra cứu dữ liệu cảm biến
+5.5. Thiết kế API
+Data Sensor sử dụng REST API để truy vấn dữ liệu lịch sử.
+[TABLE]
+Method | Endpoint | Chức năng | Xác thực
+GET | /api/sensor-data | Tra cứu dữ liệu cảm biến | JWT
+[/TABLE]
+Các tham số truy vấn chính: page, size=20, searchField, search, from, to, sortBy, order
+Các trường hỗ trợ Search và Sort gồm: ID, Sensor Type, Value, Time
+From và To sử dụng định dạng: dd/MM/yyyy HH:mm:ss
+6. Action History
+6.1. Mô tả chức năng
+Action History cho phép User xem và tra cứu lịch sử các yêu cầu điều khiển LED1 và LED2 đã được ghi nhận.
+Mỗi bản ghi hiển thị ID, Device, Action, Status và Time. Hệ thống hỗ trợ tìm kiếm, lọc, sắp xếp và phân trang với tối đa 20 bản ghi mỗi trang.
+6.2. Thiết kế giao diện
+Hình 3.9. Giao diện Action History
+6.3. Đặc tả Use Case UC05 – Tra cứu lịch sử điều khiển
+[TABLE]
+Thuộc tính | Nội dung
+Mã Use Case | UC05
+Tên Use Case | Tra cứu lịch sử điều khiển
+Actor | User
+Mục tiêu | Xem và tra cứu các thao tác điều khiển thiết bị đã được ghi nhận
+Trigger | User truy cập trang Action History
+Tiền điều kiện | User đã đăng nhập
+Hậu điều kiện | User xem được các bản ghi phù hợp với điều kiện tra cứu; dữ liệu hệ thống không bị thay đổi
+Luồng chính | User truy cập trang Action History. Hệ thống hiển thị trang lịch sử đầu tiên với tối đa 20 bản ghi. User xem các bản ghi được hiển thị.
+Luồng thay thế | A1 –  User thay đổi điều kiện tra cứu User thực hiện tìm kiếm, lọc, sắp xếp hoặc chuyển trang. Hệ thống kiểm tra và xử lý các điều kiện được lựa chọn. Hệ thống hiển thị danh sách kết quả phù hợp. A2 – Không có bản ghi phù hợp Hệ thống không tìm thấy bản ghi thỏa mãn điều kiện. Hệ thống hiển thị trạng thái không có dữ liệu phù hợp.
+Luồng ngoại lệ | E1 – Khoảng thời gian không hợp lệ User nhập From/To sai định dạng hoặc From lớn hơn To. Hệ thống hiển thị thông báo lỗi. Điều kiện tra cứu trước đó được giữ nguyên.
+[/TABLE]
+6.4. Luồng hoạt động và Sequence Diagram
+Luồng xử lý được thực hiện như sau:
+User truy cập trang Action History.
+Frontend gửi yêu cầu truy vấn tới Backend kèm JWT.
+Backend tiếp nhận các điều kiện tìm kiếm, lọc, sắp xếp và phân trang.
+Backend truy vấn ActionHistory kết hợp với Device.
+Backend thực hiện Search/Filter → Sort → Pagination.
+Backend trả kết quả truy vấn cho Frontend.
+Frontend hiển thị danh sách lịch sử điều khiển.
+Khi User thay đổi điều kiện tra cứu hoặc chuyển trang, Frontend gửi yêu cầu mới và cập nhật bảng dữ liệu.
+Hình 3.10. Sequence Diagram – Tra cứu lịch sử điều khiển
+6.5. Thiết kế API
+Action History sử dụng REST API để truy vấn lịch sử điều khiển.
+[TABLE]
+Method | Endpoint | Chức năng | Xác thực
+GET | /api/action-history | Tra cứu dữ liệu cảm biến | JWT
+[/TABLE]
+Các tham số truy vấn chính: page, size=20, searchField, search, device, action, status, from, to, sortBy, order
+Search hỗ trợ: ID, Device
+Filter hỗ trợ: Device, Action, Status, From, To
+Sort hỗ trợ: ID, Device, Action, Status, Time
+From và To sử dụng định dạng: dd/MM/yyyy HH:mm:ss
+7. Profile
+7.1. Mô tả chức năng
+Profile cho phép User xem và cập nhật thông tin cá nhân, ảnh đại diện và các tài nguyên liên quan đến dự án gồm GitHub, Figma, API Docs và Report.
+7.2. Thiết kế giao diện
+Hình 3.11. Giao diện Profile
+7.3. Đặc tả Use Case UC06 – Xem và cập nhật Profile
+[TABLE]
+Thuộc tính | Nội dung
+Mã Use Case | UC06
+Tên Use Case | Xem và cập nhật Profile
+Actor | User
+Mục tiêu | Xem, cập nhật thông tin cá nhân và truy cập các tài nguyên liên quan đến dự án
+Trigger | User truy cập trang Profile
+Tiền điều kiện | User đã đăng nhập
+Hậu điều kiện | Thông tin Profile được giữ nguyên hoặc được cập nhật theo thao tác hợp lệ của User
+Luồng chính | User truy cập trang Profile. Hệ thống hiển thị thông tin cá nhân và các tài nguyên liên quan đến dự án. User xem thông tin Profile.
+Luồng thay thế | A1 –  Cập nhật thông tin Profile User chọn chức năng chỉnh sửa Profile. Hệ thống hiển thị các trường được phép chỉnh sửa. User cập nhật thông tin và chọn lưu thay đổi. Hệ thống kiểm tra dữ liệu nhập. Hệ thống lưu thông tin hợp lệ. Hệ thống hiển thị Profile sau khi cập nhật. A2 –  Hủy chỉnh sửa User chọn hủy thao tác chỉnh sửa. Hệ thống không lưu các thay đổi và trở về chế độ xem Profile. A3 – Truy cập tài nguyên dự án User lựa chọn một liên kết tài nguyên như GitHub, Figma, API Docs hoặc Report. Hệ thống mở tài nguyên tương ứng.
+Luồng ngoại lệ | E1 – Dữ liệu Profile không hợp lệ Hệ thống từ chối lưu thay đổi. Hệ thống hiển thị thông báo lỗi tương ứng. User tiếp tục chỉnh sửa thông tin.
+[/TABLE]
+7.4. Luồng hoạt động và Sequence Diagram
+Luồng xử lý được thực hiện như sau:
+User truy cập trang Profile.
+Frontend gửi yêu cầu lấy Profile tới Backend kèm JWT.
+Backend xác định User hiện tại và truy vấn thông tin từ Database.
+Backend trả thông tin Profile cho Frontend.
+Frontend hiển thị Profile cho User.
+Khi User lưu thay đổi, Frontend gửi dữ liệu cập nhật tới Backend.
+Backend kiểm tra các trường được phép và tính hợp lệ của dữ liệu.
+Backend cập nhật thông tin User và updatedAt.
+Backend trả Profile đã cập nhật cho Frontend.
+Frontend hiển thị thông tin mới cho User.
+Hình 3.12. Sequence Diagram – Xem và cập nhật Profile
+7.5. Thiết kế API
+[TABLE]
+Method | Endpoint | Chức năng | Xác thực
+GET | /api/profile | Lấy thông tin Profile | JWT
+PUT | /api/profile | Cập nhật thông tin Profile | JWT
+[/TABLE]
+Các trường được phép cập nhật: fullName, studentCode, email, githubUrl, figmaUrl, apiDocsUrl, reportUrl, avatarUrl
+IV. Kết luận
+Trong bài thực hành 1, đề tài “Hệ thống IoT giám sát môi trường và điều khiển thiết bị” đã được phân tích và thiết kế tổng thể, bao gồm yêu cầu hệ thống, Use Case, giao diện, cơ sở dữ liệu, kiến trúc, Sequence Diagram và API.
+Hệ thống sử dụng ESP32 để thu thập dữ liệu nhiệt độ, độ ẩm, ánh sáng và điều khiển hai LED. Backend sử dụng Spring Boot, cơ sở dữ liệu MySQL và Frontend sử dụng React.
+Kết quả của bài thực hành là nền tảng để tiếp tục triển khai phần cứng, Backend, Frontend và hoàn thiện hệ thống trong các bài thực hành tiếp theo.

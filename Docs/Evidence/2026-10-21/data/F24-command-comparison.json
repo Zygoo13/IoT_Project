@@ -1,0 +1,333 @@
+{
+  "cases": [
+    {
+      "requestId": 564,
+      "deviceCode": "LED1",
+      "action": "ON",
+      "command": {
+        "channel": "MQTT",
+        "topic": "iot/device/command",
+        "receivedAt": "2026-10-20T19:28:48.628Z",
+        "observerMs": 48976.034,
+        "payload": {
+          "requestId": 564,
+          "deviceCode": "LED1",
+          "action": "ON"
+        },
+        "retained": false
+      },
+      "mqttStatus": {
+        "channel": "MQTT",
+        "topic": "iot/device/status",
+        "receivedAt": "2026-10-20T19:28:48.768Z",
+        "observerMs": 49116.384,
+        "payload": {
+          "requestId": 564,
+          "deviceCode": "LED1",
+          "status": "ON"
+        },
+        "retained": false
+      },
+      "stompConfirmation": {
+        "channel": "STOMP",
+        "topic": "/topic/devices",
+        "receivedAt": "2026-10-20T19:28:48.804Z",
+        "observerMs": 49152.366,
+        "payload": {
+          "requestId": 564,
+          "deviceCode": "LED1",
+          "status": "ON",
+          "historyStatus": "ON",
+          "confirmedAt": "2026-10-20T19:28:49.332263Z",
+          "deviceStatusUpdated": true,
+          "deliveryState": "CONFIRMED"
+        }
+      },
+      "stompTimeout": null,
+      "database": {
+        "id": "564",
+        "deviceCode": "LED1",
+        "action": "ON",
+        "status": "ON",
+        "createdAt": "2026-10-20 19:28:49.172334",
+        "confirmedAt": "2026-10-20 19:28:49.332263"
+      },
+      "commandToMqttStatusObserverMs": 140.35,
+      "result": "CONFIRMED"
+    },
+    {
+      "requestId": 565,
+      "deviceCode": "LED2",
+      "action": "ON",
+      "command": {
+        "channel": "MQTT",
+        "topic": "iot/device/command",
+        "receivedAt": "2026-10-20T19:29:02.436Z",
+        "observerMs": 62784.905,
+        "payload": {
+          "requestId": 565,
+          "deviceCode": "LED2",
+          "action": "ON"
+        },
+        "retained": false
+      },
+      "mqttStatus": {
+        "channel": "MQTT",
+        "topic": "iot/device/status",
+        "receivedAt": "2026-10-20T19:29:02.632Z",
+        "observerMs": 62980.952,
+        "payload": {
+          "requestId": 565,
+          "deviceCode": "LED2",
+          "status": "ON"
+        },
+        "retained": false
+      },
+      "stompConfirmation": {
+        "channel": "STOMP",
+        "topic": "/topic/devices",
+        "receivedAt": "2026-10-20T19:29:02.665Z",
+        "observerMs": 63013.54,
+        "payload": {
+          "requestId": 565,
+          "deviceCode": "LED2",
+          "status": "ON",
+          "historyStatus": "ON",
+          "confirmedAt": "2026-10-20T19:29:02.720334Z",
+          "deviceStatusUpdated": true,
+          "deliveryState": "CONFIRMED"
+        }
+      },
+      "stompTimeout": null,
+      "database": {
+        "id": "565",
+        "deviceCode": "LED2",
+        "action": "ON",
+        "status": "ON",
+        "createdAt": "2026-10-20 19:29:02.503367",
+        "confirmedAt": "2026-10-20 19:29:02.720334"
+      },
+      "commandToMqttStatusObserverMs": 196.047,
+      "result": "CONFIRMED"
+    },
+    {
+      "requestId": 566,
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "command": {
+        "channel": "MQTT",
+        "topic": "iot/device/command",
+        "receivedAt": "2026-10-20T19:32:04.469Z",
+        "observerMs": 244817.109,
+        "payload": {
+          "requestId": 566,
+          "deviceCode": "LED1",
+          "action": "OFF"
+        },
+        "retained": false
+      },
+      "mqttStatus": {
+        "channel": "MQTT",
+        "topic": "iot/device/status",
+        "receivedAt": "2026-10-20T19:32:04.696Z",
+        "observerMs": 245044.768,
+        "payload": {
+          "requestId": 566,
+          "deviceCode": "LED1",
+          "status": "OFF"
+        },
+        "retained": false
+      },
+      "stompConfirmation": {
+        "channel": "STOMP",
+        "topic": "/topic/devices",
+        "receivedAt": "2026-10-20T19:32:04.729Z",
+        "observerMs": 245077.491,
+        "payload": {
+          "requestId": 566,
+          "deviceCode": "LED1",
+          "status": "OFF",
+          "historyStatus": "OFF",
+          "confirmedAt": "2026-10-20T19:32:04.931645Z",
+          "deviceStatusUpdated": true,
+          "deliveryState": "CONFIRMED"
+        }
+      },
+      "stompTimeout": null,
+      "database": {
+        "id": "566",
+        "deviceCode": "LED1",
+        "action": "OFF",
+        "status": "OFF",
+        "createdAt": "2026-10-20 19:32:04.690810",
+        "confirmedAt": "2026-10-20 19:32:04.931645"
+      },
+      "commandToMqttStatusObserverMs": 227.659,
+      "result": "CONFIRMED"
+    },
+    {
+      "requestId": 567,
+      "deviceCode": "LED2",
+      "action": "OFF",
+      "command": {
+        "channel": "MQTT",
+        "topic": "iot/device/command",
+        "receivedAt": "2026-10-20T19:32:11.489Z",
+        "observerMs": 251837.9,
+        "payload": {
+          "requestId": 567,
+          "deviceCode": "LED2",
+          "action": "OFF"
+        },
+        "retained": false
+      },
+      "mqttStatus": {
+        "channel": "MQTT",
+        "topic": "iot/device/status",
+        "receivedAt": "2026-10-20T19:32:11.644Z",
+        "observerMs": 251992.1,
+        "payload": {
+          "requestId": 567,
+          "deviceCode": "LED2",
+          "status": "OFF"
+        },
+        "retained": false
+      },
+      "stompConfirmation": {
+        "channel": "STOMP",
+        "topic": "/topic/devices",
+        "receivedAt": "2026-10-20T19:32:11.679Z",
+        "observerMs": 252027.268,
+        "payload": {
+          "requestId": 567,
+          "deviceCode": "LED2",
+          "status": "OFF",
+          "historyStatus": "OFF",
+          "confirmedAt": "2026-10-20T19:32:11.634958Z",
+          "deviceStatusUpdated": true,
+          "deliveryState": "CONFIRMED"
+        }
+      },
+      "stompTimeout": null,
+      "database": {
+        "id": "567",
+        "deviceCode": "LED2",
+        "action": "OFF",
+        "status": "OFF",
+        "createdAt": "2026-10-20 19:32:11.463341",
+        "confirmedAt": "2026-10-20 19:32:11.634958"
+      },
+      "commandToMqttStatusObserverMs": 154.2,
+      "result": "CONFIRMED"
+    },
+    {
+      "requestId": 568,
+      "deviceCode": "LED1",
+      "action": "ON",
+      "command": {
+        "channel": "MQTT",
+        "topic": "iot/device/command",
+        "receivedAt": "2026-10-20T19:33:08.575Z",
+        "observerMs": 308924.156,
+        "payload": {
+          "requestId": 568,
+          "deviceCode": "LED1",
+          "action": "ON"
+        },
+        "retained": false
+      },
+      "mqttStatus": null,
+      "stompConfirmation": null,
+      "stompTimeout": {
+        "channel": "STOMP",
+        "topic": "/topic/notifications",
+        "receivedAt": "2026-10-20T19:33:19.175Z",
+        "observerMs": 319523.61,
+        "payload": {
+          "type": "DEVICE_TIMEOUT",
+          "requestId": 568,
+          "deviceCode": "LED1",
+          "occurredAt": "2026-10-20T19:33:18.723298Z"
+        }
+      },
+      "database": {
+        "id": "568",
+        "deviceCode": "LED1",
+        "action": "ON",
+        "status": "OFF",
+        "createdAt": "2026-10-20 19:33:08.723298",
+        "confirmedAt": "NULL"
+      },
+      "commandToMqttStatusObserverMs": null,
+      "result": "TIMEOUT_VERIFIED"
+    },
+    {
+      "requestId": 569,
+      "deviceCode": "LED2",
+      "action": "ON",
+      "command": {
+        "channel": "MQTT",
+        "topic": "iot/device/command",
+        "receivedAt": "2026-10-20T19:34:38.285Z",
+        "observerMs": 398634.156,
+        "payload": {
+          "requestId": 569,
+          "deviceCode": "LED2",
+          "action": "ON"
+        },
+        "retained": false
+      },
+      "mqttStatus": null,
+      "stompConfirmation": null,
+      "stompTimeout": {
+        "channel": "STOMP",
+        "topic": "/topic/notifications",
+        "receivedAt": "2026-10-20T19:34:49.378Z",
+        "observerMs": 409726.491,
+        "payload": {
+          "type": "DEVICE_TIMEOUT",
+          "requestId": 569,
+          "deviceCode": "LED2",
+          "occurredAt": "2026-10-20T19:34:48.557957Z"
+        }
+      },
+      "database": {
+        "id": "569",
+        "deviceCode": "LED2",
+        "action": "ON",
+        "status": "OFF",
+        "createdAt": "2026-10-20 19:34:38.557957",
+        "confirmedAt": "NULL"
+      },
+      "commandToMqttStatusObserverMs": null,
+      "result": "TIMEOUT_VERIFIED"
+    }
+  ],
+  "additionalObservedRequests": [
+    {
+      "id": "570",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-20 19:34:51.921930",
+      "confirmedAt": "NULL"
+    },
+    {
+      "id": "571",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "OFF",
+      "createdAt": "2026-10-20 19:35:13.498150",
+      "confirmedAt": "NULL"
+    },
+    {
+      "id": "572",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-20 19:35:41.753619",
+      "confirmedAt": "NULL"
+    }
+  ],
+  "note": "IDs 564–569 are the explicitly conducted Web UI cases. Other new requests were observed but their UI trigger is not attributed; do not count as planned test PASS. GPIO acknowledgment is not independent proof that a physical lamp illuminated."
+}

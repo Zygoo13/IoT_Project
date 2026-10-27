@@ -1,0 +1,35 @@
+{
+  "capturedAt": "2026-10-20T19:31:50.963Z",
+  "localTime": "lúc 02:31:50 GMT+7 Thứ Tư, 21 tháng 10, 2026",
+  "nodeObserver": "v24.14.0",
+  "frontend": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-router-dom": "7.18.2",
+    "vite": "8.2.1"
+  },
+  "containers": [
+    {
+      "name": "iot_project_app",
+      "image": "iot-project:local",
+      "status": "Up 12 minutes (healthy)",
+      "ports": "127.0.0.1:8088->80/tcp"
+    },
+    {
+      "name": "iot_project_mosquitto",
+      "image": "eclipse-mosquitto:2.0.22",
+      "status": "Up 2 hours (healthy)",
+      "ports": "0.0.0.0:1325->1883/tcp"
+    },
+    {
+      "name": "iot_backend_mysql_20261005",
+      "image": "mysql:8.0",
+      "status": "Up 2 hours",
+      "ports": "127.0.0.1:3307->3306/tcp"
+    }
+  ],
+  "backendPom": "3.5.13",
+  "ledDemo": false,
+  "gitHead": "75b83ed1027b1c763d6fa53471028e2512eb7635",
+  "uncommittedSource": true
+}

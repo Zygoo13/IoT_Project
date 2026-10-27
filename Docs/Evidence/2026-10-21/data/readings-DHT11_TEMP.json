@@ -1,0 +1,168 @@
+{
+  "content": [
+    {
+      "id": 9207,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:48.541085Z"
+    },
+    {
+      "id": 9204,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:46.627478Z"
+    },
+    {
+      "id": 9201,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.3,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:44.718137Z"
+    },
+    {
+      "id": 9198,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:42.762978Z"
+    },
+    {
+      "id": 9195,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:40.833127Z"
+    },
+    {
+      "id": 9192,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:38.909466Z"
+    },
+    {
+      "id": 9189,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:36.971886Z"
+    },
+    {
+      "id": 9186,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:35.049894Z"
+    },
+    {
+      "id": 9183,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:33.126786Z"
+    },
+    {
+      "id": 9180,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:31.193971Z"
+    },
+    {
+      "id": 9177,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:29.263017Z"
+    },
+    {
+      "id": 9174,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:27.330346Z"
+    },
+    {
+      "id": 9171,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:25.425695Z"
+    },
+    {
+      "id": 9168,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:23.501883Z"
+    },
+    {
+      "id": 9165,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:20.886205Z"
+    },
+    {
+      "id": 9162,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:18.497824Z"
+    },
+    {
+      "id": 9159,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:16.645413Z"
+    },
+    {
+      "id": 9156,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:14.652509Z"
+    },
+    {
+      "id": 9153,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:12.718645Z"
+    },
+    {
+      "id": 9150,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 32.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-20T19:31:10.786676Z"
+    }
+  ],
+  "page": 0,
+  "size": 20,
+  "totalElements": 2960,
+  "totalPages": 148
+}

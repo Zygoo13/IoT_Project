@@ -1,0 +1,1043 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "IoT Monitor API",
+    "description": "Đăng nhập bằng tài khoản cục bộ, sao chép token vào Authorize. Không nhập tiền tố Bearer. Thời gian JSON là UTC; page bắt đầu từ 0, size tối đa 20. HTTP 202 chỉ xác nhận đã nhận lệnh; trạng thái đèn chờ MQTT status. MQTT và STOMP /ws được mô tả trong Backend/CONTRACT.md; Swagger thử REST.",
+    "version": "BTH4"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Cùng origin với Swagger UI"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Devices",
+      "description": "Gửi lệnh LED qua MQTT; không tự xác nhận trạng thái."
+    },
+    {
+      "name": "Data",
+      "description": "Dashboard và dữ liệu bảng từ MySQL."
+    },
+    {
+      "name": "Profile",
+      "description": "Hồ sơ của User xác định từ JWT; không trả passwordHash."
+    },
+    {
+      "name": "Auth",
+      "description": "Đăng nhập, không có đăng ký tài khoản."
+    }
+  ],
+  "paths": {
+    "/api/profile": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Đọc hồ sơ của tài khoản đang đăng nhập",
+        "operationId": "get",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body hoặc query không hợp lệ.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT thiếu/sai/hết hạn; login sai thông tin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Cập nhật hồ sơ",
+        "description": "Thay toàn bộ tám trường cho phép. URL thiếu hoặc null sẽ bị xóa. Không nhận id, userId, username hoặc mật khẩu.",
+        "operationId": "update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Email hoặc mã sinh viên đã được sử dụng",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body hoặc query không hợp lệ.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT thiếu/sai/hết hạn; login sai thông tin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/devices/{deviceId}/actions": {
+      "post": {
+        "tags": [
+          "Devices"
+        ],
+        "summary": "Yêu cầu bật/tắt LED",
+        "description": "Mỗi yêu cầu hợp lệ tạo một ActionHistory, kể cả lệnh trùng. 202 không có nghĩa đèn đã đổi trạng thái. Sau 10 giây chưa xác nhận: TIMEOUT; xác nhận muộn vẫn được xử lý.",
+        "operationId": "request",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "ID số của LED1/LED2, lấy từ GET /api/dashboard",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Đã lưu yêu cầu và publish command tới broker",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accepted"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Device không tồn tại",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Lệnh đã lưu nhưng publish MQTT thất bại; lỗi có requestId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body hoặc query không hợp lệ.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT thiếu/sai/hết hạn; login sai thông tin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Đăng nhập và nhận JWT",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body hoặc query không hợp lệ.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT thiếu/sai/hết hạn; login sai thông tin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/sensor-data": {
+      "get": {
+        "tags": [
+          "Data"
+        ],
+        "summary": "Tra cứu dữ liệu cảm biến",
+        "description": "Search → Filter → Sort → Pagination tại DB. sensorType kết hợp với search. TIME nhận yyyy-MM-dd (ngày UTC) hoặc ISO có offset; tìm chung nhận dd/MM/yyyy theo giờ Việt Nam.",
+        "operationId": "sensorData",
+        "parameters": [
+          {
+            "name": "sensorType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "TEMPERATURE",
+                "HUMIDITY",
+                "LIGHT"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Trang bắt đầu từ 0",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Số dòng mỗi trang",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maximum": 20,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "searchField",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ALL",
+                "ID",
+                "SENSOR_TYPE",
+                "VALUE",
+                "TIME"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Từ khóa; searchField chỉ có ý nghĩa khi search không rỗng",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Từ thời điểm ISO 8601 có offset, bao gồm đầu mút",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Đến thời điểm ISO 8601 có offset; from phải ≤ to",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ID",
+                "SENSOR_TYPE",
+                "VALUE",
+                "TIME"
+              ]
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponseSensorRow"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body hoặc query không hợp lệ.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT thiếu/sai/hết hạn; login sai thông tin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard": {
+      "get": {
+        "tags": [
+          "Data"
+        ],
+        "summary": "Tải trạng thái Dashboard",
+        "description": "Mỗi cảm biến có tối đa 15 điểm gần nhất. DB rỗng: latest null, chart rỗng. ONLINE khi có telemetry hợp lệ trong 30 giây; Offline không đổi LED.",
+        "operationId": "dashboard",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body hoặc query không hợp lệ.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT thiếu/sai/hết hạn; login sai thông tin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/action-history": {
+      "get": {
+        "tags": [
+          "Data"
+        ],
+        "summary": "Tra cứu lịch sử điều khiển",
+        "description": "username là tài khoản thực hiện từng lệnh, lấy từ User của ActionHistory. Action là lệnh yêu cầu; status là trạng thái ghi nhận. deliveryState suy ra PENDING / TIMEOUT / CONFIRMED; PROCESSING lọc PENDING dưới 10 giây, không là giá trị status trong DB.",
+        "operationId": "actionHistory",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Trang bắt đầu từ 0",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Số dòng mỗi trang",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maximum": 20,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "searchField",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ALL",
+                "ID",
+                "DEVICE"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Từ khóa; searchField chỉ có ý nghĩa khi search không rỗng",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "device",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "LED1",
+                "LED2"
+              ]
+            }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ON",
+                "OFF"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ON",
+                "OFF",
+                "PROCESSING"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Từ thời điểm ISO 8601 có offset, bao gồm đầu mút",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Đến thời điểm ISO 8601 có offset; from phải ≤ to",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ID",
+                "DEVICE",
+                "ACTION",
+                "STATUS",
+                "TIME"
+              ]
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponseHistoryRow"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body hoặc query không hợp lệ.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT thiếu/sai/hết hạn; login sai thông tin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Chỉ có khi lệnh đã lưu nhưng publish MQTT thất bại."
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "ProfileUpdate": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "studentCode": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "[A-Za-z0-9]{1,30}"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 255,
+            "minLength": 0
+          },
+          "githubUrl": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "figmaUrl": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "apiDocsUrl": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "reportUrl": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "avatarUrl": {
+            "type": "string",
+            "description": "URL HTTPS hoặc null, chưa hỗ trợ upload file.",
+            "maxLength": 500,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "email",
+          "fullName",
+          "studentCode"
+        ]
+      },
+      "CommandRequest": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "ON",
+              "OFF"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "Accepted": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "Mật khẩu tài khoản cục bộ, kiểm tra bằng BCrypt.",
+            "minLength": 1,
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "password",
+          "username"
+        ]
+      },
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "PageResponseSensorRow": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SensorRow"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SensorRow": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sensorCode": {
+            "type": "string"
+          },
+          "sensorType": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ProfileResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "studentCode": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "githubUrl": {
+            "type": "string"
+          },
+          "figmaUrl": {
+            "type": "string"
+          },
+          "apiDocsUrl": {
+            "type": "string"
+          },
+          "reportUrl": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ChartPoint": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DashboardResponse": {
+        "type": "object",
+        "properties": {
+          "latest": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/LatestReading"
+            },
+            "description": "Ba key cố định theo Sensor.code. Giá trị null nếu chưa có reading."
+          },
+          "chart": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ChartPoint"
+              }
+            },
+            "description": "Tối đa 15 điểm mỗi cảm biến, sắp xếp thời gian tăng dần."
+          },
+          "hardware": {
+            "$ref": "#/components/schemas/Hardware"
+          },
+          "devices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceRow"
+            }
+          },
+          "ledDemo": {
+            "type": "boolean",
+            "deprecated": true,
+            "description": "Luôn false; giữ tương thích client BTH3, responder mô phỏng đã gỡ."
+          }
+        }
+      },
+      "DeviceRow": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "LED1",
+              "LED2"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Trạng thái đã xác nhận gần nhất.",
+            "enum": [
+              "ON",
+              "OFF"
+            ]
+          }
+        }
+      },
+      "Hardware": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ONLINE",
+              "OFFLINE"
+            ]
+          },
+          "lastSeenAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Mốc reading hợp lệ cuối, UTC."
+          }
+        }
+      },
+      "LatestReading": {
+        "type": "object",
+        "properties": {
+          "sensorCode": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stale": {
+            "type": "boolean"
+          }
+        }
+      },
+      "HistoryRow": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deviceId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deviceCode": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username của người đã thực hiện lệnh, không phải người đang xem lịch sử."
+          },
+          "action": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "confirmedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Null khi chưa có xác nhận, kể cả TIMEOUT."
+          },
+          "deliveryState": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "TIMEOUT",
+              "CONFIRMED"
+            ]
+          }
+        }
+      },
+      "PageResponseHistoryRow": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryRow"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -1,0 +1,760 @@
+{
+  "tests": [
+    {
+      "test": "Login user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile ownership user123",
+      "result": "PASS"
+    },
+    {
+      "test": "Login user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile ownership user124",
+      "result": "PASS"
+    },
+    {
+      "test": "Login user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile ownership user125",
+      "result": "PASS"
+    },
+    {
+      "test": "Wrong password rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Missing login fields rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/dashboard",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/sensor-data",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/action-history",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/profile",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid JWT rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Expired JWT rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Hardware state observed",
+      "result": "OBSERVED",
+      "status": "ONLINE",
+      "lastSeenAt": "2026-10-27T11:42:13.369755Z"
+    },
+    {
+      "test": "Three actual chart series, max 15",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/sensor-data?size=0",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/action-history?page=-1",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/action-history?size=21",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/sensor-data?sortBy=unknown",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/action-history?status=unknown",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/sensor-data?from=2026-10-28T00:00:00Z&to=2026-10-27T00:00:00Z",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 sensor-data size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 action-history size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 sensor-data size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 action-history size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 sensor-data size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 action-history size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 sensor-data size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 action-history size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&device=LED1",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user123 {'device': 'LED1'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&action=OFF",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user123 {'action': 'OFF'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&status=PROCESSING",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user123 {'status': 'PROCESSING'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 sensor-data size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 action-history size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 sensor-data size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 action-history size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 sensor-data size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 action-history size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 sensor-data size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 action-history size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&device=LED1",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user124 {'device': 'LED1'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&action=OFF",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user124 {'action': 'OFF'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&status=PROCESSING",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user124 {'status': 'PROCESSING'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 sensor-data size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 action-history size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 sensor-data size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 action-history size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 sensor-data size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 action-history size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 sensor-data size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 action-history size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&device=LED1",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user125 {'device': 'LED1'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&action=OFF",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user125 {'action': 'OFF'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&status=PROCESSING",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user125 {'status': 'PROCESSING'}",
+      "result": "PASS"
+    },
+    {
+      "test": "Profile PUT user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile PUT persisted",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Editing user125 does not change user123",
+      "result": "PASS"
+    },
+    {
+      "test": "Duplicate profile email rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "HTTP avatar rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Profile username spoof rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Restore original user125 profile fields",
+      "result": "PASS"
+    },
+    {
+      "test": "Command invalid/spoofed body rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Command invalid/spoofed body rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Unknown device rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Hardware ONLINE before real LED commands",
+      "result": "PASS"
+    },
+    {
+      "test": "Command accepted user123 LED1 ON",
+      "result": "PASS",
+      "httpStatus": 202
+    },
+    {
+      "test": "ESP32 confirmation and actor 617",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Device reflects ACK 617",
+      "result": "PASS"
+    },
+    {
+      "test": "Command accepted user123 LED1 OFF",
+      "result": "PASS",
+      "httpStatus": 202
+    },
+    {
+      "test": "ESP32 confirmation and actor 618",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Device reflects ACK 618",
+      "result": "PASS"
+    },
+    {
+      "test": "Command accepted user124 LED2 ON",
+      "result": "PASS",
+      "httpStatus": 202
+    },
+    {
+      "test": "ESP32 confirmation and actor 619",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Device reflects ACK 619",
+      "result": "PASS"
+    },
+    {
+      "test": "Command accepted user124 LED2 OFF",
+      "result": "PASS",
+      "httpStatus": 202
+    },
+    {
+      "test": "ESP32 confirmation and actor 620",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Device reflects ACK 620",
+      "result": "PASS"
+    },
+    {
+      "test": "Command accepted user125 LED1 ON",
+      "result": "PASS",
+      "httpStatus": 202
+    },
+    {
+      "test": "ESP32 confirmation and actor 621",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Device reflects ACK 621",
+      "result": "PASS"
+    },
+    {
+      "test": "Command accepted user125 LED1 OFF",
+      "result": "PASS",
+      "httpStatus": 202
+    },
+    {
+      "test": "ESP32 confirmation and actor 622",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Device reflects ACK 622",
+      "result": "PASS"
+    }
+  ],
+  "commands": [
+    {
+      "username": "user123",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "requestId": 617,
+      "source": "Authenticated REST API, real ESP32 acknowledgment",
+      "httpStatus": 202,
+      "result": "CONFIRMED",
+      "history": {
+        "id": 617,
+        "deviceId": 1,
+        "deviceCode": "LED1",
+        "username": "user123",
+        "action": "ON",
+        "status": "ON",
+        "createdAt": "2026-10-27T11:42:15.300995Z",
+        "confirmedAt": "2026-10-27T11:42:15.517959Z",
+        "deliveryState": "CONFIRMED"
+      },
+      "requestToRestConfirmationMs": 515.0
+    },
+    {
+      "username": "user123",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "requestId": 618,
+      "source": "Authenticated REST API, real ESP32 acknowledgment",
+      "httpStatus": 202,
+      "result": "CONFIRMED",
+      "history": {
+        "id": 618,
+        "deviceId": 1,
+        "deviceCode": "LED1",
+        "username": "user123",
+        "action": "OFF",
+        "status": "OFF",
+        "createdAt": "2026-10-27T11:42:15.827419Z",
+        "confirmedAt": "2026-10-27T11:42:15.90811Z",
+        "deliveryState": "CONFIRMED"
+      },
+      "requestToRestConfirmationMs": 250.0
+    },
+    {
+      "username": "user124",
+      "deviceCode": "LED2",
+      "action": "ON",
+      "requestId": 619,
+      "source": "Authenticated REST API, real ESP32 acknowledgment",
+      "httpStatus": 202,
+      "result": "CONFIRMED",
+      "history": {
+        "id": 619,
+        "deviceId": 2,
+        "deviceCode": "LED2",
+        "username": "user124",
+        "action": "ON",
+        "status": "ON",
+        "createdAt": "2026-10-27T11:42:16.107892Z",
+        "confirmedAt": "2026-10-27T11:42:16.304478Z",
+        "deliveryState": "CONFIRMED"
+      },
+      "requestToRestConfirmationMs": 281.0
+    },
+    {
+      "username": "user124",
+      "deviceCode": "LED2",
+      "action": "OFF",
+      "requestId": 620,
+      "source": "Authenticated REST API, real ESP32 acknowledgment",
+      "httpStatus": 202,
+      "result": "CONFIRMED",
+      "history": {
+        "id": 620,
+        "deviceId": 2,
+        "deviceCode": "LED2",
+        "username": "user124",
+        "action": "OFF",
+        "status": "OFF",
+        "createdAt": "2026-10-27T11:42:16.383531Z",
+        "confirmedAt": "2026-10-27T11:42:16.499182Z",
+        "deliveryState": "CONFIRMED"
+      },
+      "requestToRestConfirmationMs": 281.0
+    },
+    {
+      "username": "user125",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "requestId": 621,
+      "source": "Authenticated REST API, real ESP32 acknowledgment",
+      "httpStatus": 202,
+      "result": "CONFIRMED",
+      "history": {
+        "id": 621,
+        "deviceId": 1,
+        "deviceCode": "LED1",
+        "username": "user125",
+        "action": "ON",
+        "status": "ON",
+        "createdAt": "2026-10-27T11:42:16.676795Z",
+        "confirmedAt": "2026-10-27T11:42:17.12683Z",
+        "deliveryState": "CONFIRMED"
+      },
+      "requestToRestConfirmationMs": 703.0
+    },
+    {
+      "username": "user125",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "requestId": 622,
+      "source": "Authenticated REST API, real ESP32 acknowledgment",
+      "httpStatus": 202,
+      "result": "CONFIRMED",
+      "history": {
+        "id": 622,
+        "deviceId": 1,
+        "deviceCode": "LED1",
+        "username": "user125",
+        "action": "OFF",
+        "status": "OFF",
+        "createdAt": "2026-10-27T11:42:17.404372Z",
+        "confirmedAt": "2026-10-27T11:42:17.476868Z",
+        "deliveryState": "CONFIRMED"
+      },
+      "requestToRestConfirmationMs": 312.0
+    }
+  ],
+  "tokensSaved": false
+}

@@ -1,39 +1,10 @@
-import { useEffect, useState } from "react";
-
-export default function Pagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-  label,
-}) {
-  const [oNhapTrang, setONhapTrang] = useState(String(currentPage));
-  const [thongBaoLoi, setThongBaoLoi] = useState("");
-
-  const idNhapTrang = `${label.toLowerCase().replaceAll(" ", "-")}-input`;
-
-  function xuLyNhapTrang(event) {
-    event.preventDefault();
-
-    const soTrang = Number(oNhapTrang);
-    const trangKhongHopLe =
-      !Number.isInteger(soTrang) || soTrang < 1 || soTrang > totalPages;
-
-    if (trangKhongHopLe) {
-      setThongBaoLoi(`Nhập số trang từ 1 đến ${totalPages}.`);
-      return;
-    }
-
-    setThongBaoLoi("");
-    onPageChange(soTrang);
+export default function Pagination({ currentPage, totalPages, onPageChange, label }) {
+  // Hiển thị tối đa ba số trang quanh trang đang xem.
+  const trangBatDau = Math.max(1, Math.min(currentPage - 1, totalPages - 2));
+  const cacTrang = [];
+  for (let trang = trangBatDau; trang <= Math.min(totalPages, trangBatDau + 2); trang += 1) {
+    cacTrang.push(trang);
   }
-
-  useEffect(() => {
-    setONhapTrang(String(totalPages ? currentPage : 0));
-    setThongBaoLoi("");
-  }, [currentPage, totalPages]);
-
-  const laTrangDau = totalPages === 0 || currentPage === 1;
-  const laTrangCuoi = totalPages === 0 || currentPage === totalPages;
 
   return (
     <div className="pagination-area">
@@ -41,68 +12,34 @@ export default function Pagination({
         <button
           className="page-button"
           type="button"
-          disabled={laTrangDau}
-          onClick={() => onPageChange(1)}
-        >
-          Trang đầu
-        </button>
-
-        <button
-          className="page-button"
-          type="button"
-          disabled={laTrangDau}
+          aria-label="Trang trước"
+          disabled={totalPages === 0 || currentPage <= 1}
           onClick={() => onPageChange(currentPage - 1)}
         >
-          Trước
+          &lt;
         </button>
-
-        <form className="page-jump" onSubmit={xuLyNhapTrang}>
-          <label htmlFor={idNhapTrang}>Trang</label>
-
-          <input
-            id={idNhapTrang}
-            inputMode="numeric"
-            value={oNhapTrang}
-            disabled={totalPages === 0}
-            onChange={(event) => setONhapTrang(event.target.value)}
-            aria-invalid={Boolean(thongBaoLoi)}
-          />
-
-          <span>/ {totalPages}</span>
-
+        {cacTrang.map((trang) => (
           <button
-            className="page-button"
-            type="submit"
-            disabled={totalPages === 0}
+            key={trang}
+            className={`page-button${trang === currentPage ? " active" : ""}`}
+            type="button"
+            aria-label={`Trang ${trang}`}
+            aria-current={trang === currentPage ? "page" : undefined}
+            onClick={() => onPageChange(trang)}
           >
-            Đến
+            {trang}
           </button>
-        </form>
-
+        ))}
         <button
           className="page-button"
           type="button"
-          disabled={laTrangCuoi}
+          aria-label="Trang sau"
+          disabled={totalPages === 0 || currentPage >= totalPages}
           onClick={() => onPageChange(currentPage + 1)}
         >
-          Sau
-        </button>
-
-        <button
-          className="page-button"
-          type="button"
-          disabled={laTrangCuoi}
-          onClick={() => onPageChange(totalPages)}
-        >
-          Trang cuối
+          &gt;
         </button>
       </nav>
-
-      {thongBaoLoi && (
-        <p className="pagination-error" role="alert">
-          {thongBaoLoi}
-        </p>
-      )}
     </div>
   );
 }

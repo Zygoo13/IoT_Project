@@ -1,0 +1,68 @@
+{
+  "startedAt": "2026-10-20T19:27:59.652Z",
+  "endedAt": "2026-10-20T19:35:42.365Z",
+  "mqttConnected": true,
+  "stompConnected": true,
+  "mqttMessages": 433,
+  "stompMessages": 429,
+  "sensors": {
+    "DHT11_TEMP": {
+      "mqttReadings": 140,
+      "stompEvents": 140,
+      "minMqttGapMs": 0.005999999993946403,
+      "maxMqttGapMs": 9291.737000000008,
+      "lastEvent": {
+        "id": 9282,
+        "sensorCode": "DHT11_TEMP",
+        "sensorType": "TEMPERATURE",
+        "value": 32.3,
+        "unit": "°C",
+        "recordedAt": "2026-10-20T19:32:38.961396Z"
+      },
+      "lastEventMatchesRest": true
+    },
+    "DHT11_HUM": {
+      "mqttReadings": 140,
+      "stompEvents": 140,
+      "minMqttGapMs": 0.005999999993946403,
+      "maxMqttGapMs": 10249.972000000002,
+      "lastEvent": {
+        "id": 9283,
+        "sensorCode": "DHT11_HUM",
+        "sensorType": "HUMIDITY",
+        "value": 50.8,
+        "unit": "%RH",
+        "recordedAt": "2026-10-20T19:32:39.204336Z"
+      },
+      "lastEventMatchesRest": true
+    },
+    "LDR_LIGHT": {
+      "mqttReadings": 140,
+      "stompEvents": 140,
+      "minMqttGapMs": 0.005999999993946403,
+      "maxMqttGapMs": 10249.950999999997,
+      "lastEvent": {
+        "id": 9284,
+        "sensorCode": "LDR_LIGHT",
+        "sensorType": "LIGHT",
+        "value": 30.26,
+        "unit": "lux",
+        "recordedAt": "2026-10-20T19:32:39.215658Z"
+      },
+      "lastEventMatchesRest": true
+    }
+  },
+  "commandRequestIds": [
+    572,
+    571,
+    570,
+    569,
+    568,
+    567,
+    566,
+    565,
+    564
+  ],
+  "errors": [],
+  "note": "MQTT data observed from broker; hardware source/physical LED illumination require user photo/Serial confirmation. No simulated MQTT messages sent."
+}

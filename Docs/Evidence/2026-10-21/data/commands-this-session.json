@@ -1,0 +1,92 @@
+[
+  {
+    "id": 572,
+    "deviceId": 1,
+    "deviceCode": "LED1",
+    "action": "OFF",
+    "status": "OFF",
+    "createdAt": "2026-10-20T19:35:41.753619Z",
+    "confirmedAt": null,
+    "deliveryState": "PENDING"
+  },
+  {
+    "id": 571,
+    "deviceId": 1,
+    "deviceCode": "LED1",
+    "action": "ON",
+    "status": "OFF",
+    "createdAt": "2026-10-20T19:35:13.49815Z",
+    "confirmedAt": null,
+    "deliveryState": "TIMEOUT"
+  },
+  {
+    "id": 570,
+    "deviceId": 1,
+    "deviceCode": "LED1",
+    "action": "OFF",
+    "status": "OFF",
+    "createdAt": "2026-10-20T19:34:51.92193Z",
+    "confirmedAt": null,
+    "deliveryState": "TIMEOUT"
+  },
+  {
+    "id": 569,
+    "deviceId": 2,
+    "deviceCode": "LED2",
+    "action": "ON",
+    "status": "OFF",
+    "createdAt": "2026-10-20T19:34:38.557957Z",
+    "confirmedAt": null,
+    "deliveryState": "TIMEOUT"
+  },
+  {
+    "id": 568,
+    "deviceId": 1,
+    "deviceCode": "LED1",
+    "action": "ON",
+    "status": "OFF",
+    "createdAt": "2026-10-20T19:33:08.723298Z",
+    "confirmedAt": null,
+    "deliveryState": "TIMEOUT"
+  },
+  {
+    "id": 567,
+    "deviceId": 2,
+    "deviceCode": "LED2",
+    "action": "OFF",
+    "status": "OFF",
+    "createdAt": "2026-10-20T19:32:11.463341Z",
+    "confirmedAt": "2026-10-20T19:32:11.634958Z",
+    "deliveryState": "CONFIRMED"
+  },
+  {
+    "id": 566,
+    "deviceId": 1,
+    "deviceCode": "LED1",
+    "action": "OFF",
+    "status": "OFF",
+    "createdAt": "2026-10-20T19:32:04.69081Z",
+    "confirmedAt": "2026-10-20T19:32:04.931645Z",
+    "deliveryState": "CONFIRMED"
+  },
+  {
+    "id": 565,
+    "deviceId": 2,
+    "deviceCode": "LED2",
+    "action": "ON",
+    "status": "ON",
+    "createdAt": "2026-10-20T19:29:02.503367Z",
+    "confirmedAt": "2026-10-20T19:29:02.720334Z",
+    "deliveryState": "CONFIRMED"
+  },
+  {
+    "id": 564,
+    "deviceId": 1,
+    "deviceCode": "LED1",
+    "action": "ON",
+    "status": "ON",
+    "createdAt": "2026-10-20T19:28:49.172334Z",
+    "confirmedAt": "2026-10-20T19:28:49.332263Z",
+    "deliveryState": "CONFIRMED"
+  }
+]

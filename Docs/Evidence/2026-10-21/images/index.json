@@ -1,0 +1,132 @@
+[
+  {
+    "file": "F10-dashboard-online-both-off.png",
+    "capturedAt": "2026-10-20T19:28:48.455Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F13a-led-before.png",
+    "capturedAt": "2026-10-20T19:28:48.551Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F13b-led1-on-led2-off.png",
+    "capturedAt": "2026-10-20T19:29:02.377Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F13c-led2-confirmed-on.png",
+    "capturedAt": "2026-10-20T19:29:14.482Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F13d-led-both-on.png",
+    "capturedAt": "2026-10-20T19:29:27.536Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F10b-dashboard-online-both-on.png",
+    "capturedAt": "2026-10-20T19:29:29.578Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F10c-chart-tooltip-real-readings.png",
+    "capturedAt": "2026-10-20T19:29:32.583Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F16-sensor-data-real.png",
+    "capturedAt": "2026-10-20T19:29:39.660Z",
+    "url": "http://localhost:8088/data-sensor"
+  },
+  {
+    "file": "F10d-dashboard-light-response.png",
+    "capturedAt": "2026-10-20T19:30:44.231Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F10e-dashboard-after-light-change.png",
+    "capturedAt": "2026-10-20T19:32:04.331Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F10g-chart-light-change.png",
+    "capturedAt": "2026-10-20T19:32:04.412Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F13e-led1-confirmed-off-led2-on.png",
+    "capturedAt": "2026-10-20T19:32:11.351Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F13f-led-both-off-confirmed.png",
+    "capturedAt": "2026-10-20T19:33:08.428Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F10f-dashboard-hardware-offline.png",
+    "capturedAt": "2026-10-20T19:34:17.495Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F13g-offline-command-progress.png",
+    "capturedAt": "2026-10-20T19:33:08.890Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F18a-history-processing-empty-after-timeout.png",
+    "capturedAt": "2026-10-20T19:33:24.960Z",
+    "url": "http://localhost:8088/action-history"
+  },
+  {
+    "file": "F18-history-four-confirmations-and-timeout.png",
+    "capturedAt": "2026-10-20T19:34:14.166Z",
+    "url": "http://localhost:8088/action-history"
+  },
+  {
+    "file": "F13h-offline-led2-pending.png",
+    "capturedAt": "2026-10-20T19:34:38.559Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F15-dashboard-offline-command-timeout.png",
+    "capturedAt": "2026-10-20T19:35:16.574Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F13i-led2-timeout-message.png",
+    "capturedAt": "2026-10-20T19:35:16.645Z",
+    "url": "http://localhost:8088/dashboard"
+  },
+  {
+    "file": "F16b-sensor-search-temperature-value.png",
+    "capturedAt": "2026-10-20T19:35:20.253Z",
+    "url": "http://localhost:8088/data-sensor"
+  },
+  {
+    "file": "F16c-sensor-search-date.png",
+    "capturedAt": "2026-10-20T19:39:06.527Z",
+    "url": "http://localhost:8088/data-sensor"
+  },
+  {
+    "file": "F20-profile-view.png",
+    "capturedAt": "2026-10-20T19:39:09.763Z",
+    "url": "http://localhost:8088/profile"
+  },
+  {
+    "file": "F20b-profile-edit.png",
+    "capturedAt": "2026-10-20T19:39:17.750Z",
+    "url": "http://localhost:8088/profile"
+  },
+  {
+    "file": "F22-swagger-overview-no-token.png",
+    "capturedAt": "2026-10-20T19:39:53.500Z",
+    "url": "http://localhost:8088/swagger-ui/index.html"
+  },
+  {
+    "file": "F08-login-empty-no-credentials.png",
+    "capturedAt": "2026-10-20T19:40:22.915Z",
+    "url": "http://localhost:8088/login"
+  }
+]

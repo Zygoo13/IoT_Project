@@ -1,0 +1,10 @@
+{
+  "startedAt": "2026-10-27T10:30:35.890Z",
+  "baselineHistoryId": 596,
+  "topics": [
+    "iot/sensor/data",
+    "iot/device/command",
+    "iot/device/status"
+  ],
+  "credentialValuesSaved": false
+}

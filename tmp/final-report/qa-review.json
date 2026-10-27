@@ -1,0 +1,25 @@
+{
+  "output": "D:\\Knowledge\\University\\2026-Y4-S1\\HK7\\3_IOT\\3_Work\\IoT_Project\\Docs\\Report\\BAO_CAO_BTL_IOT_HOANG_QUOC_ANH.docx",
+  "pages": 23,
+  "mainContentPages": 16,
+  "chapters": [
+    "CHƯƠNG 1 GIỚI THIỆU",
+    "CHƯƠNG 2 PHÂN TÍCH",
+    "CHƯƠNG 3 THIẾT KẾ",
+    "CHƯƠNG 4 KẾT LUẬN"
+  ],
+  "schemaColumns": 40,
+  "figuresInline": 20,
+  "tablesIncludingCoverAndAppendix": 21,
+  "tocUpdated": true,
+  "figureAndTablePageReferencesUpdated": true,
+  "visualReview": "All pages inspected; unchanged body pages additionally compared pixel-for-pixel excluding renumbered footer.",
+  "photoInsertionLocations": [
+    "3.2 Hình 3.3",
+    "3.2 Hình 3.4"
+  ],
+  "secretScan": "PASS",
+  "referenceUnchanged": true,
+  "sha256": "d1f0c622da769aaa32fc156ee6f35f63a8edb05b434601443c37215a9ae2da8b",
+  "sizeBytes": 1546943
+}

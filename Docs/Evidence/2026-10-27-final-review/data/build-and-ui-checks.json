@@ -1,0 +1,25 @@
+{
+  "frontendTests": 12,
+  "frontendBuild": "PASS",
+  "dockerImageBuild": "PASS",
+  "runtimeRestarted": false,
+  "simulation": false,
+  "mqttUri": "tcp://mosquitto:1883",
+  "uiChecks": [
+    "dropdown does not apply until submit",
+    "value search",
+    "exact-second search",
+    "legend toggle",
+    "chart keyboard tooltip",
+    "page reload",
+    "expired session relogin",
+    "Processing row625",
+    "pending ON green/OFF red transparent",
+    "timeout message",
+    "automatic hardware recovery",
+    "Web LED2 ON/OFF627/628"
+  ],
+  "desktopViewport": "1440x1000",
+  "mobileHistoryViewport": "390x844",
+  "consoleWarningErrorCount": 0
+}

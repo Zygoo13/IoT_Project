@@ -1,0 +1,4 @@
+TABLE_NAME	COLUMN_NAME	REFERENCED_TABLE_NAME	REFERENCED_COLUMN_NAME
+ActionHistory	deviceId	Device	id
+ActionHistory	userId	User	id
+SensorData	sensorId	Sensor	id

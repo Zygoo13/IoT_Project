@@ -7,7 +7,7 @@ Ngày khóa: 05/10/2026. Nguồn ưu tiên: bài TH1 đã nộp, sau đó là fi
 | Chủ đề | Quyết định thống nhất | Kiểm tra khi tích hợp |
 | --- | --- | --- |
 | Phạm vi dữ liệu | Đúng 5 bảng `User`, `Sensor`, `SensorData`, `Device`, `ActionHistory`; không có `SensorSample`. Một MQTT reading hợp lệ tạo một dòng `SensorData`. | Kiểm tra schema và số dòng sau ba payload độc lập. |
-| Seed | Chỉ 1 User, 3 Sensor `DHT11_TEMP`, `DHT11_HUM`, `LDR_LIGHT`, 2 Device `LED1`, `LED2`. Không seed `SensorData` hoặc `ActionHistory`. Mật khẩu seed lấy từ môi trường và lưu hash. | DB mới có số dòng lần lượt 1/3/0/2/0; khởi động lại không nhân bản. |
+| Seed | Một User chính từ môi trường, thêm `user124`, `user125`; giữ 3 Sensor `DHT11_TEMP`, `DHT11_HUM`, `LDR_LIGHT`, 2 Device `LED1`, `LED2`. Không seed `SensorData` hoặc `ActionHistory`. Các tài khoản mới dùng `IOT_SEED_PASSWORD`, lưu BCrypt. Chỉ thêm username còn thiếu, không đổi mật khẩu/hồ sơ đã có; không giới hạn DB chỉ một User. | Với username chính khác hai tên bổ sung, DB mới có số dòng 3/3/0/2/0; khởi động lại không nhân bản hoặc sửa User cũ. |
 | REST command | Canonical `POST /api/devices/{deviceId}/actions`, body `{"action":"ON"}` hoặc `OFF`. `deviceId` là ID số của bảng `Device`; backend đổi sang `Device.code` cho MQTT. Thành công trả HTTP 202 và `{"requestId":101,"status":"ACCEPTED"}`. Không dùng đường `{deviceCode}/commands` song song. | Gửi LED1 theo ID và thấy payload MQTT mang `deviceCode:"LED1"`. |
 | REST khác | `POST /api/auth/login`, `GET /api/dashboard`, `GET /api/sensor-data`, `GET /api/action-history`, `GET/PUT /api/profile` theo TH1. Mọi endpoint trừ login cần JWT. Profile lấy User từ token, không nhận `userId` từ client. | 401 khi thiếu token; Profile không lộ password hash. |
 | Auth/JWT | Login kiểm tra BCrypt và trả `{ "token": "..." }`. JWT ký HS256 bằng khóa Base64 từ môi trường, `iss=iot-backend`, `sub=User.id`, hết hạn sau `IOT_JWT_TTL_SECONDS` (mặc định 3600). Backend xác thực chữ ký, issuer và hạn dùng trên mọi API khác login; không có đăng ký. | Login sai 401; token thiếu/sai/hết hạn 401; đổi secret làm token cũ hết hiệu lực. |
@@ -24,7 +24,7 @@ Ngày khóa: 05/10/2026. Nguồn ưu tiên: bài TH1 đã nộp, sau đó là fi
 | Dashboard JSON | Trả `latest` theo ba sensor, mỗi mục có `sensorCode,value,unit,recordedAt` hoặc `null`; `chart` gồm ba series độc lập, mỗi series tối đa 15 reading thực; `hardware` có `status,lastSeenAt`; `devices` có `id,code,status`. Không tạo một sample gộp trong DB. | DB rỗng: latest null, chart rỗng, hardware Offline; có dữ liệu: mỗi series tối đa 15. |
 | REST đọc JSON | `latest` và `chart` là object khóa theo ba `Sensor.code`; chart point gồm `value,recordedAt`, theo thời gian tăng dần. Latest thêm `stale` khi reading cũ hơn 30 giây. Hai API bảng trả `{content,page,size,totalElements,totalPages}`. Sensor row có `id,sensorCode,sensorType,value,unit,recordedAt`; History row theo hàng dưới. | GET rỗng vẫn trả đủ key và metadata; không tạo bảng hoặc dữ liệu tổng hợp. |
 | REST đọc query | `page=0`, `size=20`, `sortBy=TIME`, `order=DESC` mặc định; sort ổn định theo ID phụ. `search` không có `searchField` là tìm chung trên các cột hiển thị: Sensor gồm ID, mã/tên/loại/đơn vị, giá trị, thời gian; History gồm ID, thiết bị, action/status, thời gian tạo/xác nhận và deliveryState. Chuỗi tìm không phân biệt hoa/thường; ngày hiển thị `dd/MM/yyyy` hoặc thời điểm đầy đủ `dd/MM/yyyy HH:mm:ss` được hiểu theo `Asia/Ho_Chi_Minh`. `searchField` cũ vẫn được nhận khi đi cùng `search`: Sensor `ID,SENSOR_TYPE,VALUE,TIME`; History `ID,DEVICE`; `searchField=ALL` tương đương tìm chung. ID/VALUE theo cột cũ tìm đúng số; TIME theo cột cũ nhận ngày UTC `yyyy-MM-dd` hoặc giây ISO 8601 có offset. `device` lọc đúng LED1/LED2; `action,status` nhận ON/OFF. `from,to` là ISO 8601 có offset, bao gồm hai đầu. Tham số sai trả 400. | Search/filter trước sort/page; trang vượt cuối trả `content=[]`; không ghép input vào tên cột SQL. |
-| History JSON | Mỗi dòng có `id,deviceId,deviceCode,action,status,createdAt,confirmedAt` và `deliveryState` suy ra `PENDING/TIMEOUT/CONFIRMED`. `status` vẫn chỉ ON/OFF. | History chưa xác nhận không bị hiển thị như lệnh đã thành công. |
+| History JSON | Mỗi dòng có `id,deviceId,deviceCode,username,action,status,createdAt,confirmedAt` và `deliveryState` suy ra `PENDING/TIMEOUT/CONFIRMED`. `username` lấy từ User của từng ActionHistory; không lấy từ người xem trang hoặc client body. `status` vẫn chỉ ON/OFF. | Hiển thị Người thực hiện trước Lệnh; giữ phân trang/lọc và đọc đúng tác giả lịch sử cũ. Không trả passwordHash. |
 | WebSocket | Native STOMP endpoint `/ws`, không SockJS; origin frontend development mặc định `http://localhost:5173`, đổi bằng `IOT_FRONTEND_ORIGIN` (một origin rõ ràng). JWT gửi ở STOMP `CONNECT` qua header `Authorization: Bearer ...`; server xác thực CONNECT và chỉ cho SUBSCRIBE bốn topic ở bảng dưới. Client `SEND` bị từ chối. Mất kết nối thì frontend reconnect và gọi lại REST. | Origin lạ, token thiếu/sai, topic lạ và client SEND bị từ chối; nối lại tải state từ REST. |
 | Profile/avatar | `GET/PUT /api/profile`; PUT chỉ nhận `fullName,studentCode,email,githubUrl,figmaUrl,apiDocsUrl,reportUrl,avatarUrl`. `fullName`, `studentCode`, `email` bắt buộc; URL khác nhận HTTP/HTTPS hoặc null; `avatarUrl` là URL HTTPS bền vững do User cung cấp. PUT thay đủ tám trường, null hoặc thiếu URL sẽ xóa URL đó. Giai đoạn đầu không có upload ảnh. | Không sửa được id, username, passwordHash; URL/unique được kiểm tra. |
 | Lỗi REST | 400 input sai, 401 token thiếu/sai, 404 Device không tồn tại, 503 khi broker không nhận publish. Error body có `code,message` và `requestId` khi lệnh đã được ghi. | Client phân biệt lệnh đã lưu nhưng chưa gửi được với lỗi trước khi tạo history. |
@@ -65,3 +65,21 @@ LED2 sau reconnect; tám history thử đã dọn. STOMP native đã thử bằn
 Node v24: origin/JWT/topic/SEND sai bị chặn, ba reading phát sensor và REST
 đọc được, Offline một lần rồi Online lại, status đúng/late và timeout phát đúng
 event; reconnect + GET phục hồi state. Năm reading và hai history thử đã dọn.
+
+## Bộ lọc loại cảm biến
+GET /api/sensor-data nhận sensorType tùy chọn: TEMPERATURE, HUMIDITY hoặc LIGHT. Bỏ tham số để lấy tất cả. Bộ lọc kết hợp với search và from/to trước sort và pagination; giá trị không hỗ trợ trả 400.
+
+Tìm chung SensorData hỗ trợ giá trị hiển thị làm tròn một chữ số thập phân, có hoặc không kèm đơn vị (ví dụ `29.5`, `29.5 °C`, `29.5°C`, `68.3 %RH`, `34.1 lux`). Bộ lọc loại cảm biến vẫn kết hợp trước phân trang.
+
+## Chuyển BTH4 — 20/10/2026
+
+Đã gỡ LedDemoResponder và override compose.demo.yaml. Backend chỉ nhận telemetry/status
+qua MQTT; không tự publish status để xác nhận lệnh. Dashboard vẫn trả ledDemo=false
+(deprecated) để tương thích client cũ. Dữ liệu/histories BTH3 đã có không được xóa và
+không được xem là bằng chứng số đo/xác nhận phần cứng thật.
+
+Swagger UI tại /swagger-ui/index.html; OpenAPI /v3/api-docs và /v3/api-docs.yaml
+mô tả REST thực tế. Các đường tài liệu GET không cần JWT; API nghiệp vụ vẫn yêu cầu
+bearer JWT, riêng login không cần. Swagger không mô tả MQTT/STOMP thành REST endpoint.
+
+- Lọc lịch sử `status=PROCESSING`: chỉ các lệnh có `deliveryState=PENDING` (chưa xác nhận, dưới 10 giây). Không thêm giá trị vào Device.status hoặc ActionHistory.status; TIMEOUT không thuộc Processing.

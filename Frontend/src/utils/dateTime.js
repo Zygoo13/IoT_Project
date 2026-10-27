@@ -50,6 +50,22 @@ export function parseDateTime(value) {
   return formatDateTime(date) === value ? date : null;
 }
 
+// Tìm trọn một ngày hoặc một giây theo giờ Việt Nam, kể cả phần micro giây trong DB.
+export function parseSearchTimeRange(value) {
+  const input = value.trim();
+  if (!input) return null;
+  const isDate = /^\d{2}\/\d{2}\/\d{4}$/.test(input);
+  const start = parseDateTime(isDate ? `${input} 00:00:00` : input);
+  if (!start) {
+    throw new Error("Nhập ngày dd/MM/yyyy hoặc thời gian dd/MM/yyyy HH:mm:ss.");
+  }
+  const end = new Date(start.getTime() + (isDate ? 86400000 : 1000) - 1);
+  return {
+    from: start.toISOString(),
+    to: end.toISOString().replace(".999Z", ".999999Z"),
+  };
+}
+
 // Kiểm tra khoảng thời gian
 export function getDateRangeError(fromTime, toTime) {
   const tuNgay = fromTime ? parseDateTime(fromTime) : null;

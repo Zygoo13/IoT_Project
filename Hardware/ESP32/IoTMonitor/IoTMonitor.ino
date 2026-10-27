@@ -111,7 +111,8 @@ void connectMQTT() {
 
     } else {
 
-      Serial.println("failed!");
+      Serial.print("MQTT failed, state = ");
+      Serial.println(client.state());
 
       delay(2000);
     }
@@ -263,7 +264,7 @@ void setup() {
 
   Serial.println();
   Serial.println("==============================");
-  Serial.println("       DEMO B READY");
+  Serial.println("       READY");
   Serial.println("==============================");
 }
 

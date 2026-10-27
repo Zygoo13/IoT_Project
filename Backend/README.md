@@ -13,8 +13,11 @@ Khung Spring Boot cho bài BTH4, đặt ngang cấp `Frontend`. Nghiệp vụ l�
 
 Đã hoàn thành cổng MySQL/seed, Auth/Profile, REST đọc, MQTT telemetry, điều khiển LED và STOMP realtime. Package gốc là `zygoo13.iot`. Ứng dụng có
 đúng năm entity/bảng theo TH1; `schema.sql` tạo bảng và Hibernate chỉ kiểm tra
-ánh xạ (`ddl-auto=validate`). Seed chỉ thêm 1 User, 3 Sensor và 2 Device nếu
-chưa có; không thêm SensorData hoặc ActionHistory. `POST /api/auth/login` trả JWT;
+ánh xạ (`ddl-auto=validate`). Seed thêm tài khoản chính từ môi trường và hai tài khoản
+`user124`, `user125` còn thiếu, cùng 3 Sensor và 2 Device; không thêm SensorData hoặc
+ActionHistory. User có sẵn giữ nguyên ID, hồ sơ và mật khẩu; không còn giới hạn đúng một User.
+Lịch sử trả thêm `username` của người thực hiện từng lệnh qua quan hệ ActionHistory–User.
+`POST /api/auth/login` trả JWT;
 `GET/PUT /api/profile` và ba GET đọc dữ liệu yêu cầu token. MQTT nhận reading
 từ `iot/sensor/data`, gửi lệnh tới `iot/device/command` và nhận xác nhận ở
 `iot/device/status`. STOMP chạy qua WebSocket gốc `/ws`, không dùng SockJS.
@@ -370,3 +373,38 @@ Lệnh không được xác nhận phát một notification Timeout, giữ LED c
 chuyển history sang Confirmed và phát device event. Sau khi ngắt/nối lại WS,
 GET REST lấy được reading và history mới nhất. Phép thử dọn năm reading và hai
 history, trả DB về `1/3/0/2/0`.
+
+## Swagger / OpenAPI — BTH4 (20/10/2026)
+
+Swagger dùng springdoc-openapi-starter-webmvc-ui 2.8.17 với Spring Boot 3.5.13.
+Dependency tạo tài liệu từ controller/DTO thực tế; OpenApiConfig khai báo bearer JWT,
+schema lỗi chung và server cùng origin. Annotation trên controller mô tả query,
+response và quy tắc xác nhận lệnh; không thay logic nghiệp vụ.
+
+- Docker: http://localhost:8088/swagger-ui/index.html
+- Java trực tiếp: http://localhost:8080/swagger-ui/index.html
+- OpenAPI JSON/YAML: /v3/api-docs và /v3/api-docs.yaml
+
+POST login → sao chép token → Authorize (chỉ token) → Try it out các GET.
+PUT Profile lưu dữ liệu thật; POST Devices gửi command thật, không có responder mô phỏng.
+GET Swagger được mở trong SecurityConfig; mọi API nghiệp vụ vẫn yêu cầu JWT.
+Nginx proxy /swagger-ui và /v3/api-docs tới Backend, tránh bị React SPA trả HTML.
+Swagger không lưu token qua reload. MQTT/STOMP đọc trong CONTRACT.md.
+
+Cách chạy BTH4 và checklist ESP32 nằm trong [README gốc](../README.md).
+Đã gỡ compose.demo.yaml và LedDemoResponder. ledDemo trong Dashboard giữ false
+để tương thích client cũ; Frontend không còn nhánh demoMode. Không xóa dữ liệu BTH3.
+Script node scripts/verify-api-docs.mjs kiểm tra tài liệu và REST đọc, không gửi lệnh.
+Các kết quả ngày 05/10 ở trên là lịch sử kiểm thử, không đại diện cho GPIO BTH4 hiện tại.
+
+## Broker Docker (20/10/2026)
+
+Compose gốc chạy app và Mosquitto, Backend dùng `tcp://mosquitto:1883`.
+Host publish TCP 1325 cho ESP32 qua IP LAN, giữ nguyên credentials trong
+`Backend/.env.bth4` và ba topic. `environment` trong Compose ưu tiên hơn
+`env_file`; không đổi URI bên trong container thành localhost.
+
+Chạy `.\start.ps1` từ thư mục gốc để bật MySQL hiện có rồi app/broker.
+MySQL và volume được giữ nguyên. Password file MQTT được helper tạo cục bộ,
+không đưa vào Git/image. Healthcheck broker thử xác thực qua `$SYS/broker/uptime`;
+healthcheck app thử HTTP. Cả hai chưa thay thế kiểm thử ESP32/GPIO thực tế.

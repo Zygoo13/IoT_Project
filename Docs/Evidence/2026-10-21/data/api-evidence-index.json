@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-10-20T19:31:51.456Z",
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/profile",
+      "summary": "Đọc hồ sơ của tài khoản đang đăng nhập"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/profile",
+      "summary": "Cập nhật hồ sơ"
+    },
+    {
+      "method": "POST",
+      "path": "/api/devices/{deviceId}/actions",
+      "summary": "Yêu cầu bật/tắt LED"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "summary": "Đăng nhập và nhận JWT"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sensor-data",
+      "summary": "Tra cứu dữ liệu cảm biến"
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "summary": "Tải trạng thái Dashboard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/action-history",
+      "summary": "Tra cứu lịch sử điều khiển"
+    }
+  ],
+  "note": "No token, password, username values or User row export. OpenAPI examples removed."
+}

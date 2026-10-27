@@ -1,0 +1,294 @@
+[
+  {
+    "file": "data/api-evidence-index.json",
+    "match": true
+  },
+  {
+    "file": "data/capture-progress.json",
+    "match": true
+  },
+  {
+    "file": "data/capture-start.json",
+    "match": true
+  },
+  {
+    "file": "data/capture-summary.json",
+    "match": true
+  },
+  {
+    "file": "data/command-request-564.json",
+    "match": true
+  },
+  {
+    "file": "data/command-request-565.json",
+    "match": true
+  },
+  {
+    "file": "data/command-request-566.json",
+    "match": true
+  },
+  {
+    "file": "data/command-request-567.json",
+    "match": true
+  },
+  {
+    "file": "data/commands-this-session.json",
+    "match": true
+  },
+  {
+    "file": "data/dashboard-after.json",
+    "match": true
+  },
+  {
+    "file": "data/dashboard-before.json",
+    "match": true
+  },
+  {
+    "file": "data/dashboard-light-response.json",
+    "match": true
+  },
+  {
+    "file": "data/db-columns.tsv",
+    "match": true
+  },
+  {
+    "file": "data/db-devices-sensors.tsv",
+    "match": true
+  },
+  {
+    "file": "data/db-final-device-state.tsv",
+    "match": true
+  },
+  {
+    "file": "data/db-foreign-keys.tsv",
+    "match": true
+  },
+  {
+    "file": "data/db-observed-sensor-data.tsv",
+    "match": true
+  },
+  {
+    "file": "data/db-recent-action-history.tsv",
+    "match": true
+  },
+  {
+    "file": "data/db-recent-sensor-data.tsv",
+    "match": true
+  },
+  {
+    "file": "data/db-report-action-history.tsv",
+    "match": true
+  },
+  {
+    "file": "data/db-table-counts.tsv",
+    "match": true
+  },
+  {
+    "file": "data/db-version.tsv",
+    "match": true
+  },
+  {
+    "file": "data/environment.json",
+    "match": true
+  },
+  {
+    "file": "data/F23-telemetry-comparison.json",
+    "match": true
+  },
+  {
+    "file": "data/F24-command-comparison.json",
+    "match": true
+  },
+  {
+    "file": "data/hardware-state-events.json",
+    "match": true
+  },
+  {
+    "file": "data/history-after.json",
+    "match": true
+  },
+  {
+    "file": "data/history-before.json",
+    "match": true
+  },
+  {
+    "file": "data/mqtt-stomp-events.json",
+    "match": true
+  },
+  {
+    "file": "data/offline-test.json",
+    "match": true
+  },
+  {
+    "file": "data/offline-timeout-rest.json",
+    "match": true
+  },
+  {
+    "file": "data/openapi-no-examples.json",
+    "match": true
+  },
+  {
+    "file": "data/readings-DHT11_HUM.json",
+    "match": true
+  },
+  {
+    "file": "data/readings-DHT11_TEMP.json",
+    "match": true
+  },
+  {
+    "file": "data/readings-LDR_LIGHT.json",
+    "match": true
+  },
+  {
+    "file": "data/sensor-data-after.json",
+    "match": true
+  },
+  {
+    "file": "data/sensor-data-before.json",
+    "match": true
+  },
+  {
+    "file": "data/test-results.tsv",
+    "match": true
+  },
+  {
+    "file": "F23_TELEMETRY.md",
+    "match": true
+  },
+  {
+    "file": "F24_LED_CONTROL.md",
+    "match": true
+  },
+  {
+    "file": "hardware-photos/README.md",
+    "match": true
+  },
+  {
+    "file": "IMAGE_CATALOG.md",
+    "match": true
+  },
+  {
+    "file": "images/F08-login-empty-no-credentials.png",
+    "match": true
+  },
+  {
+    "file": "images/F10-dashboard-online-both-off.png",
+    "match": true
+  },
+  {
+    "file": "images/F10b-dashboard-online-both-on.png",
+    "match": true
+  },
+  {
+    "file": "images/F10c-chart-tooltip-real-readings.png",
+    "match": true
+  },
+  {
+    "file": "images/F10d-dashboard-light-response.png",
+    "match": true
+  },
+  {
+    "file": "images/F10e-dashboard-after-light-change.png",
+    "match": true
+  },
+  {
+    "file": "images/F10f-dashboard-hardware-offline.png",
+    "match": true
+  },
+  {
+    "file": "images/F10g-chart-light-change.png",
+    "match": true
+  },
+  {
+    "file": "images/F13a-led-before.png",
+    "match": true
+  },
+  {
+    "file": "images/F13b-led1-on-led2-off.png",
+    "match": true
+  },
+  {
+    "file": "images/F13c-led2-confirmed-on.png",
+    "match": true
+  },
+  {
+    "file": "images/F13d-led-both-on.png",
+    "match": true
+  },
+  {
+    "file": "images/F13e-led1-confirmed-off-led2-on.png",
+    "match": true
+  },
+  {
+    "file": "images/F13f-led-both-off-confirmed.png",
+    "match": true
+  },
+  {
+    "file": "images/F13g-offline-command-progress.png",
+    "match": true
+  },
+  {
+    "file": "images/F13h-offline-led2-pending.png",
+    "match": true
+  },
+  {
+    "file": "images/F13i-led2-timeout-message.png",
+    "match": true
+  },
+  {
+    "file": "images/F15-dashboard-offline-command-timeout.png",
+    "match": true
+  },
+  {
+    "file": "images/F16-sensor-data-real.png",
+    "match": true
+  },
+  {
+    "file": "images/F16b-sensor-search-temperature-value.png",
+    "match": true
+  },
+  {
+    "file": "images/F16c-sensor-search-date.png",
+    "match": true
+  },
+  {
+    "file": "images/F18-history-four-confirmations-and-timeout.png",
+    "match": true
+  },
+  {
+    "file": "images/F18a-history-processing-empty-after-timeout.png",
+    "match": true
+  },
+  {
+    "file": "images/F20-profile-view.png",
+    "match": true
+  },
+  {
+    "file": "images/F20b-profile-edit.png",
+    "match": true
+  },
+  {
+    "file": "images/F22-swagger-overview-no-token.png",
+    "match": true
+  },
+  {
+    "file": "images/index.json",
+    "match": true
+  },
+  {
+    "file": "README.md",
+    "match": true
+  },
+  {
+    "file": "tools/capture-report.mjs",
+    "match": true
+  },
+  {
+    "file": "tools/export-report-data.mjs",
+    "match": true
+  },
+  {
+    "file": "tools/finalize-report-evidence.mjs",
+    "match": true
+  }
+]

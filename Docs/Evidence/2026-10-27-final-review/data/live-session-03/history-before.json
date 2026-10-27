@@ -1,0 +1,228 @@
+{
+  "content": [
+    {
+      "id": 616,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user123",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T11:37:05.714648Z",
+      "confirmedAt": null,
+      "deliveryState": "TIMEOUT"
+    },
+    {
+      "id": 615,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "ON",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:59:43.088546Z",
+      "confirmedAt": null,
+      "deliveryState": "TIMEOUT"
+    },
+    {
+      "id": 614,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:55:07.424909Z",
+      "confirmedAt": "2026-10-27T10:55:07.695694Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 613,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:55:06.688782Z",
+      "confirmedAt": "2026-10-27T10:55:07.044686Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 612,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:55:06.343801Z",
+      "confirmedAt": "2026-10-27T10:55:06.401838Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 611,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:55:05.953501Z",
+      "confirmedAt": "2026-10-27T10:55:06.060449Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 610,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:55:05.476035Z",
+      "confirmedAt": "2026-10-27T10:55:05.612868Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 609,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:55:05.015973Z",
+      "confirmedAt": "2026-10-27T10:55:05.053717Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 608,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27T10:55:03.107333Z",
+      "confirmedAt": "2026-10-27T10:55:03.374194Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 607,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27T10:55:02.347746Z",
+      "confirmedAt": "2026-10-27T10:55:02.675032Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 606,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:55:01.762811Z",
+      "confirmedAt": "2026-10-27T10:55:01.933545Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 605,
+      "deviceId": 2,
+      "deviceCode": "LED2",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:54:56.189724Z",
+      "confirmedAt": "2026-10-27T10:54:56.283663Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 604,
+      "deviceId": 2,
+      "deviceCode": "LED2",
+      "username": "user124",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27T10:54:55.478475Z",
+      "confirmedAt": "2026-10-27T10:54:55.680502Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 603,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:38:50.268611Z",
+      "confirmedAt": null,
+      "deliveryState": "TIMEOUT"
+    },
+    {
+      "id": 602,
+      "deviceId": 2,
+      "deviceCode": "LED2",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:36:00.677586Z",
+      "confirmedAt": "2026-10-27T10:36:00.749973Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 601,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:36:00.129052Z",
+      "confirmedAt": "2026-10-27T10:36:00.343862Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 600,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27T10:35:59.424569Z",
+      "confirmedAt": "2026-10-27T10:35:59.55393Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 599,
+      "deviceId": 2,
+      "deviceCode": "LED2",
+      "username": "user124",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27T10:35:58.022231Z",
+      "confirmedAt": "2026-10-27T10:35:58.119635Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 598,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27T10:35:57.214196Z",
+      "confirmedAt": "2026-10-27T10:35:57.365954Z",
+      "deliveryState": "CONFIRMED"
+    },
+    {
+      "id": 597,
+      "deviceId": 1,
+      "deviceCode": "LED1",
+      "username": "user124",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27T10:35:56.094121Z",
+      "confirmedAt": "2026-10-27T10:35:56.370874Z",
+      "deliveryState": "CONFIRMED"
+    }
+  ],
+  "page": 0,
+  "size": 20,
+  "totalElements": 313,
+  "totalPages": 16
+}

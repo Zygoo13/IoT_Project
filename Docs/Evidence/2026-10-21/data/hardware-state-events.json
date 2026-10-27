@@ -1,0 +1,12 @@
+[
+  {
+    "channel": "STOMP",
+    "topic": "/topic/hardware",
+    "receivedAt": "2026-10-20T19:33:09.700Z",
+    "observerMs": 310049.212,
+    "payload": {
+      "status": "OFFLINE",
+      "lastSeenAt": "2026-10-20T19:32:39.215658Z"
+    }
+  }
+]

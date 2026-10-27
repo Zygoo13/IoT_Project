@@ -1,0 +1,83 @@
+{
+  "startedAt": "2026-10-20T19:27:59.652Z",
+  "endedAt": "2026-10-20T19:35:42.365Z",
+  "totalSensorEvents": 420,
+  "sqlRows": 420,
+  "allStompEventsMatchDatabase": true,
+  "mismatches": [],
+  "perSensor": {
+    "DHT11_TEMP": {
+      "mqtt": 140,
+      "stomp": 140,
+      "valuesEqualInObservedOrder": true,
+      "minimum": 31.7,
+      "maximum": 32.3,
+      "firstEvent": {
+        "id": 8865,
+        "sensorCode": "DHT11_TEMP",
+        "sensorType": "TEMPERATURE",
+        "value": 31.7,
+        "unit": "°C",
+        "recordedAt": "2026-10-20T19:28:00.90064Z"
+      },
+      "lastEvent": {
+        "id": 9282,
+        "sensorCode": "DHT11_TEMP",
+        "sensorType": "TEMPERATURE",
+        "value": 32.3,
+        "unit": "°C",
+        "recordedAt": "2026-10-20T19:32:38.961396Z"
+      },
+      "lastRestMatches": true
+    },
+    "DHT11_HUM": {
+      "mqtt": 140,
+      "stomp": 140,
+      "valuesEqualInObservedOrder": true,
+      "minimum": 48.4,
+      "maximum": 50.8,
+      "firstEvent": {
+        "id": 8866,
+        "sensorCode": "DHT11_HUM",
+        "sensorType": "HUMIDITY",
+        "value": 48.4,
+        "unit": "%RH",
+        "recordedAt": "2026-10-20T19:28:03.141752Z"
+      },
+      "lastEvent": {
+        "id": 9283,
+        "sensorCode": "DHT11_HUM",
+        "sensorType": "HUMIDITY",
+        "value": 50.8,
+        "unit": "%RH",
+        "recordedAt": "2026-10-20T19:32:39.204336Z"
+      },
+      "lastRestMatches": true
+    },
+    "LDR_LIGHT": {
+      "mqtt": 140,
+      "stomp": 140,
+      "valuesEqualInObservedOrder": true,
+      "minimum": 0,
+      "maximum": 200,
+      "firstEvent": {
+        "id": 8867,
+        "sensorCode": "LDR_LIGHT",
+        "sensorType": "LIGHT",
+        "value": 0,
+        "unit": "lux",
+        "recordedAt": "2026-10-20T19:28:03.164523Z"
+      },
+      "lastEvent": {
+        "id": 9284,
+        "sensorCode": "LDR_LIGHT",
+        "sensorType": "LIGHT",
+        "value": 30.26,
+        "unit": "lux",
+        "recordedAt": "2026-10-20T19:32:39.215658Z"
+      },
+      "lastRestMatches": true
+    }
+  },
+  "note": "MQTT has no sample ID/time; comparison by sensor value order is observational. STOMP ↔ SQL comparison uses exact ID, sensor, value and microsecond timestamp. No hardware measurement cycle inferred."
+}

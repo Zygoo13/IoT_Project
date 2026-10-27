@@ -3,15 +3,10 @@ import { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import { buildQueryString, requestApi } from "../services/api";
 import { onRealtime } from "../services/realtime";
-import {
-  DATE_TIME_FORMAT,
-  formatDateTime,
-  getDateRangeError,
-  parseDateTime,
-} from "../utils/dateTime";
+import { formatDateTime, parseSearchTimeRange } from "../utils/dateTime";
 import { formatValue } from "../utils/formatValue";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 5;
 
 const EMPTY_PAGE = {
   content: [],
@@ -19,11 +14,6 @@ const EMPTY_PAGE = {
   size: PAGE_SIZE,
   totalElements: 0,
   totalPages: 0,
-};
-
-const EMPTY_RANGE = {
-  fromTime: "",
-  toTime: "",
 };
 
 const SENSOR_NAMES = {
@@ -35,16 +25,17 @@ const SENSOR_NAMES = {
 export default function DataSensor() {
   const [trangHienTai, setTrangHienTai] = useState(0);
   const [trangCamBien, setTrangCamBien] = useState(EMPTY_PAGE);
+  const [soDongMoiTrang, setSoDongMoiTrang] = useState(PAGE_SIZE);
 
   const [tuKhoa, setTuKhoa] = useState("");
+  const [loaiCamBien, setLoaiCamBien] = useState("");
+  const [loaiCamBienDaApDung, setLoaiCamBienDaApDung] = useState("");
   const [tuKhoaDaApDung, setTuKhoaDaApDung] = useState("");
+  const [thoiGianDaApDung, setThoiGianDaApDung] = useState(null);
+  const [loiTimKiem, setLoiTimKiem] = useState("");
 
   const [thuTuSapXep, setThuTuSapXep] = useState("DESC");
 
-  const [khoangThoiGian, setKhoangThoiGian] = useState(EMPTY_RANGE);
-  const [khoangDaApDung, setKhoangDaApDung] = useState(EMPTY_RANGE);
-
-  const [loiBoLoc, setLoiBoLoc] = useState("");
   const [thongBaoLoi, setThongBaoLoi] = useState("");
 
   const [dangTai, setDangTai] = useState(true);
@@ -57,7 +48,16 @@ export default function DataSensor() {
   function xuLyTimKiem(event) {
     event.preventDefault();
 
-    setTuKhoaDaApDung(tuKhoa.trim());
+    try {
+      const timeRange = loaiCamBien === "TIME" ? parseSearchTimeRange(tuKhoa) : null;
+      setThoiGianDaApDung(timeRange);
+    } catch (error) {
+      setLoiTimKiem(error.message);
+      return;
+    }
+    setLoiTimKiem("");
+    setTuKhoaDaApDung(loaiCamBien === "TIME" ? "" : tuKhoa.trim());
+    setLoaiCamBienDaApDung(loaiCamBien);
     setTrangHienTai(0);
   }
 
@@ -66,64 +66,49 @@ export default function DataSensor() {
     setTrangHienTai(0);
   }
 
-  // Kiểm tra khoảng thời gian
-  function apDungKhoangThoiGian() {
-    const loi = getDateRangeError(
-      khoangThoiGian.fromTime,
-      khoangThoiGian.toTime,
-    );
-
-    if (loi) {
-      setLoiBoLoc(loi);
-      return;
-    }
-
-    setLoiBoLoc("");
-    setKhoangDaApDung({ ...khoangThoiGian });
-    setTrangHienTai(0);
-  }
-
-  function xoaKhoangThoiGian() {
-    setKhoangThoiGian(EMPTY_RANGE);
-    setKhoangDaApDung(EMPTY_RANGE);
-    setLoiBoLoc("");
-    setTrangHienTai(0);
-  }
-
-  // Tải lại khi có dữ liệu realtime mới
+  // Ba reading thường đến cùng lúc; tải lại một lần và giữ bảng trong lúc chờ.
   useEffect(() => {
-    return onRealtime((topic) => {
-      if (topic === "sensors" || topic === "connected") {
+    let refreshTimer;
+    const unsubscribe = onRealtime((topic) => {
+      if (topic === "connected") {
+        clearTimeout(refreshTimer);
+        refreshTimer = undefined;
         taiLaiTrang();
+      } else if (topic === "sensors" && !refreshTimer) {
+        refreshTimer = setTimeout(() => {
+          refreshTimer = undefined;
+          taiLaiTrang();
+        }, 300);
       }
     });
+    return () => {
+      unsubscribe();
+      clearTimeout(refreshTimer);
+    };
   }, []);
 
   // Tải dữ liệu cảm biến
   useEffect(() => {
     let daHuy = false;
+    const controller = new AbortController();
 
     async function taiDuLieuCamBien() {
       const thamSo = {
         page: trangHienTai,
-        size: PAGE_SIZE,
+        size: soDongMoiTrang,
         sortBy: "ID",
         order: thuTuSapXep,
         search: tuKhoaDaApDung,
-        from: khoangDaApDung.fromTime
-          ? parseDateTime(khoangDaApDung.fromTime)?.toISOString()
-          : null,
-        to: khoangDaApDung.toTime
-          ? parseDateTime(khoangDaApDung.toTime)?.toISOString()
-          : null,
+        sensorType: loaiCamBienDaApDung === "TIME" ? "" : loaiCamBienDaApDung,
+        from: thoiGianDaApDung?.from,
+        to: thoiGianDaApDung?.to,
       };
 
       setDangTai(true);
-      setTrangCamBien(EMPTY_PAGE);
 
       try {
         const query = buildQueryString(thamSo);
-        const result = await requestApi(`/sensor-data?${query}`);
+        const result = await requestApi(`/sensor-data?${query}`, { signal: controller.signal });
 
         if (daHuy) {
           return;
@@ -140,6 +125,7 @@ export default function DataSensor() {
           return;
         }
 
+        setTrangCamBien(EMPTY_PAGE);
         if (error.status === 400) {
           setThongBaoLoi(error.message);
         } else {
@@ -160,17 +146,20 @@ export default function DataSensor() {
 
     return () => {
       daHuy = true;
+      controller.abort();
     };
   }, [
     trangHienTai,
     tuKhoaDaApDung,
-    khoangDaApDung,
+    loaiCamBienDaApDung,
+    thoiGianDaApDung,
+    soDongMoiTrang,
     thuTuSapXep,
     lanLamMoi,
   ]);
 
   const banGhiDau = trangCamBien.totalElements
-    ? trangHienTai * PAGE_SIZE + 1
+    ? trangHienTai * soDongMoiTrang + 1
     : 0;
 
   const banGhiCuoi = trangCamBien.totalElements
@@ -189,15 +178,30 @@ export default function DataSensor() {
       >
         <div className="query-top-row">
           <form
-            className="search-controls query-search-controls"
+            className="search-controls query-search-controls sensor-search-controls"
             onSubmit={xuLyTimKiem}
           >
+            <label className="query-control">
+              Tìm theo
+              <select
+                value={loaiCamBien}
+                onChange={(event) => {
+                  setLoaiCamBien(event.target.value);
+                }}
+              >
+                <option value="">Tất cả</option>
+                <option value="TEMPERATURE">Nhiệt độ</option>
+                <option value="HUMIDITY">Độ ẩm</option>
+                <option value="LIGHT">Ánh sáng</option>
+                <option value="TIME">Thời gian</option>
+              </select>
+            </label>
             <label className="query-control query-search-input">
               Tìm kiếm
               <input
                 value={tuKhoa}
                 onChange={(event) => setTuKhoa(event.target.value)}
-                placeholder="ID, loại cảm biến, giá trị hoặc thời gian"
+                placeholder={loaiCamBien === "TIME" ? "dd/MM/yyyy hoặc dd/MM/yyyy HH:mm:ss" : "Giá trị hoặc thời gian (dd/MM/yyyy)"}
               />
             </label>
 
@@ -220,67 +224,8 @@ export default function DataSensor() {
           </div>
         </div>
 
-        <div className="query-filter-row data-query-filter-row">
-          <fieldset className="filter-group time-filter-group">
-            <legend>Khoảng thời gian</legend>
 
-            <div className="range-controls">
-              <label>
-                <span>Từ</span>
-                <input
-                  aria-label="Từ thời điểm"
-                  placeholder={DATE_TIME_FORMAT}
-                  value={khoangThoiGian.fromTime}
-                  onChange={(event) =>
-                    setKhoangThoiGian({
-                      ...khoangThoiGian,
-                      fromTime: event.target.value,
-                    })
-                  }
-                />
-              </label>
-
-              <label>
-                <span>Đến</span>
-                <input
-                  aria-label="Đến thời điểm"
-                  placeholder={DATE_TIME_FORMAT}
-                  value={khoangThoiGian.toTime}
-                  onChange={(event) =>
-                    setKhoangThoiGian({
-                      ...khoangThoiGian,
-                      toTime: event.target.value,
-                    })
-                  }
-                />
-              </label>
-            </div>
-          </fieldset>
-
-          <div className="filter-actions query-actions">
-            <button
-              className="secondary-button"
-              type="button"
-              onClick={xoaKhoangThoiGian}
-            >
-              Xóa lọc
-            </button>
-
-            <button
-              className="primary-button"
-              type="button"
-              onClick={apDungKhoangThoiGian}
-            >
-              Áp dụng
-            </button>
-          </div>
-        </div>
-
-        {loiBoLoc && (
-          <p className="query-error" role="alert">
-            {loiBoLoc}
-          </p>
-        )}
+        {loiTimKiem && <p className="query-error" role="alert">{loiTimKiem}</p>}
       </section>
 
       {thongBaoLoi && (
@@ -292,13 +237,30 @@ export default function DataSensor() {
         </p>
       )}
 
+      <div className="table-summary">
       <p className="result-info">
-        {dangTai
+        {dangTai && trangCamBien.content.length === 0
           ? "Đang tải..."
           : `Hiển thị ${banGhiDau}-${banGhiCuoi} trên tổng số ${trangCamBien.totalElements} bản ghi`}
       </p>
 
-      <div className="table-container">
+        <label className="page-size-control">
+          Số dòng / trang
+          <select
+            value={soDongMoiTrang}
+            onChange={(event) => {
+              setSoDongMoiTrang(Number(event.target.value));
+              setTrangHienTai(0);
+            }}
+          >
+            {[5, 10, 15, 20].map((soDong) => (
+              <option key={soDong} value={soDong}>{soDong}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div className="table-container" aria-busy={dangTai}>
         <table className="data-table">
           <thead>
             <tr>

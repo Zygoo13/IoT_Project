@@ -33,9 +33,11 @@ public class SeedData implements ApplicationRunner {
                     required("IOT_SEED_STUDENT_CODE"),
                     required("IOT_SEED_EMAIL"));
             entityManager.persist(user);
-        } else if (users != 1) {
-            throw new IllegalStateException("Expected exactly one User");
         }
+
+        // Add the two local accounts once; never reset existing profiles or passwords.
+        seedUser("user124", "Người dùng 2", "BTH4USER124", "user124@example.invalid");
+        seedUser("user125", "Người dùng 3", "BTH4USER125", "user125@example.invalid");
 
         seedSensor("DHT11_TEMP", "Temperature Sensor", "TEMPERATURE", "°C");
         seedSensor("DHT11_HUM", "Humidity Sensor", "HUMIDITY", "%RH");
@@ -44,9 +46,20 @@ public class SeedData implements ApplicationRunner {
         seedDevice("LED2");
 
         entityManager.flush();
-        requireCount("User", 1);
         requireCount("Sensor", 3);
         requireCount("Device", 2);
+    }
+
+    private void seedUser(String username, String fullName, String studentCode, String email) {
+        Long found = entityManager.createQuery(
+                "select count(u) from User u where u.username = :username", Long.class)
+                .setParameter("username", username)
+                .getSingleResult();
+        if (found == 0) {
+            entityManager.persist(new User(username,
+                    new BCryptPasswordEncoder().encode(required("IOT_SEED_PASSWORD")),
+                    fullName, studentCode, email));
+        }
     }
 
     private void seedSensor(String code, String name, String type, String unit) {

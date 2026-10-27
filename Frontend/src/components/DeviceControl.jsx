@@ -11,6 +11,8 @@ export default function DeviceControl({
 }) {
   const khongXacDinh = device.status === "UNKNOWN";
   const dangCho = commandState?.pending;
+  const dangBat = dangCho && commandState.action === "ON";
+  const dangTat = dangCho && commandState.action === "OFF";
 
   const nhanTrangThai = STATUS_LABELS[device.status] || "Chưa xác định";
 
@@ -40,9 +42,9 @@ export default function DeviceControl({
           </span>
         </p>
 
-        {(khongXacDinh || commandState) && (
+        {(khongXacDinh || commandState?.pending || commandState?.type === "error") && (
           <p
-            className={`command-message ${commandState?.type || ""}`}
+            className={`command-message ${commandState?.type || ""} ${commandState?.action === "ON" ? "is-on" : commandState?.action === "OFF" ? "is-off" : ""}`}
             aria-live="polite"
           >
             {thongBaoLenh}
@@ -55,21 +57,25 @@ export default function DeviceControl({
 
         <div className="device-actions">
           <button
-            className="on-button"
+            className={`on-button${device.status === "OFF" ? " is-current" : ""}${dangBat ? " is-requested" : ""}`}
+            aria-busy={Boolean(dangBat)}
             type="button"
             disabled={dangCho || khongXacDinh}
             onClick={() => onControl(device.code, "ON")}
           >
-            ON
+            {dangBat && <span className="command-spinner" aria-hidden="true" />}
+            {dangBat ? "Đang bật…" : "Bật đèn"}
           </button>
 
           <button
-            className="off-button"
+            className={`off-button${device.status === "ON" ? " is-current" : ""}${dangTat ? " is-requested" : ""}`}
+            aria-busy={Boolean(dangTat)}
             type="button"
             disabled={dangCho || khongXacDinh}
             onClick={() => onControl(device.code, "OFF")}
           >
-            OFF
+            {dangTat && <span className="command-spinner" aria-hidden="true" />}
+            {dangTat ? "Đang tắt…" : "Tắt đèn"}
           </button>
         </div>
       </div>

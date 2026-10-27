@@ -1,5 +1,9 @@
 package zygoo13.iot.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.time.Instant;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import zygoo13.iot.entity.User;
 import zygoo13.iot.repository.UserRepository;
 
+@Tag(name = "Auth", description = "Đăng nhập, không có đăng ký tài khoản.")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -37,6 +42,7 @@ public class AuthController {
         this.ttlSeconds = ttlSeconds;
     }
 
+    @Operation(summary = "Đăng nhập và nhận JWT", security = {})
     @PostMapping("/login")
     public TokenResponse login(@Valid @RequestBody LoginRequest request) {
         User user = users.findByUsername(request.username())
@@ -60,6 +66,9 @@ public class AuthController {
         return new ApiException(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", "Invalid username or password");
     }
 
-    public record LoginRequest(@NotBlank String username, @NotBlank String password) { }
+    public record LoginRequest(@NotBlank String username,
+                               @Schema(format = "password", accessMode = Schema.AccessMode.WRITE_ONLY,
+                                       description = "Mật khẩu tài khoản cục bộ, kiểm tra bằng BCrypt.")
+                               @NotBlank String password) { }
     public record TokenResponse(String token) { }
 }

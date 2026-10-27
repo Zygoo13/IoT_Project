@@ -1,9 +1,9 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 import { clearAccessToken } from "../services/api";
 
 const mucDieuHuong = [
-  { to: "/dashboard", label: "Tổng quan" },
+  { to: "/dashboard", label: "Dashboard" },
   { to: "/data-sensor", label: "Dữ liệu cảm biến" },
   { to: "/action-history", label: "Lịch sử điều khiển" },
   { to: "/profile", label: "Hồ sơ" },
@@ -20,7 +20,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-title">
-        <span>Giám sát IoT</span>
+        <Link className="sidebar-home" to="/dashboard">IoT Monitor</Link>
         <small>Môi trường và thiết bị</small>
       </div>
 

@@ -1,0 +1,41 @@
+TABLE_NAME	COLUMN_NAME	COLUMN_TYPE	IS_NULLABLE	COLUMN_KEY
+ActionHistory	id	bigint	NO	PRI
+ActionHistory	userId	bigint	NO	MUL
+ActionHistory	deviceId	bigint	NO	MUL
+ActionHistory	action	varchar(10)	NO	
+ActionHistory	status	varchar(10)	NO	
+ActionHistory	createdAt	datetime(6)	NO	
+ActionHistory	confirmedAt	datetime(6)	YES	
+Device	id	bigint	NO	PRI
+Device	code	varchar(30)	NO	UNI
+Device	name	varchar(100)	NO	
+Device	type	varchar(30)	NO	
+Device	status	varchar(10)	NO	
+Device	active	tinyint(1)	NO	
+Device	createdAt	datetime(6)	NO	
+Device	updatedAt	datetime(6)	NO	
+Sensor	id	bigint	NO	PRI
+Sensor	code	varchar(30)	NO	UNI
+Sensor	name	varchar(100)	NO	
+Sensor	type	varchar(30)	NO	
+Sensor	unit	varchar(20)	NO	
+Sensor	active	tinyint(1)	NO	
+Sensor	createdAt	datetime(6)	NO	
+Sensor	updatedAt	datetime(6)	NO	
+SensorData	id	bigint	NO	PRI
+SensorData	sensorId	bigint	NO	MUL
+SensorData	value	decimal(12,4)	NO	
+SensorData	recordedAt	datetime(6)	NO	
+User	id	bigint	NO	PRI
+User	username	varchar(50)	NO	UNI
+User	passwordHash	varchar(255)	NO	
+User	fullName	varchar(100)	NO	
+User	studentCode	varchar(30)	NO	UNI
+User	email	varchar(255)	NO	UNI
+User	githubUrl	varchar(500)	YES	
+User	figmaUrl	varchar(500)	YES	
+User	apiDocsUrl	varchar(500)	YES	
+User	reportUrl	varchar(500)	YES	
+User	avatarUrl	varchar(500)	YES	
+User	createdAt	datetime(6)	NO	
+User	updatedAt	datetime(6)	NO	

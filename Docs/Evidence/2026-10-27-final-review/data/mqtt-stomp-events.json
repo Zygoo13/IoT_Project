@@ -1,0 +1,1162 @@
+[
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:15:54.381Z",
+    "observerMs": 825.057,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:15:54.407Z",
+    "observerMs": 850.679,
+    "payload": {
+      "id": 9885,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:15:54.325242Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:15:54.945Z",
+    "observerMs": 1389.029,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.2
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:15:54.945Z",
+    "observerMs": 1389.039,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 32.7
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:15:54.996Z",
+    "observerMs": 1440.14,
+    "payload": {
+      "id": 9886,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.2,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:15:54.876822Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:15:55.021Z",
+    "observerMs": 1465.206,
+    "payload": {
+      "id": 9887,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 32.7,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:15:54.92662Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:15:56.682Z",
+    "observerMs": 3125.895,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:15:56.716Z",
+    "observerMs": 3160.037,
+    "payload": {
+      "id": 9888,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:15:56.580285Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:15:56.888Z",
+    "observerMs": 3332.59,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.1
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:15:56.888Z",
+    "observerMs": 3332.622,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 33.96
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:15:56.925Z",
+    "observerMs": 3368.886,
+    "payload": {
+      "id": 9889,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.1,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:15:56.779839Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:15:56.958Z",
+    "observerMs": 3402.434,
+    "payload": {
+      "id": 9890,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 33.96,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:15:56.814794Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:15:58.426Z",
+    "observerMs": 4870.675,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:15:58.427Z",
+    "observerMs": 4870.771,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.2
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:15:58.427Z",
+    "observerMs": 4870.798,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 34.26
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:15:58.461Z",
+    "observerMs": 4904.711,
+    "payload": {
+      "id": 9891,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:15:58.285038Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:15:58.505Z",
+    "observerMs": 4949.288,
+    "payload": {
+      "id": 9892,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.2,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:15:58.314732Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:15:58.533Z",
+    "observerMs": 4977.633,
+    "payload": {
+      "id": 9893,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 34.26,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:15:58.357913Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:00.105Z",
+    "observerMs": 6549.245,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:00.129Z",
+    "observerMs": 6573.48,
+    "payload": {
+      "id": 9894,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:15:59.922662Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:00.395Z",
+    "observerMs": 6839.47,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.2
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:00.395Z",
+    "observerMs": 6839.481,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 32.34
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:00.418Z",
+    "observerMs": 6861.961,
+    "payload": {
+      "id": 9895,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.2,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:00.205073Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:00.436Z",
+    "observerMs": 6880.439,
+    "payload": {
+      "id": 9896,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 32.34,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:00.225698Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:04.049Z",
+    "observerMs": 10493.531,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:04.072Z",
+    "observerMs": 10515.784,
+    "payload": {
+      "id": 9897,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:03.773571Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:04.158Z",
+    "observerMs": 10602.561,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.2
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:04.158Z",
+    "observerMs": 10602.571,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 31.86
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:04.158Z",
+    "observerMs": 10602.574,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:04.158Z",
+    "observerMs": 10602.577,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.3
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:04.158Z",
+    "observerMs": 10602.58,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 33.5
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:04.178Z",
+    "observerMs": 10622.517,
+    "payload": {
+      "id": 9898,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.2,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:03.879191Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:04.196Z",
+    "observerMs": 10640.619,
+    "payload": {
+      "id": 9899,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 31.86,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:03.897657Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:04.219Z",
+    "observerMs": 10662.996,
+    "payload": {
+      "id": 9900,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:03.915348Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:04.237Z",
+    "observerMs": 10680.995,
+    "payload": {
+      "id": 9901,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.3,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:03.936993Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:04.255Z",
+    "observerMs": 10699.491,
+    "payload": {
+      "id": 9902,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 33.5,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:03.954382Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:05.934Z",
+    "observerMs": 12378.117,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:05.961Z",
+    "observerMs": 12405.514,
+    "payload": {
+      "id": 9903,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:05.613441Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:05.986Z",
+    "observerMs": 12430.421,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.3
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:05.986Z",
+    "observerMs": 12430.443,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 34.54
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:06.015Z",
+    "observerMs": 12459.269,
+    "payload": {
+      "id": 9904,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.3,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:05.665277Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:06.037Z",
+    "observerMs": 12481.32,
+    "payload": {
+      "id": 9905,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 34.54,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:05.690146Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:08.361Z",
+    "observerMs": 14805.017,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:08.390Z",
+    "observerMs": 14834.112,
+    "payload": {
+      "id": 9906,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:08.849664Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:08.644Z",
+    "observerMs": 15088.568,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.3
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:08.644Z",
+    "observerMs": 15088.594,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 34.1
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:08.675Z",
+    "observerMs": 15119.486,
+    "payload": {
+      "id": 9907,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.3,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:09.129155Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:08.700Z",
+    "observerMs": 15144.027,
+    "payload": {
+      "id": 9908,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 34.1,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:09.156094Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:09.944Z",
+    "observerMs": 16388.112,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:09.970Z",
+    "observerMs": 16413.921,
+    "payload": {
+      "id": 9909,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:10.404365Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:10.039Z",
+    "observerMs": 16482.869,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.3
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:10.039Z",
+    "observerMs": 16482.881,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 32.26
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:10.066Z",
+    "observerMs": 16510.548,
+    "payload": {
+      "id": 9910,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.3,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:10.494842Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:10.088Z",
+    "observerMs": 16532.555,
+    "payload": {
+      "id": 9911,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 32.26,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:10.521328Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:34.266Z",
+    "observerMs": 40709.934,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:34.266Z",
+    "observerMs": 40709.951,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.5
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:34.266Z",
+    "observerMs": 40709.962,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 36.02
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:34.288Z",
+    "observerMs": 40732.378,
+    "payload": {
+      "id": 9912,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:33.989417Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:34.312Z",
+    "observerMs": 40756.058,
+    "payload": {
+      "id": 9913,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.5,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:34.009275Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:34.336Z",
+    "observerMs": 40780.118,
+    "payload": {
+      "id": 9914,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 36.02,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:34.032804Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:34.614Z",
+    "observerMs": 41057.913,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:34.614Z",
+    "observerMs": 41057.929,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.5
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:34.614Z",
+    "observerMs": 41057.936,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 36.26
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:34.639Z",
+    "observerMs": 41083.328,
+    "payload": {
+      "id": 9915,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:34.328981Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:34.665Z",
+    "observerMs": 41108.874,
+    "payload": {
+      "id": 9916,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.5,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:34.352529Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:34.687Z",
+    "observerMs": 41130.853,
+    "payload": {
+      "id": 9917,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 36.26,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:34.37714Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:35.095Z",
+    "observerMs": 41539.637,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:35.115Z",
+    "observerMs": 41559.562,
+    "payload": {
+      "id": 9918,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:34.797736Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:35.286Z",
+    "observerMs": 41730.132,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.5
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:35.286Z",
+    "observerMs": 41730.15,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 36.72
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:35.306Z",
+    "observerMs": 41749.925,
+    "payload": {
+      "id": 9919,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.5,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:34.982469Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:35.323Z",
+    "observerMs": 41767.492,
+    "payload": {
+      "id": 9920,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 36.72,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:35.001363Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:37.046Z",
+    "observerMs": 43489.691,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:37.068Z",
+    "observerMs": 43511.752,
+    "payload": {
+      "id": 9921,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:36.69964Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:37.358Z",
+    "observerMs": 43802.044,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.5
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:37.358Z",
+    "observerMs": 43802.056,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 37.14
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:37.379Z",
+    "observerMs": 43823.112,
+    "payload": {
+      "id": 9922,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.5,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:37.002385Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:37.399Z",
+    "observerMs": 43843.088,
+    "payload": {
+      "id": 9923,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 37.14,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:37.022674Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:38.998Z",
+    "observerMs": 45441.785,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:39.022Z",
+    "observerMs": 45465.862,
+    "payload": {
+      "id": 9924,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:39.682785Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:39.298Z",
+    "observerMs": 45741.917,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.5
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:39.298Z",
+    "observerMs": 45741.945,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 37.5
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:39.320Z",
+    "observerMs": 45763.916,
+    "payload": {
+      "id": 9925,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.5,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:39.972638Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:39.337Z",
+    "observerMs": 45780.886,
+    "payload": {
+      "id": 9926,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 37.5,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:39.993624Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:41.162Z",
+    "observerMs": 47605.861,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.9
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:41.190Z",
+    "observerMs": 47634.035,
+    "payload": {
+      "id": 9927,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.9,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:41.817776Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:41.600Z",
+    "observerMs": 48044.087,
+    "payload": {
+      "sensorCode": "DHT11_HUM",
+      "value": 65.5
+    },
+    "retained": false
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:41.600Z",
+    "observerMs": 48044.105,
+    "payload": {
+      "sensorCode": "LDR_LIGHT",
+      "value": 37.44
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:41.633Z",
+    "observerMs": 48076.758,
+    "payload": {
+      "id": 9928,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 65.5,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T10:16:42.24594Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:41.653Z",
+    "observerMs": 48097.133,
+    "payload": {
+      "id": 9929,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 37.44,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T10:16:42.276709Z"
+    }
+  },
+  {
+    "channel": "MQTT",
+    "topic": "iot/sensor/data",
+    "receivedAt": "2026-10-27T10:16:44.456Z",
+    "observerMs": 50900.626,
+    "payload": {
+      "sensorCode": "DHT11_TEMP",
+      "value": 29.8
+    },
+    "retained": false
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/sensors",
+    "receivedAt": "2026-10-27T10:16:44.483Z",
+    "observerMs": 50927.067,
+    "payload": {
+      "id": 9930,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 29.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T10:16:45.071959Z"
+    }
+  },
+  {
+    "channel": "STOMP",
+    "topic": "/topic/hardware",
+    "receivedAt": "2026-10-27T10:17:15.933Z",
+    "observerMs": 82377.725,
+    "payload": {
+      "status": "OFFLINE",
+      "lastSeenAt": "2026-10-27T10:16:45.071959Z"
+    }
+  }
+]

@@ -1,0 +1,168 @@
+{
+  "content": [
+    {
+      "id": 9206,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 49.936,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:46.884134Z"
+    },
+    {
+      "id": 9203,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 60.88,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:44.898418Z"
+    },
+    {
+      "id": 9200,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 52.864,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:42.924216Z"
+    },
+    {
+      "id": 9197,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 59.584,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:40.933611Z"
+    },
+    {
+      "id": 9194,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 58.768,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:39.168622Z"
+    },
+    {
+      "id": 9191,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 55.312,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:37.047321Z"
+    },
+    {
+      "id": 9188,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 50.128,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:35.240041Z"
+    },
+    {
+      "id": 9185,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 68.56,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:33.205821Z"
+    },
+    {
+      "id": 9182,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 52.96,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:31.266664Z"
+    },
+    {
+      "id": 9179,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 72.208,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:29.329755Z"
+    },
+    {
+      "id": 9176,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 83.056,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:27.611782Z"
+    },
+    {
+      "id": 9173,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 56.944,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:25.533969Z"
+    },
+    {
+      "id": 9170,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 37.06,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:23.779824Z"
+    },
+    {
+      "id": 9167,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 51.472,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:21.082844Z"
+    },
+    {
+      "id": 9164,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 43.6,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:18.587194Z"
+    },
+    {
+      "id": 9161,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 105.5556,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:16.914584Z"
+    },
+    {
+      "id": 9158,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 93.568,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:14.966156Z"
+    },
+    {
+      "id": 9155,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 38.4,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:12.966217Z"
+    },
+    {
+      "id": 9152,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 38.58,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:10.984197Z"
+    },
+    {
+      "id": 9149,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 38.3,
+      "unit": "lux",
+      "recordedAt": "2026-10-20T19:31:08.921841Z"
+    }
+  ],
+  "page": 0,
+  "size": 20,
+  "totalElements": 2951,
+  "totalPages": 148
+}

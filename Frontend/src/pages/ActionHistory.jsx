@@ -3,14 +3,9 @@ import { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import { buildQueryString, requestApi } from "../services/api";
 import { onRealtime } from "../services/realtime";
-import {
-  DATE_TIME_FORMAT,
-  formatDateTime,
-  getDateRangeError,
-  parseDateTime,
-} from "../utils/dateTime";
+import { formatDateTime, parseSearchTimeRange } from "../utils/dateTime";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 5;
 
 const EMPTY_PAGE = {
   content: [],
@@ -24,23 +19,21 @@ const EMPTY_FILTERS = {
   device: "",
   action: "",
   status: "",
-  fromTime: "",
-  toTime: "",
 };
 
 export default function ActionHistory() {
   const [trangHienTai, setTrangHienTai] = useState(0);
   const [trangLichSu, setTrangLichSu] = useState(EMPTY_PAGE);
+  const [soDongMoiTrang, setSoDongMoiTrang] = useState(PAGE_SIZE);
 
   const [tuKhoa, setTuKhoa] = useState("");
-  const [tuKhoaDaApDung, setTuKhoaDaApDung] = useState("");
+  const [thoiGianDaApDung, setThoiGianDaApDung] = useState(null);
+  const [loiTimKiem, setLoiTimKiem] = useState("");
 
   const [thuTuSapXep, setThuTuSapXep] = useState("DESC");
 
   const [boLoc, setBoLoc] = useState(EMPTY_FILTERS);
-  const [boLocDaApDung, setBoLocDaApDung] = useState(EMPTY_FILTERS);
 
-  const [loiBoLoc, setLoiBoLoc] = useState("");
   const [thongBaoLoi, setThongBaoLoi] = useState("");
 
   const [dangTai, setDangTai] = useState(true);
@@ -53,7 +46,13 @@ export default function ActionHistory() {
   function xuLyTimKiem(event) {
     event.preventDefault();
 
-    setTuKhoaDaApDung(tuKhoa.trim());
+    try {
+      setThoiGianDaApDung(parseSearchTimeRange(tuKhoa));
+    } catch (error) {
+      setLoiTimKiem(error.message);
+      return;
+    }
+    setLoiTimKiem("");
     setTrangHienTai(0);
   }
 
@@ -62,68 +61,63 @@ export default function ActionHistory() {
     setTrangHienTai(0);
   }
 
-  // Kiểm tra và áp dụng bộ lọc
-  function apDungBoLoc() {
-    const loi = getDateRangeError(boLoc.fromTime, boLoc.toTime);
-
-    if (loi) {
-      setLoiBoLoc(loi);
-      return;
-    }
-
-    setLoiBoLoc("");
-    setBoLocDaApDung({ ...boLoc });
+  function doiBoLoc(tenTruong, giaTri) {
+    setBoLoc((boLocHienTai) => ({ ...boLocHienTai, [tenTruong]: giaTri }));
     setTrangHienTai(0);
   }
 
   function xoaBoLoc() {
+    setTuKhoa("");
+    setThoiGianDaApDung(null);
+    setLoiTimKiem("");
     setBoLoc(EMPTY_FILTERS);
-    setBoLocDaApDung(EMPTY_FILTERS);
-    setLoiBoLoc("");
     setTrangHienTai(0);
   }
 
-  // Tải lại khi có dữ liệu realtime mới
+  // Gom phản hồi gần nhau, giữ bảng trong lúc tải lại.
   useEffect(() => {
-    return onRealtime((topic) => {
-      if (
-        topic === "connected" ||
-        topic === "devices" ||
-        topic === "notifications"
-      ) {
+    let refreshTimer;
+    const unsubscribe = onRealtime((topic) => {
+      if (topic === "connected") {
+        clearTimeout(refreshTimer);
+        refreshTimer = undefined;
         taiLaiTrang();
+      } else if ((topic === "devices" || topic === "notifications") && !refreshTimer) {
+        refreshTimer = setTimeout(() => {
+          refreshTimer = undefined;
+          taiLaiTrang();
+        }, 300);
       }
     });
+    return () => {
+      unsubscribe();
+      clearTimeout(refreshTimer);
+    };
   }, []);
 
   // Tải lịch sử điều khiển
   useEffect(() => {
     let daHuy = false;
+    const controller = new AbortController();
 
     async function taiLichSuDieuKhien() {
       const thamSo = {
         page: trangHienTai,
-        size: PAGE_SIZE,
+        size: soDongMoiTrang,
         sortBy: "ID",
         order: thuTuSapXep,
-        search: tuKhoaDaApDung,
-        device: boLocDaApDung.device,
-        action: boLocDaApDung.action,
-        status: boLocDaApDung.status,
-        from: boLocDaApDung.fromTime
-          ? parseDateTime(boLocDaApDung.fromTime)?.toISOString()
-          : null,
-        to: boLocDaApDung.toTime
-          ? parseDateTime(boLocDaApDung.toTime)?.toISOString()
-          : null,
+        from: thoiGianDaApDung?.from,
+        to: thoiGianDaApDung?.to,
+        device: boLoc.device,
+        action: boLoc.action,
+        status: boLoc.status,
       };
 
       setDangTai(true);
-      setTrangLichSu(EMPTY_PAGE);
 
       try {
         const query = buildQueryString(thamSo);
-        const result = await requestApi(`/action-history?${query}`);
+        const result = await requestApi(`/action-history?${query}`, { signal: controller.signal });
 
         if (daHuy) {
           return;
@@ -140,6 +134,7 @@ export default function ActionHistory() {
           return;
         }
 
+        setTrangLichSu(EMPTY_PAGE);
         if (error.status === 400) {
           setThongBaoLoi(error.message);
         } else {
@@ -160,17 +155,19 @@ export default function ActionHistory() {
 
     return () => {
       daHuy = true;
+      controller.abort();
     };
   }, [
     trangHienTai,
-    tuKhoaDaApDung,
-    boLocDaApDung,
+    thoiGianDaApDung,
+    soDongMoiTrang,
+    boLoc,
     thuTuSapXep,
     lanLamMoi,
   ]);
 
   const banGhiDau = trangLichSu.totalElements
-    ? trangHienTai * PAGE_SIZE + 1
+    ? trangHienTai * soDongMoiTrang + 1
     : 0;
 
   const banGhiCuoi = trangLichSu.totalElements
@@ -183,147 +180,61 @@ export default function ActionHistory() {
         <h1>Lịch sử điều khiển</h1>
       </header>
 
-      <section
-        className="query-panel"
-        aria-label="Bộ lọc lịch sử điều khiển"
-      >
+      <section className="query-panel" aria-label="Bộ lọc lịch sử điều khiển">
         <div className="query-top-row">
-          <form
-            className="search-controls query-search-controls"
-            onSubmit={xuLyTimKiem}
-          >
-            <label className="query-control query-search-input">
-              Tìm kiếm
+          <form className="search-controls query-search-controls" onSubmit={xuLyTimKiem}>
+            <label className="query-control">
+              Tìm kiếm theo thời gian
               <input
                 value={tuKhoa}
                 onChange={(event) => setTuKhoa(event.target.value)}
-                placeholder="ID, thiết bị, lệnh, trạng thái hoặc thời gian"
+                placeholder="dd/MM/yyyy hoặc dd/MM/yyyy HH:mm:ss"
+                aria-invalid={Boolean(loiTimKiem)}
               />
             </label>
-
-            <button className="primary-button" type="submit">
-              Tìm kiếm
-            </button>
+            <button className="primary-button" type="submit">Tìm kiếm</button>
           </form>
-
           <div className="sort-controls">
-            <label className="query-control query-order-control">
+            <label className="query-control">
               Thứ tự
-              <select
-                value={thuTuSapXep}
-                onChange={doiThuTuSapXep}
-              >
+              <select value={thuTuSapXep} onChange={doiThuTuSapXep}>
                 <option value="ASC">Tăng dần</option>
                 <option value="DESC">Giảm dần</option>
               </select>
             </label>
           </div>
         </div>
-
-        <div className="query-filter-row history-query-filter-row">
+        <div className="history-filter-controls">
           <label className="query-control">
             Thiết bị
-            <select
-              value={boLoc.device}
-              onChange={(event) =>
-                setBoLoc({
-                  ...boLoc,
-                  device: event.target.value,
-                })
-              }
-            >
+            <select value={boLoc.device} onChange={(event) => doiBoLoc("device", event.target.value)}>
               <option value="">Tất cả</option>
               <option value="LED1">LED1</option>
               <option value="LED2">LED2</option>
             </select>
           </label>
-
           <label className="query-control">
             Lệnh
-            <select
-              value={boLoc.action}
-              onChange={(event) =>
-                setBoLoc({
-                  ...boLoc,
-                  action: event.target.value,
-                })
-              }
-            >
+            <select value={boLoc.action} onChange={(event) => doiBoLoc("action", event.target.value)}>
               <option value="">Tất cả</option>
               <option value="ON">Bật</option>
               <option value="OFF">Tắt</option>
             </select>
           </label>
-
           <label className="query-control">
             Trạng thái
-            <select
-              value={boLoc.status}
-              onChange={(event) =>
-                setBoLoc({
-                  ...boLoc,
-                  status: event.target.value,
-                })
-              }
-            >
+            <select value={boLoc.status} onChange={(event) => doiBoLoc("status", event.target.value)}>
               <option value="">Tất cả</option>
+              <option value="PROCESSING">Processing</option>
               <option value="ON">Bật</option>
               <option value="OFF">Tắt</option>
             </select>
           </label>
-
-          <label className="query-control history-time-control">
-            Từ thời điểm
-            <input
-              placeholder={DATE_TIME_FORMAT}
-              value={boLoc.fromTime}
-              onChange={(event) =>
-                setBoLoc({
-                  ...boLoc,
-                  fromTime: event.target.value,
-                })
-              }
-            />
-          </label>
-
-          <label className="query-control history-time-control">
-            Đến thời điểm
-            <input
-              placeholder={DATE_TIME_FORMAT}
-              value={boLoc.toTime}
-              onChange={(event) =>
-                setBoLoc({
-                  ...boLoc,
-                  toTime: event.target.value,
-                })
-              }
-            />
-          </label>
-
-          <div className="filter-actions query-actions">
-            <button
-              className="secondary-button"
-              type="button"
-              onClick={xoaBoLoc}
-            >
-              Xóa lọc
-            </button>
-
-            <button
-              className="primary-button"
-              type="button"
-              onClick={apDungBoLoc}
-            >
-              Áp dụng
-            </button>
-          </div>
+          <button className="secondary-button clear-filter-button" type="button" onClick={xoaBoLoc}>
+            Xóa lọc
+          </button>
         </div>
-
-        {loiBoLoc && (
-          <p className="query-error" role="alert">
-            {loiBoLoc}
-          </p>
-        )}
+        {loiTimKiem && <p className="query-error" role="alert">{loiTimKiem}</p>}
       </section>
 
       {thongBaoLoi && (
@@ -335,18 +246,36 @@ export default function ActionHistory() {
         </p>
       )}
 
-      <p className="result-info">
-        {dangTai
-          ? "Đang tải..."
-          : `Hiển thị ${banGhiDau}-${banGhiCuoi} trên tổng số ${trangLichSu.totalElements} bản ghi`}
-      </p>
+      <div className="table-summary">
+        <p className="result-info">
+          {dangTai && trangLichSu.content.length === 0
+            ? "Đang tải..."
+            : `Hiển thị ${banGhiDau}-${banGhiCuoi} trên tổng số ${trangLichSu.totalElements} bản ghi`}
+        </p>
 
-      <div className="table-container">
+        <label className="page-size-control">
+          Số dòng / trang
+          <select
+            value={soDongMoiTrang}
+            onChange={(event) => {
+              setSoDongMoiTrang(Number(event.target.value));
+              setTrangHienTai(0);
+            }}
+          >
+            {[5, 10, 15, 20].map((soDong) => (
+              <option key={soDong} value={soDong}>{soDong}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div className="table-container" aria-busy={dangTai}>
         <table className="data-table">
           <thead>
             <tr>
               <th>ID</th>
               <th>Thiết bị</th>
+              <th>Người thực hiện</th>
               <th>Lệnh</th>
               <th>Trạng thái</th>
               <th>Thời gian</th>
@@ -359,6 +288,7 @@ export default function ActionHistory() {
                 <tr key={record.id}>
                   <td>{record.id}</td>
                   <td>{record.deviceCode}</td>
+                  <td className="history-username">{record.username || "—"}</td>
 
                   <td>
                     <span
@@ -371,10 +301,10 @@ export default function ActionHistory() {
 
                   <td>
                     <span
-                      className={`status-badge ${record.status === "ON" ? "is-on" : "is-off"
+                      className={`status-badge ${record.deliveryState === "PENDING" ? "is-processing" : record.status === "ON" ? "is-on" : "is-off"
                         }`}
                     >
-                      {record.status === "ON" ? "BẬT" : "TẮT"}
+                      {record.deliveryState === "PENDING" ? "Processing" : record.status === "ON" ? "BẬT" : "TẮT"}
                     </span>
                   </td>
 
@@ -383,7 +313,7 @@ export default function ActionHistory() {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="empty-table-cell">
+                <td colSpan="6" className="empty-table-cell">
                   {dangTai ? "Đang tải..." : "Không tìm thấy dữ liệu."}
                 </td>
               </tr>

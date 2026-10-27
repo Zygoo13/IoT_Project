@@ -1,0 +1,86 @@
+{
+  "capturedThrough": "2026-10-27T11:50:34.950Z",
+  "sensorEvents": 522,
+  "sqlRows": 522,
+  "mismatches": [],
+  "perSensor": {
+    "DHT11_TEMP": {
+      "mqtt": 174,
+      "stomp": 174,
+      "valuesEqualInOrder": true,
+      "minimum": 26.7,
+      "maximum": 27.5,
+      "minimumMqttGapMs": 1807.497000000003,
+      "maximumMqttGapMs": 176314.02400000003,
+      "lastReading": {
+        "id": 12080,
+        "sensorCode": "DHT11_TEMP",
+        "sensorType": "TEMPERATURE",
+        "value": 27,
+        "unit": "°C",
+        "recordedAt": "2026-10-27T11:50:35.489622Z"
+      }
+    },
+    "DHT11_HUM": {
+      "mqtt": 174,
+      "stomp": 174,
+      "valuesEqualInOrder": true,
+      "minimum": 48,
+      "maximum": 49.7,
+      "minimumMqttGapMs": 1493.4440000000031,
+      "maximumMqttGapMs": 176330.011,
+      "lastReading": {
+        "id": 12081,
+        "sensorCode": "DHT11_HUM",
+        "sensorType": "HUMIDITY",
+        "value": 49.1,
+        "unit": "%RH",
+        "recordedAt": "2026-10-27T11:50:35.536432Z"
+      }
+    },
+    "LDR_LIGHT": {
+      "mqtt": 174,
+      "stomp": 174,
+      "valuesEqualInOrder": true,
+      "minimum": 4.32,
+      "maximum": 96.832,
+      "minimumMqttGapMs": 1493.4630000000034,
+      "maximumMqttGapMs": 176330.00400000002,
+      "lastReading": {
+        "id": 12082,
+        "sensorCode": "LDR_LIGHT",
+        "sensorType": "LIGHT",
+        "value": 91.696,
+        "unit": "lux",
+        "recordedAt": "2026-10-27T11:50:35.552857Z"
+      }
+    }
+  },
+  "hardwareEvents": [
+    {
+      "channel": "STOMP",
+      "topic": "/topic/hardware",
+      "receivedAt": "2026-10-27T11:47:07.741Z",
+      "observerMs": 313422.077,
+      "payload": {
+        "status": "OFFLINE",
+        "lastSeenAt": "2026-10-27T11:46:36.88395Z"
+      }
+    },
+    {
+      "channel": "STOMP",
+      "topic": "/topic/hardware",
+      "receivedAt": "2026-10-27T11:49:32.899Z",
+      "observerMs": 458579.511,
+      "payload": {
+        "status": "ONLINE",
+        "lastSeenAt": "2026-10-27T11:49:33.485995Z"
+      }
+    }
+  ],
+  "limits": [
+    "No sampleId or device measurement timestamp; matching by observed order does not prove a shared sampling cycle.",
+    "Physical LED illumination requires user confirmation/photo; GPIO acknowledgment is software evidence.",
+    "The observer session preceding this one was interrupted by runtime restart and is stored separately."
+  ]
+}

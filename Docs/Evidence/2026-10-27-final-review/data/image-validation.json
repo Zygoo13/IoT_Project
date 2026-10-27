@@ -1,0 +1,82 @@
+[
+  {
+    "file": "dashboard-final-after-reload.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "dashboard-offline-after-navigation.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "dashboard-offline-before-tests.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "dashboard-online-final.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "dashboard-recovered-online.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "dashboard-timeout-message.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "history-processing-empty-after-timeout.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "history-processing-pending-row.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "history-six-columns-desktop.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "history-three-users-final.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "led-pending-on-off-colors.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "profile-edit-form-buttons.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "profile-edit-upper.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "sensor-time-search-final.png",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "file": "swagger-historyrow-username.png",
+    "width": 1360,
+    "height": 329
+  },
+  {
+    "file": "swagger-seven-endpoints.png",
+    "width": 1424,
+    "height": 1161
+  }
+]

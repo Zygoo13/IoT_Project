@@ -1,0 +1,10 @@
+# Giữ tương thích lệnh BTH4 cũ; compose.yaml đã chạy broker trong Docker.
+services:
+  app:
+    env_file:
+      - path: Backend/.env.bth4
+        format: raw
+    environment:
+      IOT_MQTT_URI: "tcp://mosquitto:1883"
+      IOT_MQTT_CLIENT_ID: "iot-backend-bth4"
+      IOT_LED_DEMO_ENABLED: "false"

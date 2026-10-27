@@ -1,0 +1,244 @@
+{
+  "capturedAt": "2026-10-27T10:54:56.154Z",
+  "history": {
+    "id": 604,
+    "deviceId": 2,
+    "deviceCode": "LED2",
+    "username": "user124",
+    "action": "ON",
+    "status": "ON",
+    "createdAt": "2026-10-27T10:54:55.478475Z",
+    "confirmedAt": "2026-10-27T10:54:55.680502Z",
+    "deliveryState": "CONFIRMED"
+  },
+  "dashboard": {
+    "latest": {
+      "DHT11_TEMP": {
+        "sensorCode": "DHT11_TEMP",
+        "value": 27.5,
+        "unit": "°C",
+        "recordedAt": "2026-10-27T10:54:55.030683Z",
+        "stale": false
+      },
+      "DHT11_HUM": {
+        "sensorCode": "DHT11_HUM",
+        "value": 50.2,
+        "unit": "%RH",
+        "recordedAt": "2026-10-27T10:54:55.294566Z",
+        "stale": false
+      },
+      "LDR_LIGHT": {
+        "sensorCode": "LDR_LIGHT",
+        "value": 79.552,
+        "unit": "lux",
+        "recordedAt": "2026-10-27T10:54:55.313262Z",
+        "stale": false
+      }
+    },
+    "chart": {
+      "DHT11_TEMP": [
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:26.904711Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:28.869823Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:30.843921Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:32.849878Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:34.891005Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:36.786672Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:38.865384Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:40.833122Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:42.768695Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:45.198871Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:47.238074Z"
+        },
+        {
+          "value": 27.4,
+          "recordedAt": "2026-10-27T10:54:49.174948Z"
+        },
+        {
+          "value": 27.5,
+          "recordedAt": "2026-10-27T10:54:51.148268Z"
+        },
+        {
+          "value": 27.5,
+          "recordedAt": "2026-10-27T10:54:53.081819Z"
+        },
+        {
+          "value": 27.5,
+          "recordedAt": "2026-10-27T10:54:55.030683Z"
+        }
+      ],
+      "DHT11_HUM": [
+        {
+          "value": 49.9,
+          "recordedAt": "2026-10-27T10:54:26.955113Z"
+        },
+        {
+          "value": 49.9,
+          "recordedAt": "2026-10-27T10:54:29.107983Z"
+        },
+        {
+          "value": 49.9,
+          "recordedAt": "2026-10-27T10:54:31.130943Z"
+        },
+        {
+          "value": 49.9,
+          "recordedAt": "2026-10-27T10:54:32.977054Z"
+        },
+        {
+          "value": 49.9,
+          "recordedAt": "2026-10-27T10:54:34.969834Z"
+        },
+        {
+          "value": 49.9,
+          "recordedAt": "2026-10-27T10:54:37.016582Z"
+        },
+        {
+          "value": 49.9,
+          "recordedAt": "2026-10-27T10:54:38.970863Z"
+        },
+        {
+          "value": 50,
+          "recordedAt": "2026-10-27T10:54:41.063271Z"
+        },
+        {
+          "value": 50,
+          "recordedAt": "2026-10-27T10:54:42.812237Z"
+        },
+        {
+          "value": 50,
+          "recordedAt": "2026-10-27T10:54:45.411552Z"
+        },
+        {
+          "value": 50.1,
+          "recordedAt": "2026-10-27T10:54:47.448628Z"
+        },
+        {
+          "value": 50.1,
+          "recordedAt": "2026-10-27T10:54:49.218986Z"
+        },
+        {
+          "value": 50.1,
+          "recordedAt": "2026-10-27T10:54:51.291623Z"
+        },
+        {
+          "value": 50.2,
+          "recordedAt": "2026-10-27T10:54:53.283941Z"
+        },
+        {
+          "value": 50.2,
+          "recordedAt": "2026-10-27T10:54:55.294566Z"
+        }
+      ],
+      "LDR_LIGHT": [
+        {
+          "value": 90.592,
+          "recordedAt": "2026-10-27T10:54:26.974968Z"
+        },
+        {
+          "value": 90.448,
+          "recordedAt": "2026-10-27T10:54:29.137839Z"
+        },
+        {
+          "value": 90.112,
+          "recordedAt": "2026-10-27T10:54:31.159668Z"
+        },
+        {
+          "value": 89.728,
+          "recordedAt": "2026-10-27T10:54:32.998285Z"
+        },
+        {
+          "value": 90.16,
+          "recordedAt": "2026-10-27T10:54:34.986306Z"
+        },
+        {
+          "value": 96.448,
+          "recordedAt": "2026-10-27T10:54:37.034567Z"
+        },
+        {
+          "value": 97.552,
+          "recordedAt": "2026-10-27T10:54:38.990533Z"
+        },
+        {
+          "value": 98.416,
+          "recordedAt": "2026-10-27T10:54:41.195513Z"
+        },
+        {
+          "value": 98.32,
+          "recordedAt": "2026-10-27T10:54:42.830901Z"
+        },
+        {
+          "value": 95.968,
+          "recordedAt": "2026-10-27T10:54:45.433083Z"
+        },
+        {
+          "value": 95.728,
+          "recordedAt": "2026-10-27T10:54:47.467762Z"
+        },
+        {
+          "value": 95.776,
+          "recordedAt": "2026-10-27T10:54:49.236872Z"
+        },
+        {
+          "value": 95.44,
+          "recordedAt": "2026-10-27T10:54:51.309171Z"
+        },
+        {
+          "value": 53.776,
+          "recordedAt": "2026-10-27T10:54:53.3036Z"
+        },
+        {
+          "value": 79.552,
+          "recordedAt": "2026-10-27T10:54:55.313262Z"
+        }
+      ]
+    },
+    "hardware": {
+      "status": "ONLINE",
+      "lastSeenAt": "2026-10-27T10:54:55.313262Z"
+    },
+    "devices": [
+      {
+        "id": 1,
+        "code": "LED1",
+        "status": "OFF"
+      },
+      {
+        "id": 2,
+        "code": "LED2",
+        "status": "ON"
+      }
+    ],
+    "ledDemo": false
+  }
+}

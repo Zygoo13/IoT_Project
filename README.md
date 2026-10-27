@@ -1,155 +1,159 @@
-# IoT Project
+# IoT Monitor — BTH4
 
-React + Spring Boot + MySQL + Mosquitto, chuẩn bị ghép ESP32 cho BTH4.
+React + Spring Boot + MySQL + Mosquitto + ESP32. BTH3 đã hoàn thành.
+Từ 20/10/2026, source đã gỡ bộ phản hồi LED mô phỏng. Không xóa dữ liệu cũ,
+không đổi năm bảng và không sửa firmware trong bước chuẩn bị này.
 
-```text
-IoT_Project/
-├── Backend/             # Spring Boot, API, MQTT và STOMP
-├── Frontend/            # Năm màn hình React
-├── Hardware/            # Sketch ESP32 để phát triển và nạp
-├── Docs/                # Bài nộp, wireframe và firmware demo gốc
-├── docker/              # Nginx, quản lý tiến trình và healthcheck
-├── Dockerfile
-└── compose.yaml
-```
+## Cấu trúc
 
-## Một container Frontend + Backend
+- Frontend/: năm màn hình React, REST và STOMP native WebSocket.
+- Backend/: JWT, API, OpenAPI/Swagger, MQTT, MySQL và STOMP.
+- Hardware/ESP32/IoTMonitor/: sketch ESP32 và config.h cục bộ.
+- Docs/: bài nộp, wireframe và firmware tham khảo.
+- docker/: Nginx, Supervisor, cấu hình Mosquitto và healthcheck.
+- compose.yaml: service app (Frontend + Backend) và service mosquitto trong project iot_project.
+- compose.bth4.yaml: giữ tương thích lệnh BTH4 cũ; cấu hình nền đã dùng broker Docker.
+- start.ps1: khởi động MySQL hiện có, chuẩn bị password file nếu thiếu rồi chạy Compose.
 
-Image `iot-project:local` build React bằng Node, build Spring Boot bằng Maven,
-rồi chạy **Nginx và Java trong cùng container** `iot_project_app`.
-Supervisor quản lý hai tiến trình và dừng chúng khi container dừng.
+## Khởi động BTH4
 
-```text
-Browser → localhost:8088 → Nginx
-                            ├── / và các route React → file build
-                            ├── /api/* → Spring Boot :8080 trong container
-                            └── /ws → WebSocket/STOMP của Spring Boot
+Cần Docker Desktop ở chế độ Linux containers. MySQL vẫn dùng container
+iot_backend_mysql_20261005 và volume hiện có, chưa chuyển vào Compose này.
+Chỉ chạy một Backend nhận telemetry. Mosquitto Windows đã dừng và chuyển
+StartupType sang Manual để không tranh cổng 1325 với Docker.
 
-Spring Boot → MySQL và Mosquitto hiện có trên máy
-ESP32 → Wi-Fi → Mosquitto
-```
+1. Giữ Backend/.env cục bộ chứa DB, seed và JWT secret.
+2. Backend/.env.bth4 chứa IOT_MQTT_USER và IOT_MQTT_PASSWORD của broker 1325.
+   Nếu chưa có, sao chép Backend/bth4.env.example và điền tài khoản đang dùng.
+   Không ghi đè file cục bộ đã có; file được đọc raw, không bao giá trị bằng dấu nháy.
+3. Chạy từ thư mục gốc:
 
-MySQL và Mosquitto **không được gộp vào image**. Container app dùng DB hiện có,
-bao gồm tài khoản và dữ liệu demo. Không có lệnh tự nạp demo hoặc đặt lại DB.
+~~~powershell
+.\start.ps1
+~~~
 
-### Chuẩn bị trên máy hiện tại
+Sau khi sửa source, dùng `.\start.ps1 -Build`. Script không tạo lại MySQL hoặc volume.
+Khi MySQL đã chạy, có thể dùng trực tiếp:
 
-- Docker Desktop đang chạy Linux containers.
-- MySQL container `iot_backend_mysql_20261005` đang chạy, host port **3307**.
-- Mosquitto đang chạy tại host port **1883** với cấu hình/tài khoản cục bộ.
-- `Backend/.env` đã có thông tin DB, MQTT, User seed và JWT theo Backend README.
-- Dừng Backend Java đang chạy ngoài Docker trước khi khởi động app container.
-  Chỉ chạy **một Backend** nhận telemetry để tránh lưu một message hai lần.
-
-Nếu MySQL đang dừng:
-
-```powershell
-docker start iot_backend_mysql_20261005
-```
-
-Nếu broker thử nghiệm trên máy hiện tại đang dừng, từ thư mục gốc:
-
-```powershell
-Start-Process -FilePath 'C:\Program Files\Mosquitto\mosquitto.exe' `
-  -ArgumentList @('-c', '.mosquitto-test.conf') `
-  -WorkingDirectory (Join-Path $PWD 'Backend') -WindowStyle Hidden
-```
-
-File cấu hình và password file Mosquitto đã có cục bộ trong Backend, được Git
-bỏ qua. Không chạy thêm broker nếu cổng 1883 đã được broker hiện tại sử dụng.
-
-### Build và chạy
-
-Chạy tại **thư mục gốc IoT_Project**:
-
-```powershell
-docker compose --env-file Backend/.env up -d --build
+~~~powershell
+docker compose --env-file Backend/.env up -d
 docker compose --env-file Backend/.env ps
-```
+~~~
 
-Đợi app chuyển sang `healthy`, rồi mở **http://localhost:8088**.
-Dùng tài khoản seed cục bộ hiện có. Origin mới có phiên JWT riêng nên cần
-đăng nhập tại địa chỉ mới. Không cần chạy Vite hoặc Java trực tiếp.
+Trong Docker Desktop, Start nhóm iot_project sẽ chạy cả app và Mosquitto.
+MySQL nằm ngoài nhóm nên vẫn cần chạy riêng; start.ps1 xử lý bước này.
+Hai service dùng restart: unless-stopped: tự chạy lại cùng Docker nếu trước đó
+không bị Stop thủ công. Mở Docker Desktop không tự Start service đã bị Stop.
 
-Sau khi đã build, có thể bật/tắt đúng container app:
+- Web: http://localhost:8088
+- Swagger UI: http://localhost:8088/swagger-ui/index.html
+- OpenAPI JSON: http://localhost:8088/v3/api-docs
+- OpenAPI YAML: http://localhost:8088/v3/api-docs.yaml
 
-```powershell
-docker start iot_project_app
-docker stop iot_project_app
-docker logs --tail 50 iot_project_app
-```
+Compose đọc Backend/.env trước, rồi Backend/.env.bth4 để thay credentials MQTT.
+Các giá trị environment ưu tiên hơn env_file: URI tcp://mosquitto:1883,
+client ID iot-backend-bth4, IOT_LED_DEMO_ENABLED=false. Không in config đầy đủ
+vì chứa secrets. Cờ demo cũ không còn bật được mô phỏng trong source hiện tại.
 
-Sau khi sửa source, chạy lại lệnh `compose up -d --build`.
-Khi đổi biến môi trường, dùng `compose up -d` để cập nhật cấu hình container;
-`docker start` giữ cấu hình của lần tạo trước.
+Backend gọi broker bằng tên service mosquitto trong Docker network. ESP32 tiếp tục
+dùng IP LAN của laptop và cổng 1325; Docker chuyển tiếp 1325 → 1883. Giữ nguyên
+tài khoản, ba topic và firmware. Không mở mosquitto.exe trên Windows cùng cổng.
+Nếu ESP32 không kết nối qua Wi-Fi, kiểm tra IP LAN và Windows Firewall cho TCP 1325.
 
-```powershell
-docker compose --env-file Backend/.env down
-```
+prepare-password.ps1 tạo docker/mosquitto/.passwords bằng image broker từ credentials
+cục bộ, không in chúng. File này bị loại khỏi Git và Docker build. Broker sao chép
+hash vào file quyền 600 khi khởi động. Nếu chủ động đổi tài khoản, cập nhật .env.bth4,
+chạy lại helper với -Replace rồi recreate hai service để nhận môi trường mới.
+Dữ liệu broker lưu trong volume mosquitto_data, độc lập với volume MySQL.
 
-`down` chỉ dừng/xóa container app và network của compose này. MySQL hiện có
-và dữ liệu của nó được giữ nguyên; broker trên Windows cũng không bị dừng.
+Không dùng compose.demo.yaml: override này và LedDemoResponder đã được gỡ.
+Không dùng down -v hoặc tạo lại MySQL. Dữ liệu demo BTH3 đang có được giữ;
+chúng không phải phép đo hoặc xác nhận ESP32. Script Backend/scripts/demo-data.ps1
+vẫn là công cụ fixture thủ công, không tự chạy; chế độ clean chỉ dùng manifest
+cục bộ để nhận diện đúng các dòng do script tạo, không dọn ở bước chuẩn bị này.
 
-### Cấu hình Docker
+## Dùng Swagger
 
-Compose đọc secret từ `Backend/.env` **lúc chạy**. `.dockerignore` loại các
-file môi trường, cấu hình broker, Docs, Hardware và dữ liệu tạm khỏi build
-context. Không đưa mật khẩu/JWT vào Dockerfile hoặc build argument.
+### Tài khoản và người thực hiện lệnh
 
-Compose đổi địa chỉ loopback sang `host.docker.internal` để app container
-truy cập dịch vụ trên Windows. Các biến sau có thể thêm vào `Backend/.env`
-khi cần đổi cổng hoặc máy dịch vụ:
+Hệ thống dùng tài khoản chính đã có và hai tài khoản bổ sung `user124`, `user125`.
+Khi tạo mới, hai tài khoản dùng mật khẩu từ `IOT_SEED_PASSWORD` trong môi trường cục bộ,
+lưu bằng BCrypt. Seed chỉ thêm username còn thiếu; không đặt lại mật khẩu, hồ sơ hoặc
+ID đã có khi khởi động lại. Hai hồ sơ bổ sung dùng mã/email riêng và có thể sửa tại Hồ sơ.
 
-| Biến | Mặc định |
-| --- | --- |
-| `IOT_APP_PORT` | `8088` |
-| `IOT_DOCKER_DB_HOST` | `host.docker.internal` |
-| `IOT_DOCKER_DB_PORT` | `3307` |
-| `IOT_DOCKER_MQTT_HOST` | `host.docker.internal` |
-| `IOT_DOCKER_MQTT_PORT` | `1883` |
-| `IOT_DOCKER_FRONTEND_ORIGIN` | `http://localhost:8088` |
+Lịch sử điều khiển hiển thị `Người thực hiện` trước `Lệnh`, lấy `username` theo
+`ActionHistory.userId`. Backend xác định người gửi từ JWT, không nhận người thực hiện
+do client tự khai. Lịch sử cũ giữ nguyên người đã gửi; không đổi thành tài khoản đang xem.
 
-Tên database lấy từ `MYSQL_DATABASE`; DB user/password và MQTT user/password
-vẫn lấy từ các biến Backend đang dùng. Client ID MQTT của app Docker là
-`iot-backend-docker`. Khi đổi cổng web, đổi cả frontend origin cho khớp.
-Origin phải là một địa chỉ rõ ràng, không dùng `*`.
+Kiểm thử hồi quy đa tài khoản: `Backend/src/test/java/zygoo13/iot/api/HistoryUsersIntegrationTest.java`
+dùng H2 riêng và MQTT mock, không gửi lệnh đến ESP32 thật. Chạy `mvn test` trong Backend.
 
-Cổng web chỉ publish lên loopback của máy, phù hợp demo cục bộ. Cấu hình này
-đã kiểm tra trên Docker Desktop Windows; nếu chuyển sang Linux/server khác,
-cần đặt DB/MQTT host tương ứng với môi trường đó.
+### Thao tác trên tài liệu API
 
-Healthcheck kiểm tra trang React trả 200 và API Profile không token trả 401.
-Nó kiểm tra hai tiến trình đang phục vụ HTTP; broker Offline vẫn cho REST
-hoạt động nên healthcheck không dùng để kết luận ESP32 hoặc MQTT Online.
+1. Mở Auth → POST /api/auth/login → Try it out.
+2. Nhập username/password tài khoản cục bộ rồi Execute.
+3. Sao chép trường token, bấm Authorize, dán token (không thêm chữ Bearer).
+4. Dùng GET Dashboard, Sensor Data, Action History và Profile để tra cứu.
+5. PUT Profile thay đủ tám trường cho phép. POST Devices thực sự gửi lệnh MQTT;
+   chỉ Execute khi đã sẵn sàng điều khiển phần cứng.
 
-## Phần cứng
+Swagger không lưu JWT sau reload và không chứa credentials ví dụ thật.
+HTTP 202 chỉ có nghĩa lệnh đã lưu/publish, không xác nhận LED đã đổi.
+Xác nhận phải đến từ iot/device/status; sau 10 giây chưa có xác nhận là TIMEOUT.
+Hardware Online chỉ dựa vào telemetry hợp lệ trong 30 giây; Offline không đặt LED OFF.
+STOMP /ws và bốn topic nằm trong [Backend/CONTRACT.md](Backend/CONTRACT.md),
+Swagger chỉ thử REST, không thử subscribe MQTT/STOMP.
 
-Mở [Hardware/README.md](Hardware/README.md) để xem GPIO, thư viện Arduino,
-cấu hình Wi-Fi/MQTT và cách nạp `Hardware/ESP32/IoTMonitor/IoTMonitor.ino`.
-`config.h` là file riêng được Git bỏ qua; `config.example.h` là mẫu để chia sẻ.
-Firmware làm việc giữ logic của bản demo, chỉ tách cấu hình khỏi sketch.
+## Kiểm tra không điều khiển phần cứng
 
-Broker thử hiện lắng nghe loopback. Để ghép ESP32 thật qua Wi-Fi ở BTH4, cần
-listener LAN có xác thực và cấu hình firewall; ESP32 dùng IP LAN của máy chạy
-broker, không dùng địa chỉ Docker nội bộ. Chưa thực hiện việc mở listener LAN
-hoặc nạp/kiểm chứng ESP32 trong lượt đóng gói này.
+~~~powershell
+node Backend/scripts/verify-api-docs.mjs
+docker exec iot_project_app nginx -t
+docker inspect iot_project_app --format '{{.State.Health.Status}}'
+~~~
 
-## Kết quả kiểm tra Docker (06/10/2026)
+Script đọc tài khoản cục bộ nhưng không in mật khẩu/JWT. Script kiểm tra login, các GET, schema, JWT, query lỗi và route React; thêm PUT/POST
+không JWT để xác nhận bị chặn 401. Không cập nhật Profile, không gửi command
+hợp lệ, không publish MQTT hoặc xóa dữ liệu. Có thể đặt IOT_VERIFY_BASE_URL
+nếu đổi cổng web. Healthcheck chỉ kiểm tra HTTP, không chứng minh MQTT/ESP32 hoạt động.
 
-- Docker build React và Maven thành công; JAR Spring Boot được đóng gói lại.
-- Container `healthy`; Nginx kiểm tra cấu hình thành công.
-- Năm route React/deep link trả HTML 200; login đúng 200, sai 401; API không
-  token 401; GET Profile có JWT 200 và không trả password hash.
-- Native WebSocket qua Nginx xác thực STOMP CONNECT và subscribe bốn topic.
-- Ba MQTT reading tạo đúng ba dòng MySQL, ba sensor event và REST đọc được.
-- Một lệnh LED2 giữ trạng thái cũ được nhận HTTP 202; status MQTT đúng tạo
-  device event và history CONFIRMED. Terminal đóng vai ESP32 trong phép thử.
-- Chỉ dọn ID reading/history của phép thử và khôi phục timestamp LED2;
-  số dòng SensorData/ActionHistory trở lại như trước. Dữ liệu demo được giữ.
-- Khởi động lại container vẫn `healthy`; số dòng User/Sensor/SensorData/Device/
-  ActionHistory giữ nguyên `1/3/54/2/38`, LED1 ON và LED2 OFF.
-- Arduino CLI chưa có trên máy; chưa compile/upload sketch trên ESP32.
+## Quy trình tích hợp ESP32 tiếp theo
 
-Chi tiết nghiệp vụ: [Backend/CONTRACT.md](Backend/CONTRACT.md).
-Chạy phát triển không Docker: [Backend/README.md](Backend/README.md) và
-[Frontend/README.md](Frontend/README.md).
+- Xác nhận broker 1325 đang chạy và credentials khớp; không chạy broker khác trên cùng cổng.
+- ESP32 publish iot/sensor/data → kiểm tra SensorData mới, GET Dashboard/Sensor Data,
+  sự kiện /topic/sensors và UI. Một reading hợp lệ tương ứng một dòng DB.
+- Sau khi sẵn sàng thử GPIO: Web gửi ON/OFF → history PENDING → command có requestId
+  → ESP32 publish status cùng requestId → history CONFIRMED, Device và UI cập nhật.
+- Thử offline 30 giây, timeout 10 giây, xác nhận muộn, reload và WebSocket reconnect.
+- Các script verify-telemetry/command/stomp cũ có publish hoặc ghi/dọn fixture;
+  không chạy tự động khi ESP32 đang hoạt động.
+
+## Dừng và khôi phục
+
+~~~powershell
+docker compose --env-file Backend/.env stop
+~~~
+
+Lệnh dừng app và broker Docker, giữ nguyên MySQL và các volume. Dùng start.ps1
+để chạy lại. Không dùng down -v. Cấu hình/password file Mosquitto Windows ban đầu
+vẫn được giữ nếu cần rollback: dừng app và broker Docker trước, khởi động broker
+Windows rồi đổi URI app sang tcp://host.docker.internal:1325 bằng override riêng
+trước khi chạy lại app. Không chạy đồng thời hai broker trên 1325 hoặc hai Backend.
+Quay về BTH3 phải dùng snapshot/image cũ đã lưu riêng, không bật mô phỏng trên
+broker đang phục vụ ESP32 thật.
+
+## Kết quả kiểm tra 20/10/2026
+
+- Docker build: React và Maven package thành công, JAR Spring Boot được đóng gói.
+- Swagger/OpenAPI có 7 thao tác REST và Authorize JWT; API nghiệp vụ vẫn yêu cầu JWT.
+- Script verify-api-docs đạt 25 kiểm tra HTTP; browser mở Swagger và Try it out
+  GET Dashboard thiếu JWT trả 401 đúng định dạng lỗi.
+- Không gửi lệnh LED, không thay Profile, không sửa schema hoặc dọn DB.
+- Sau khi chuyển broker vào Docker: app và Mosquitto healthy; xác thực qua host
+  1325 thành công, sai mật khẩu/ẩn danh bị từ chối. Backend subscribe telemetry/status
+  và tự subscribe lại sau khi broker restart. File persistence tồn tại trong volume.
+- SensorData tiếp tục tăng, ActionHistory không đổi trong phép kiểm tra; chưa dùng
+  kết quả này để kết luận toàn bộ luồng ESP32, GPIO và STOMP đã được kiểm chứng.
+
+Chi tiết Backend: [Backend/README.md](Backend/README.md).
+Phần cứng: [Hardware/README.md](Hardware/README.md).

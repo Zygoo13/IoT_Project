@@ -1,0 +1,32 @@
+{
+  "accounts": [
+    {
+      "username": "user123",
+      "login": "PASS",
+      "profile_isolation": "PASS",
+      "history_sql_attribution_paging_filters": "PASS",
+      "read_api_smoke": "PASS"
+    },
+    {
+      "username": "user124",
+      "login": "PASS",
+      "profile_isolation": "PASS",
+      "history_sql_attribution_paging_filters": "PASS",
+      "read_api_smoke": "PASS"
+    },
+    {
+      "username": "user125",
+      "login": "PASS",
+      "profile_isolation": "PASS",
+      "history_sql_attribution_paging_filters": "PASS",
+      "read_api_smoke": "PASS"
+    }
+  ],
+  "primary_unchanged": true,
+  "old_history_unchanged": true,
+  "sensor_data_preserved": true,
+  "swagger_username": true,
+  "unauthenticated_401": true,
+  "live_commands_sent": 0,
+  "live_database_writes_by_test": 0
+}

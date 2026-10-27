@@ -1,0 +1,83 @@
+[
+  {
+    "file": "dashboard-offline-before-tests.png",
+    "url": "http://localhost:8088/dashboard",
+    "capturedAt": "2026-10-27T10:44:17.138Z"
+  },
+  {
+    "file": "history-six-columns-desktop.png",
+    "url": "http://localhost:8088/action-history",
+    "capturedAt": "2026-10-27T10:44:23.449Z"
+  },
+  {
+    "file": "profile-edit-upper.png",
+    "url": "http://localhost:8088/profile",
+    "capturedAt": "2026-10-27T10:45:00.535Z"
+  },
+  {
+    "file": "swagger-seven-endpoints.png",
+    "url": "http://localhost:8088/swagger-ui/index.html",
+    "capturedAt": "2026-10-27T10:45:53.579Z"
+  },
+  {
+    "file": "swagger-historyrow-username.png",
+    "url": "http://localhost:8088/swagger-ui/index.html",
+    "capturedAt": "2026-10-27T10:46:35.749Z",
+    "note": "Browser screenshot of the visible HistoryRow schema panel; no data edited."
+  },
+  {
+    "file": "profile-edit-form-buttons.png",
+    "url": "http://localhost:8088/profile",
+    "capturedAt": "2026-10-27T10:46:55.428Z"
+  },
+  {
+    "file": "dashboard-final-after-reload.png",
+    "savedAt": "2026-10-27T11:50:21.874865+00:00",
+    "timestampSource": "filesystem save time"
+  },
+  {
+    "file": "dashboard-offline-after-navigation.png",
+    "savedAt": "2026-10-27T11:47:51.249334+00:00",
+    "timestampSource": "filesystem save time"
+  },
+  {
+    "file": "dashboard-online-final.png",
+    "savedAt": "2026-10-27T11:44:14.249462+00:00",
+    "timestampSource": "filesystem save time"
+  },
+  {
+    "file": "dashboard-recovered-online.png",
+    "savedAt": "2026-10-27T11:49:57.799226+00:00",
+    "timestampSource": "filesystem save time"
+  },
+  {
+    "file": "dashboard-timeout-message.png",
+    "savedAt": "2026-10-27T11:49:14.825987+00:00",
+    "timestampSource": "filesystem save time"
+  },
+  {
+    "file": "history-processing-empty-after-timeout.png",
+    "savedAt": "2026-10-27T11:47:34.559457+00:00",
+    "timestampSource": "filesystem save time"
+  },
+  {
+    "file": "history-processing-pending-row.png",
+    "savedAt": "2026-10-27T11:47:51.743873+00:00",
+    "timestampSource": "filesystem save time"
+  },
+  {
+    "file": "history-three-users-final.png",
+    "savedAt": "2026-10-27T11:46:15.726249+00:00",
+    "timestampSource": "filesystem save time"
+  },
+  {
+    "file": "led-pending-on-off-colors.png",
+    "savedAt": "2026-10-27T11:47:16.260504+00:00",
+    "timestampSource": "filesystem save time"
+  },
+  {
+    "file": "sensor-time-search-final.png",
+    "savedAt": "2026-10-27T11:45:53.905196+00:00",
+    "timestampSource": "filesystem save time"
+  }
+]

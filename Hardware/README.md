@@ -48,11 +48,13 @@ Hai GPIO LED khởi tạo LOW khi ESP32 khởi động; trạng thái DB có th�
 
 ## Khi ghép với Docker
 
-React và Spring Boot chạy trong container app; Mosquitto vẫn là broker riêng
-trên máy. ESP32 dùng **IP LAN của máy chạy Mosquitto**, không dùng `localhost`
-hoặc `host.docker.internal`. Port và tài khoản phải khớp cấu hình broker.
+React và Spring Boot chạy trong service app; Mosquitto chạy cùng project Compose.
+ESP32 dùng **IP LAN của laptop và cổng 1325**, không dùng `localhost`,
+`host.docker.internal` hoặc tên service `mosquitto`. Docker chuyển cổng 1325
+trên máy host đến listener 1883 trong container; Backend dùng mosquitto:1883.
 
-Broker thử hiện chỉ lắng nghe loopback nên ESP32 chưa truy cập được từ Wi-Fi.
-Khi bước sang BTH4, cấu hình listener LAN có xác thực và quyền MQTT phù hợp,
-kiểm tra Windows Firewall rồi mới nạp cấu hình mới. Lượt tổ chức thư mục này
-chưa thay cấu hình listener và chưa kiểm chứng trên ESP32 thật.
+Tài khoản MQTT và ba topic giữ nguyên. Mosquitto Windows ở chế độ Manual và
+đã dừng để không tranh cổng. Khởi động toàn bộ bằng `.\start.ps1` ở thư mục gốc.
+Nếu kết nối Wi-Fi thất bại, kiểm tra IP LAN và Windows Firewall TCP 1325 trước
+khi cân nhắc nạp lại firmware. File sketch trên máy không chứng minh binary nào
+đang được nạp; đối chiếu Serial Monitor 115200 và thời điểm upload khi kiểm thử thật.

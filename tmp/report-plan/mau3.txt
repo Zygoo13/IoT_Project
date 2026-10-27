@@ -1,0 +1,530 @@
+
+===== PDF PAGE 1 =====
+B21DCCN475 Báo Cáo Môn IOT và ứng dụng
+ Iot và ứng dụng (Học viện Công nghệ Bưu chính Viễn thông)
+Scan to open on Studeersnel
+Studocu is not sponsored or endorsed by any college or university
+ B21DCCN475 Báo Cáo Môn IOT và ứng dụng
+ Iot và ứng dụng (Học viện Công nghệ Bưu chính Viễn thông)
+Scan to open on Studeersnel
+Studocu is not sponsored or endorsed by any college or university
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 2 =====
+ 
+ 
+HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG 
+KHOA CÔNG NGHỆ THÔNG TIN 
+-----◻◻◻◻◻----- 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+BÁO CÁO BÀI TẬP LỚN 
+IOT VÀ ỨNG DỤNG 
+ 
+ 
+ 
+Giảng viên hướng dẫn: Nguyễn Quốc Uy 
+Sinh viên thực hiện: Đào Tùng Lâm 
+Mã sinh viên: B21DCCN475 
+Nhóm IOT: 05 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 3 =====
+1  
+LỜI CẢM ƠN 
+Để hoàn thành được báo cáo thực bài tập lớn môn học IOT và ứng dụng 
+nhóm lớp 05 thì em xin cảm ơn tới thầy Nguyễn Quốc Uy đã luôn nhiệt tình chỉ 
+dẫn, giảng dạy cho em những kiến thức về môn học để em có thể hoàn thiện tốt 
+nhất . 
+Em xin chân thành cảm ơn! 
+ 
+Hà Nội, ngày 23 tháng 10 năm 2024 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 4 =====
+2  
+LỜI CẢM ƠN 1 
+CHƯƠNG 1: GIỚI THIỆU BÀI TOÁN 3 
+1.1. Đặt vấn đề 3 
+CHƯƠNG 2 : CÁC CHỨC NĂNG 4 
+2.1 : Các chức năng cơ bản 4 
+2.2 : Các thiết bị sử dụng 4 
+CHƯƠNG 3 : GIAO DIỆN 5 
+3.1. Dashboard 5 
+3.2. Data Sensor 5 
+3.3. Device Activity 8 
+3.4. Profile 11 
+CHƯƠNG 4 : THIẾT KẾ HỆ THỐNG 13 
+4.3. Phần cứng 14 
+4.3.1 : Các thiết bị và các thành phần 14 
+4.3.2 : Lập trình cho mạch điều khiển ESP32 17 
+4.4. Backend 22 
+4.4.1 : Thiết kế cơ sở dữ liệu 22 
+4.5 : API Docs: 26 
+4.5.1 : Api lấy 4 dữ liệu gần nhất của DataSensor cho biểu đồ 26 
+4.5.2 : Api lấy lịch sử dữ liệu của Data Sensor 28 
+4.5.3 : Api lấy lịch sử hoạt động của Device 31 
+4.6 : Frontend (Html,Css,JavaScript): 35 
+4.6.1. Fetch dữ liệu từ Server 36 
+CHƯƠNG 5 : KẾT QUẢ 37 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 5 =====
+3  
+CHƯƠNG 1: GIỚI THIỆU BÀI TOÁN 
+1.1. Đặt vấn đề 
+Trong những năm gần đây, sự phát triển  vượt bậc của công nghệ đã tạo ra 
+những bước tiến đáng kể trong việc cải thiện chất lượng cuộc sống con người, với 
+sự hỗ trợ của các sản phẩm và ứng dụng thông minh. IoT (Internet of Things), hay 
+Internet vạn vật, nổi lên như một trong  những công nghệ chủ chốt, cho phép kết 
+nối và giao tiếp giữa các thiết bị vật lý thông qua Internet. Các thiết bị IoT có khả 
+năng thu thập, chia sẻ dữ liệu và tương tác với nhau mà không cần sự can thiệp 
+của con người 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 6 =====
+4  
+CHƯƠNG 2 : CÁC CHỨC NĂNG 
+2.1 : Các chức năng cơ bản 
+ 
+- Xem các thông tin nhiệt độ, độ ẩm , ánh sáng realtime qua cảm biến 
+- Điều khiển bật tắt 3 thiết bị socket và giao thức mqtt: Đèn, Quạt, Điều hòa  
+- Xem lịch sử data sensor: Tìm kiếm theo thời gian, Sắp xếp theo nhiệt độ, 
+độ ẩm, ánh sáng, thời gian 
+- Xem lịch sử bật tắt thiết bị: Tìm kiếm theo thời gian, loại thiết bị, hành 
+động. Sắp xếp theo thời gian 
+ 
+2.2 : Các thiết bị sử dụng 
+- Phần cứng: 
+- ESP32 Wroom - 32 
+- Cảm biến đo nhiệt độ , độ ẩm DHT11 
+- Cảm biến ánh sáng 4 pin 
+- 3 đèn Led 
+- Phần mềm: 
+- Font-end: Html,Css,Javascript 
+- Back end : Nodejs, Express.js 
+- Database: Mysql 
+- MQTT broker: Mosquitto 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 7 =====
+5  
+CHƯƠNG 3 : GIAO DIỆN 
+3.1. Dashboard: 
+Trang Dashboard thể hiện thông số của các cảm biến nhiệt độ, độ ẩm, ánh sáng. 
+Hiển thị một biểu đồ chart cho biết sự biến thiên các giá trị của cảm biến, và các action 
+để điều khiển thiết bị: 
+ 
+ 
+ 
+Hình 1 : Dashboard 
+ 
+ 
+ 
+ 
+ 
+3.2. Data Sensor: 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 8 =====
+6  
+- Hiển thị bảng dữ liệu của Data Sensor gồm 5 cột ID, Nhiệt Độ, Độ Ẩm, Ánh 
+Sáng, Thời Gian . 
+ 
+ 
+ 
+ 
+ 
+Hình 2 : Data Sensor 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 9 =====
+7  
+- Thanh tìm kiếm cho phép người dùng tìm kiếm theo ngày. Bộ lọc gồm sort, 
+sort type. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Hình 3 : Bộ Lọc Và Thanh Tìm Kiếm
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 10 =====
+8  
+ 
+ 
+3.3. Device Activity 
+Hiển thị danh sách lịch sử hoạt động của các thiết bị. 
+Thanh tìm kiếm cho phép người dùng tìm kiếm dữ liệu theo thời gian. Bộ lọc 
+gồm thiết bị, hành động. Sắp xếp theo thời gian 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 11 =====
+9  
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 12 =====
+10  
+ 
+ 
+ 
+ 
+ 
+ 
+3.4. Profile: 
+Giao diện hiển thị thông tin cá nhân và đường dẫn đến báo cáo.pdf, git project 
+và api docs của dự án. 
+ 
+ 
+ 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 13 =====
+11  
+ 
+ 
+CHƯƠNG 4 : THIẾT KẾ HỆ THỐNG 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 14 =====
+12  
+4.3. Phần cứng 
+4.3.1 : Các thiết bị và các thành phần 
+Mạch bao gồm các thành phần 
+ 
+ 
+Thành phần Hình ảnh 
+Mạch điều khiển Esp32 
+ 
+ 
+Cảm biến nhiệt độ, độ ẩm 
+DHT11 
+ 
+ 
+Cảm biến ánh sáng 4 pin  
+ 
+Led 5mm 
+ 
+ 
+Breadboard 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 15 =====
+13  
+Dây nối  
+ 
+ 
+ 
+ 
+4.3.2 : Thiết kế mạch: 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 16 =====
+14  
+ 
+Hình 11: Thiết kế mạch 
+ 
+ 
+4.3.3 : Lập trình cho mạch điều khiển ESP32 
+Sử dụng IDE Arduino Với Các Thư Viện PubSub, Wifi Với ESP32. 
+Các thành phần của mã nguồn: 
+-  Inculde các thư viện, setup mqtt username,password. Define pin cho các 
+chân 
+ 
+ 
+ 
+- Hàm setup 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 17 =====
+15  
+ 
+ 
+- Hàm Setup Wifi  
+ 
+ 
+- Setup Pub and Sub 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 18 =====
+16  
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 19 =====
+17  
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 20 =====
+18  
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 21 =====
+19  
+ 
+ 
+Chương trình từ ESP32 được cài đặt để pub/sub tới Mosquitto Broker. Điều này giúp 
+giao tiếp giữa Backend Server và ESP32 thông qua giao thức mqtt (một giao thức phù 
+hợp cho các thiết bị IoT). 
+ 
+4.4. Backend 
+4.4.1 : Thiết kế cơ sở dữ liệu 
+Cơ sở dữ liệu gồm 2 bảng 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 22 =====
+20  
+ 
+Hình 12: Thiết kế cơ sở dữ liệu 
+Các bảng trong database: 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 23 =====
+21  
+- devicehistory: chứa lịch sử bật tắt các Led 
+ 
+ 
+Cột Kiểu dữ liệu Mô tả 
+Id INT (PK) id 
+thietbi VARCHAR(255) tên của thiết bị 
+hanhdong VARCHAR(255) ON, OFF 
+thoigian DATETIME  
+ 
+ 
+ 
+- data sensor: lịch sử dữ liệu từ 3 độ đo cảm biến 
+ 
+ 
+ 
+ 
+Cột Kiểu dữ liệu Mô tả 
+Id INT (PK) id 
+temp FLOAT nhiệt độ 
+humidity FLOAT độ ẩm 
+lux int ánh sáng 
+Date_Time 
+ 
+DATETIME  
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 24 =====
+22  
+4.5 : API Docs: 
+ 
+ 
+Xây dựng API Docs sử dụng Postman: 
+ 
+ 
+Hình 17: API Docs PostMan 
+ 
+ 
+ 
+4.5.1 : Api lấy 4 dữ liệu gần nhất của DataSensor cho biểu đồ: 
++ http://127.0.0.1:3000/api/getdatacharts/ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 25 =====
+23  
+ 
+ 
+Hình 18: Dữ Liệu Trả Về 
+ 
+ 
+ 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 26 =====
+24  
+ 
+ 
+4.5.2 : Api lấy lịch sử dữ liệu của Data Sensor 
++ /api/getmeasuredata 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 27 =====
+25  
+ 
+4.5.3 : : Api lấy lịch sử hoạt động của Device: 
++ /api/getdevicehistory 
+ 
+4.6 : Frontend (Html,Css,Javascript): 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 28 =====
+26  
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 29 =====
+27  
+ 
+4.6.1. Lấy dữ liệu từ Server 
+Để tương tác với Backend Server tương tác thông qua 2 hình thức tương ứng với mục 
+đích riêng: 
+ 
++ Với dữ liệu realtime (độ đo từ các cảm biến): 
+Sử dụng thông qua socket.io, mở cổng kết nối và lắng nghe các topic từ phía 
+server 
++ Với vấn đề tương tác qua api: 
+Sử dụng fetch request  qua các http request và nhận về các response từ server. 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 30 =====
+28  
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 31 =====
+29  
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 32 =====
+30  
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 33 =====
+31  
+CHƯƠNG 5 : KẾT QUẢ 
+ 
+Github dự án: 
++ Backend Server: https://github.com/Maybetuandat/back_end_iot.git 
++ Code esp32:https://github.com/Maybetuandat/iot_ioplatform.git 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641

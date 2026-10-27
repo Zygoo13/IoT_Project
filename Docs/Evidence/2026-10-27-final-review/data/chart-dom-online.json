@@ -1,0 +1,29 @@
+{
+  "series": [
+    {
+      "code": "DHT11_TEMP",
+      "count": 15,
+      "firstTime": "2026-10-27T11:43:32.460521Z",
+      "firstX": "60",
+      "lastTime": "2026-10-27T11:44:00.572862Z",
+      "lastX": "1026"
+    },
+    {
+      "code": "DHT11_HUM",
+      "count": 15,
+      "firstTime": "2026-10-27T11:43:32.584094Z",
+      "firstX": "60",
+      "lastTime": "2026-10-27T11:44:00.620079Z",
+      "lastX": "1026"
+    },
+    {
+      "code": "LDR_LIGHT",
+      "count": 15,
+      "firstTime": "2026-10-27T11:43:32.602589Z",
+      "firstX": "60",
+      "lastTime": "2026-10-27T11:44:00.642198Z",
+      "lastX": "1026"
+    }
+  ],
+  "viewBox": "0 0 1060 260"
+}

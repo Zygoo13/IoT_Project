@@ -14,3 +14,4 @@ tmp
 **/.mosquitto*
 **/.demo-data-manifest.json
 **/*.log
+docker/mosquitto/.passwords

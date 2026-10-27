@@ -1,0 +1,956 @@
+[
+  {
+    "database": {
+      "id": "595",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 10:24:39.231045",
+      "confirmedAt": "2026-10-27 10:24:42.821642"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "596",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:24:47.808279",
+      "confirmedAt": "2026-10-27 10:25:01.384079"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "597",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 10:35:56.094121",
+      "confirmedAt": "2026-10-27 10:35:56.370874"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "598",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:35:57.214196",
+      "confirmedAt": "2026-10-27 10:35:57.365954"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "599",
+      "username": "user124",
+      "deviceCode": "LED2",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 10:35:58.022231",
+      "confirmedAt": "2026-10-27 10:35:58.119635"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "600",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 10:35:59.424569",
+      "confirmedAt": "2026-10-27 10:35:59.553930"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "601",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:36:00.129052",
+      "confirmedAt": "2026-10-27 10:36:00.343862"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "602",
+      "username": "user124",
+      "deviceCode": "LED2",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:36:00.677586",
+      "confirmedAt": "2026-10-27 10:36:00.749973"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "603",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:38:50.268611",
+      "confirmedAt": "NULL"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "604",
+      "username": "user124",
+      "deviceCode": "LED2",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 10:54:55.478475",
+      "confirmedAt": "2026-10-27 10:54:55.680502"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "605",
+      "username": "user124",
+      "deviceCode": "LED2",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:54:56.189724",
+      "confirmedAt": "2026-10-27 10:54:56.283663"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "606",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:55:01.762811",
+      "confirmedAt": "2026-10-27 10:55:01.933545"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "607",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 10:55:02.347746",
+      "confirmedAt": "2026-10-27 10:55:02.675032"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "608",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 10:55:03.107333",
+      "confirmedAt": "2026-10-27 10:55:03.374194"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "609",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:55:05.015973",
+      "confirmedAt": "2026-10-27 10:55:05.053717"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "610",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:55:05.476035",
+      "confirmedAt": "2026-10-27 10:55:05.612868"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "611",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:55:05.953501",
+      "confirmedAt": "2026-10-27 10:55:06.060449"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "612",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:55:06.343801",
+      "confirmedAt": "2026-10-27 10:55:06.401838"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "613",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:55:06.688782",
+      "confirmedAt": "2026-10-27 10:55:07.044686"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "614",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:55:07.424909",
+      "confirmedAt": "2026-10-27 10:55:07.695694"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "615",
+      "username": "user124",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "OFF",
+      "createdAt": "2026-10-27 10:59:43.088546",
+      "confirmedAt": "NULL"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "616",
+      "username": "user123",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 11:37:05.714648",
+      "confirmedAt": "NULL"
+    },
+    "mqttCommand": null,
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "617",
+      "username": "user123",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 11:42:15.300995",
+      "confirmedAt": "2026-10-27 11:42:15.517959"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:42:14.863Z",
+      "observerMs": 20543.779,
+      "payload": {
+        "requestId": 617,
+        "deviceCode": "LED1",
+        "action": "ON"
+      },
+      "retained": false
+    },
+    "mqttStatus": {
+      "channel": "MQTT",
+      "topic": "iot/device/status",
+      "receivedAt": "2026-10-27T11:42:15.068Z",
+      "observerMs": 20748.489,
+      "payload": {
+        "requestId": 617,
+        "deviceCode": "LED1",
+        "status": "ON"
+      },
+      "retained": false
+    },
+    "stompConfirmation": {
+      "channel": "STOMP",
+      "topic": "/topic/devices",
+      "receivedAt": "2026-10-27T11:42:15.096Z",
+      "observerMs": 20776.463,
+      "payload": {
+        "requestId": 617,
+        "deviceCode": "LED1",
+        "status": "ON",
+        "historyStatus": "ON",
+        "confirmedAt": "2026-10-27T11:42:15.517959Z",
+        "deviceStatusUpdated": true,
+        "deliveryState": "CONFIRMED"
+      }
+    },
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": 204.71,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "618",
+      "username": "user123",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 11:42:15.827419",
+      "confirmedAt": "2026-10-27 11:42:15.908110"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:42:15.415Z",
+      "observerMs": 21095.857,
+      "payload": {
+        "requestId": 618,
+        "deviceCode": "LED1",
+        "action": "OFF"
+      },
+      "retained": false
+    },
+    "mqttStatus": {
+      "channel": "MQTT",
+      "topic": "iot/device/status",
+      "receivedAt": "2026-10-27T11:42:15.477Z",
+      "observerMs": 21157.66,
+      "payload": {
+        "requestId": 618,
+        "deviceCode": "LED1",
+        "status": "OFF"
+      },
+      "retained": false
+    },
+    "stompConfirmation": {
+      "channel": "STOMP",
+      "topic": "/topic/devices",
+      "receivedAt": "2026-10-27T11:42:15.500Z",
+      "observerMs": 21180.339,
+      "payload": {
+        "requestId": 618,
+        "deviceCode": "LED1",
+        "status": "OFF",
+        "historyStatus": "OFF",
+        "confirmedAt": "2026-10-27T11:42:15.90811Z",
+        "deviceStatusUpdated": true,
+        "deliveryState": "CONFIRMED"
+      }
+    },
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": 61.803,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "619",
+      "username": "user124",
+      "deviceCode": "LED2",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 11:42:16.107892",
+      "confirmedAt": "2026-10-27 11:42:16.304478"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:42:15.707Z",
+      "observerMs": 21387.355,
+      "payload": {
+        "requestId": 619,
+        "deviceCode": "LED2",
+        "action": "ON"
+      },
+      "retained": false
+    },
+    "mqttStatus": {
+      "channel": "MQTT",
+      "topic": "iot/device/status",
+      "receivedAt": "2026-10-27T11:42:15.887Z",
+      "observerMs": 21568.244,
+      "payload": {
+        "requestId": 619,
+        "deviceCode": "LED2",
+        "status": "ON"
+      },
+      "retained": false
+    },
+    "stompConfirmation": {
+      "channel": "STOMP",
+      "topic": "/topic/devices",
+      "receivedAt": "2026-10-27T11:42:15.920Z",
+      "observerMs": 21600.381,
+      "payload": {
+        "requestId": 619,
+        "deviceCode": "LED2",
+        "status": "ON",
+        "historyStatus": "ON",
+        "confirmedAt": "2026-10-27T11:42:16.304478Z",
+        "deviceStatusUpdated": true,
+        "deliveryState": "CONFIRMED"
+      }
+    },
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": 180.889,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "620",
+      "username": "user124",
+      "deviceCode": "LED2",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 11:42:16.383531",
+      "confirmedAt": "2026-10-27 11:42:16.499182"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:42:15.994Z",
+      "observerMs": 21674.423,
+      "payload": {
+        "requestId": 620,
+        "deviceCode": "LED2",
+        "action": "OFF"
+      },
+      "retained": false
+    },
+    "mqttStatus": {
+      "channel": "MQTT",
+      "topic": "iot/device/status",
+      "receivedAt": "2026-10-27T11:42:16.089Z",
+      "observerMs": 21769.531,
+      "payload": {
+        "requestId": 620,
+        "deviceCode": "LED2",
+        "status": "OFF"
+      },
+      "retained": false
+    },
+    "stompConfirmation": {
+      "channel": "STOMP",
+      "topic": "/topic/devices",
+      "receivedAt": "2026-10-27T11:42:16.129Z",
+      "observerMs": 21809.432,
+      "payload": {
+        "requestId": 620,
+        "deviceCode": "LED2",
+        "status": "OFF",
+        "historyStatus": "OFF",
+        "confirmedAt": "2026-10-27T11:42:16.499182Z",
+        "deviceStatusUpdated": true,
+        "deliveryState": "CONFIRMED"
+      }
+    },
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": 95.108,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "621",
+      "username": "user125",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 11:42:16.676795",
+      "confirmedAt": "2026-10-27 11:42:17.126830"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:42:16.301Z",
+      "observerMs": 21981.337,
+      "payload": {
+        "requestId": 621,
+        "deviceCode": "LED1",
+        "action": "ON"
+      },
+      "retained": false
+    },
+    "mqttStatus": {
+      "channel": "MQTT",
+      "topic": "iot/device/status",
+      "receivedAt": "2026-10-27T11:42:16.703Z",
+      "observerMs": 22384.199,
+      "payload": {
+        "requestId": 621,
+        "deviceCode": "LED1",
+        "status": "ON"
+      },
+      "retained": false
+    },
+    "stompConfirmation": {
+      "channel": "STOMP",
+      "topic": "/topic/devices",
+      "receivedAt": "2026-10-27T11:42:16.776Z",
+      "observerMs": 22456.768,
+      "payload": {
+        "requestId": 621,
+        "deviceCode": "LED1",
+        "status": "ON",
+        "historyStatus": "ON",
+        "confirmedAt": "2026-10-27T11:42:17.12683Z",
+        "deviceStatusUpdated": true,
+        "deliveryState": "CONFIRMED"
+      }
+    },
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": 402.862,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "622",
+      "username": "user125",
+      "deviceCode": "LED1",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 11:42:17.404372",
+      "confirmedAt": "2026-10-27 11:42:17.476868"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:42:17.063Z",
+      "observerMs": 22743.866,
+      "payload": {
+        "requestId": 622,
+        "deviceCode": "LED1",
+        "action": "OFF"
+      },
+      "retained": false
+    },
+    "mqttStatus": {
+      "channel": "MQTT",
+      "topic": "iot/device/status",
+      "receivedAt": "2026-10-27T11:42:17.116Z",
+      "observerMs": 22796.475,
+      "payload": {
+        "requestId": 622,
+        "deviceCode": "LED1",
+        "status": "OFF"
+      },
+      "retained": false
+    },
+    "stompConfirmation": {
+      "channel": "STOMP",
+      "topic": "/topic/devices",
+      "receivedAt": "2026-10-27T11:42:17.144Z",
+      "observerMs": 22825.185,
+      "payload": {
+        "requestId": 622,
+        "deviceCode": "LED1",
+        "status": "OFF",
+        "historyStatus": "OFF",
+        "confirmedAt": "2026-10-27T11:42:17.476868Z",
+        "deviceStatusUpdated": true,
+        "deliveryState": "CONFIRMED"
+      }
+    },
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": 52.609,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "623",
+      "username": "user123",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "OFF",
+      "createdAt": "2026-10-27 11:47:15.237990",
+      "confirmedAt": "NULL"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:47:15.635Z",
+      "observerMs": 321316.018,
+      "payload": {
+        "requestId": 623,
+        "deviceCode": "LED1",
+        "action": "ON"
+      },
+      "retained": false
+    },
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": {
+      "channel": "STOMP",
+      "topic": "/topic/notifications",
+      "receivedAt": "2026-10-27T11:47:25.157Z",
+      "observerMs": 330838.106,
+      "payload": {
+        "type": "DEVICE_TIMEOUT",
+        "requestId": 623,
+        "deviceCode": "LED1",
+        "occurredAt": "2026-10-27T11:47:25.23799Z"
+      }
+    },
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "624",
+      "username": "user123",
+      "deviceCode": "LED2",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 11:47:15.495988",
+      "confirmedAt": "NULL"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:47:15.908Z",
+      "observerMs": 321589.192,
+      "payload": {
+        "requestId": 624,
+        "deviceCode": "LED2",
+        "action": "OFF"
+      },
+      "retained": false
+    },
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": {
+      "channel": "STOMP",
+      "topic": "/topic/notifications",
+      "receivedAt": "2026-10-27T11:47:25.159Z",
+      "observerMs": 330839.844,
+      "payload": {
+        "type": "DEVICE_TIMEOUT",
+        "requestId": 624,
+        "deviceCode": "LED2",
+        "occurredAt": "2026-10-27T11:47:25.495988Z"
+      }
+    },
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "625",
+      "username": "user123",
+      "deviceCode": "LED1",
+      "action": "ON",
+      "status": "OFF",
+      "createdAt": "2026-10-27 11:47:50.756373",
+      "confirmedAt": "NULL"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:47:51.312Z",
+      "observerMs": 356992.355,
+      "payload": {
+        "requestId": 625,
+        "deviceCode": "LED1",
+        "action": "ON"
+      },
+      "retained": false
+    },
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": {
+      "channel": "STOMP",
+      "topic": "/topic/notifications",
+      "receivedAt": "2026-10-27T11:48:02.207Z",
+      "observerMs": 367886.371,
+      "payload": {
+        "type": "DEVICE_TIMEOUT",
+        "requestId": 625,
+        "deviceCode": "LED1",
+        "occurredAt": "2026-10-27T11:48:00.756373Z"
+      }
+    },
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "626",
+      "username": "user123",
+      "deviceCode": "LED2",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 11:48:59.934592",
+      "confirmedAt": "NULL"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:48:59.339Z",
+      "observerMs": 425019.147,
+      "payload": {
+        "requestId": 626,
+        "deviceCode": "LED2",
+        "action": "OFF"
+      },
+      "retained": false
+    },
+    "mqttStatus": null,
+    "stompConfirmation": null,
+    "stompTimeout": {
+      "channel": "STOMP",
+      "topic": "/topic/notifications",
+      "receivedAt": "2026-10-27T11:49:10.115Z",
+      "observerMs": 435795.407,
+      "payload": {
+        "type": "DEVICE_TIMEOUT",
+        "requestId": 626,
+        "deviceCode": "LED2",
+        "occurredAt": "2026-10-27T11:49:09.934592Z"
+      }
+    },
+    "sameObserverCommandToStatusMs": null,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "627",
+      "username": "user123",
+      "deviceCode": "LED2",
+      "action": "ON",
+      "status": "ON",
+      "createdAt": "2026-10-27 11:50:13.993979",
+      "confirmedAt": "2026-10-27 11:50:14.103180"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:50:13.803Z",
+      "observerMs": 499483.253,
+      "payload": {
+        "requestId": 627,
+        "deviceCode": "LED2",
+        "action": "ON"
+      },
+      "retained": false
+    },
+    "mqttStatus": {
+      "channel": "MQTT",
+      "topic": "iot/device/status",
+      "receivedAt": "2026-10-27T11:50:13.890Z",
+      "observerMs": 499569.494,
+      "payload": {
+        "requestId": 627,
+        "deviceCode": "LED2",
+        "status": "ON"
+      },
+      "retained": false
+    },
+    "stompConfirmation": {
+      "channel": "STOMP",
+      "topic": "/topic/devices",
+      "receivedAt": "2026-10-27T11:50:13.920Z",
+      "observerMs": 499599.989,
+      "payload": {
+        "requestId": 627,
+        "deviceCode": "LED2",
+        "status": "ON",
+        "historyStatus": "ON",
+        "confirmedAt": "2026-10-27T11:50:14.10318Z",
+        "deviceStatusUpdated": true,
+        "deliveryState": "CONFIRMED"
+      }
+    },
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": 86.241,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  },
+  {
+    "database": {
+      "id": "628",
+      "username": "user123",
+      "deviceCode": "LED2",
+      "action": "OFF",
+      "status": "OFF",
+      "createdAt": "2026-10-27 11:50:14.280036",
+      "confirmedAt": "2026-10-27 11:50:14.313193"
+    },
+    "mqttCommand": {
+      "channel": "MQTT",
+      "topic": "iot/device/command",
+      "receivedAt": "2026-10-27T11:50:14.101Z",
+      "observerMs": 499780.41,
+      "payload": {
+        "requestId": 628,
+        "deviceCode": "LED2",
+        "action": "OFF"
+      },
+      "retained": false
+    },
+    "mqttStatus": {
+      "channel": "MQTT",
+      "topic": "iot/device/status",
+      "receivedAt": "2026-10-27T11:50:14.111Z",
+      "observerMs": 499790.445,
+      "payload": {
+        "requestId": 628,
+        "deviceCode": "LED2",
+        "status": "OFF"
+      },
+      "retained": false
+    },
+    "stompConfirmation": {
+      "channel": "STOMP",
+      "topic": "/topic/devices",
+      "receivedAt": "2026-10-27T11:50:14.146Z",
+      "observerMs": 499826.246,
+      "payload": {
+        "requestId": 628,
+        "deviceCode": "LED2",
+        "status": "OFF",
+        "historyStatus": "OFF",
+        "confirmedAt": "2026-10-27T11:50:14.313193Z",
+        "deviceStatusUpdated": true,
+        "deliveryState": "CONFIRMED"
+      }
+    },
+    "stompTimeout": null,
+    "sameObserverCommandToStatusMs": 10.035,
+    "source": "Observed request; only assign to agent-planned test when listed in api-review.json or UI action log."
+  }
+]

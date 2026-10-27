@@ -94,14 +94,23 @@ public class ReadService {
         List<DeviceRow> ledRows = devices.findAllByOrderByCodeAsc().stream()
                 .map(device -> new DeviceRow(device.getId(), device.getCode(), device.getStatus()))
                 .toList();
-        return new DashboardResponse(latest, chart, hardware, ledRows);
+        return new DashboardResponse(latest, chart, hardware, ledRows, false);
     }
 
     @Transactional(readOnly = true)
     public PageResponse<SensorRow> sensorData(TableQuery query) {
+        return sensorData(query, null);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<SensorRow> sensorData(TableQuery query, String sensorType) {
         Options options = options(query, SENSOR_SORT, Set.of("ID", "SENSOR_TYPE", "VALUE", "TIME"));
+        String selectedType = optionalChoice(sensorType, Set.of("TEMPERATURE", "HUMIDITY", "LIGHT"), "sensorType");
         Specification<SensorData> filter = (root, ignored, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
+            if (selectedType != null) {
+                predicates.add(cb.equal(root.get("sensor").get("type"), selectedType));
+            }
             if (options.searchField() != null) {
                 switch (options.searchField()) {
                     case "ALL" -> predicates.add(sensorSearch(root, cb, query.search()));
@@ -138,7 +147,8 @@ public class ReadService {
         Options options = options(query, HISTORY_SORT, Set.of("ID", "DEVICE"));
         String deviceCode = optionalChoice(device, Set.of("LED1", "LED2"), "device");
         String actionCode = optionalChoice(action, Set.of("ON", "OFF"), "action");
-        String statusCode = optionalChoice(status, Set.of("ON", "OFF"), "status");
+        String statusCode = optionalChoice(status, Set.of("ON", "OFF", "PROCESSING"), "status");
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         Specification<ActionHistory> filter = (root, ignored, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (options.searchField() != null) {
@@ -156,7 +166,10 @@ public class ReadService {
             if (actionCode != null) {
                 predicates.add(cb.equal(root.get("action"), actionCode));
             }
-            if (statusCode != null) {
+            if ("PROCESSING".equals(statusCode)) {
+                predicates.add(cb.isNull(root.get("confirmedAt")));
+                predicates.add(cb.greaterThan(root.get("createdAt"), now.minusSeconds(10)));
+            } else if (statusCode != null) {
                 predicates.add(cb.equal(root.get("status"), statusCode));
             }
             if (options.from() != null) {
@@ -167,10 +180,9 @@ public class ReadService {
             }
             return cb.and(predicates.toArray(Predicate[]::new));
         };
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         Page<HistoryRow> result = history.findAll(filter, options.pageable())
                 .map(row -> new HistoryRow(row.getId(), row.getDevice().getId(), row.getDevice().getCode(),
-                        row.getAction(), row.getStatus(), utc(row.getCreatedAt()),
+                        row.getUser().getUsername(), row.getAction(), row.getStatus(), utc(row.getCreatedAt()),
                         row.getConfirmedAt() == null ? null : utc(row.getConfirmedAt()),
                         row.getConfirmedAt() != null ? "CONFIRMED"
                                 : row.getCreatedAt().plusSeconds(10).isAfter(now) ? "PENDING" : "TIMEOUT"));
@@ -233,6 +245,12 @@ public class ReadService {
         matches.add(contains(cb, root.get("sensor").get("type"), pattern));
         matches.add(contains(cb, root.get("sensor").get("unit"), pattern));
         matches.add(contains(cb, root.get("value").as(String.class), pattern));
+        // Tìm được cả số đã làm tròn và đơn vị như đang hiển thị trên bảng.
+        Expression<String> displayedValue = cb.function("round", BigDecimal.class,
+                root.get("value"), cb.literal(1)).as(String.class);
+        matches.add(contains(cb, displayedValue, pattern));
+        Expression<String> valueWithUnit = cb.concat(displayedValue, root.get("sensor").get("unit"));
+        matches.add(contains(cb, valueWithUnit, likePattern(search.replaceAll("\\s+", ""))));
         matches.add(contains(cb, root.get("recordedAt").as(String.class), pattern));
         String term = upper(search);
         if ("NHIỆT ĐỘ".contains(term) && term.length() >= 2) {

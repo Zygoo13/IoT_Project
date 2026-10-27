@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-27",
+  "apiPass": 142,
+  "apiFail": 0,
+  "apiObserved": 1,
+  "frontendTests": {
+    "pass": 12,
+    "fail": 0
+  },
+  "backendTests": {
+    "pass": 4,
+    "fail": 0,
+    "environment": "H2 + mocked MQTT"
+  },
+  "builds": [
+    "Vite PASS",
+    "Docker app image build PASS; running services not restarted"
+  ],
+  "sensorReadings": 522,
+  "sqlMismatches": 0,
+  "commandsConfirmed": [
+    617,
+    618,
+    619,
+    620,
+    621,
+    622,
+    627,
+    628
+  ],
+  "commandsTimeout": [
+    623,
+    624,
+    625,
+    626
+  ],
+  "oldEvidenceFilesVerified": 73,
+  "brokerFaultInjection": "NOT TESTED",
+  "lateDuplicateReorderedHardwareAck": "NOT TESTED",
+  "physicalLedPhotoConfirmation": "Not collected in this session",
+  "finalHardware": "ONLINE; telemetry resumed; LED1 OFF, LED2 OFF"
+}

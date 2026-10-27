@@ -1,0 +1,516 @@
+{
+  "tests": [
+    {
+      "test": "Login user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile ownership user123",
+      "result": "PASS"
+    },
+    {
+      "test": "Login user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile ownership user124",
+      "result": "PASS"
+    },
+    {
+      "test": "Login user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile ownership user125",
+      "result": "PASS"
+    },
+    {
+      "test": "Wrong password rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Missing login fields rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/dashboard",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/sensor-data",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/action-history",
+      "result": "PASS"
+    },
+    {
+      "test": "No token /api/profile",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid JWT rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Expired JWT rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/dashboard",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Hardware state observed",
+      "result": "OBSERVED",
+      "status": "OFFLINE",
+      "lastSeenAt": "2026-10-27T10:37:07.705313Z"
+    },
+    {
+      "test": "Three actual chart series, max 15",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/sensor-data?size=0",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/action-history?page=-1",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/action-history?size=21",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/sensor-data?sortBy=unknown",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/action-history?status=unknown",
+      "result": "PASS"
+    },
+    {
+      "test": "Invalid query /api/sensor-data?from=2026-10-28T00:00:00Z&to=2026-10-27T00:00:00Z",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 sensor-data size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 action-history size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 sensor-data size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 action-history size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 sensor-data size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 action-history size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 sensor-data size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user123 action-history size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user123",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&device=LED1",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user123 {'device': 'LED1'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&action=OFF",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user123 {'action': 'OFF'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&status=PROCESSING",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user123 {'status': 'PROCESSING'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 sensor-data size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 action-history size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 sensor-data size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 action-history size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 sensor-data size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 action-history size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 sensor-data size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user124 action-history size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user124",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&device=LED1",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user124 {'device': 'LED1'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&action=OFF",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user124 {'action': 'OFF'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&status=PROCESSING",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user124 {'status': 'PROCESSING'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 sensor-data size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=5&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 action-history size=5",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 sensor-data size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=10&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 action-history size=10",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 sensor-data size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=15&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 action-history size=15",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/sensor-data?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 sensor-data size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&page=0&sortBy=ID&order=DESC",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Paging/sort user125 action-history size=20",
+      "result": "PASS"
+    },
+    {
+      "test": "History username schema user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&device=LED1",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user125 {'device': 'LED1'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&action=OFF",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user125 {'action': 'OFF'}",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/action-history?size=20&status=PROCESSING",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "History filter user125 {'status': 'PROCESSING'}",
+      "result": "PASS"
+    },
+    {
+      "test": "Profile PUT user125",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Profile PUT persisted",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Editing user125 does not change user123",
+      "result": "PASS"
+    },
+    {
+      "test": "Duplicate profile email rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "HTTP avatar rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Profile username spoof rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "GET /api/profile",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "test": "Restore original user125 profile fields",
+      "result": "PASS"
+    },
+    {
+      "test": "Command invalid/spoofed body rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Command invalid/spoofed body rejected",
+      "result": "PASS"
+    },
+    {
+      "test": "Unknown device rejected",
+      "result": "PASS"
+    }
+  ],
+  "commands": [],
+  "tokensSaved": false
+}

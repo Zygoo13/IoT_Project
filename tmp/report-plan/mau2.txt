@@ -1,0 +1,531 @@
+
+===== PDF PAGE 1 =====
+Báo Cáo IOT - Nguyễn Quốc Uy
+ Iot và ứng dụng (Học viện Công nghệ Bưu chính Viễn thông)
+Scan to open on Studeersnel
+Studocu is not sponsored or endorsed by any college or university
+ Báo Cáo IOT - Nguyễn Quốc Uy
+ Iot và ứng dụng (Học viện Công nghệ Bưu chính Viễn thông)
+Scan to open on Studeersnel
+Studocu is not sponsored or endorsed by any college or university
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 2 =====
+HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG 
+ 
+ 
+ 
+BÁO CÁO BÀI TẬP LỚN 
+IOT VÀ ỨNG DỤNG 
+ 
+Giảng viên hướng dẫn: Nguyễn Quốc Uy 
+Sinh viên thực hiện: Lê Quang Thắng 
+Mã sinh viên: 
+Nhóm lớp: 
+B22DCCN812 
+16 
+ 
+Hà Nội – 2025 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 3 =====
+LỜI CẢM ƠN 
+Để hoàn thiện bài báo cáo bài tập lớn môn học "IoT và Ứng dụng", em xin trân 
+trọng gửi lời cảm ơn chân thành và sâu sắc nhất tới thầy Nguyễn Quốc Uy. 
+Trong suốt quá trình học tập và thực hiện đề tài, em đã nhận được sự hướng dẫn, 
+chỉ bảo tận tình từ thầy. Những bài giảng tâm huyết và kiến thức chuyên môn quý báu mà 
+thầy truyền đạt chính là nền tảng vững chắc giúp em vượt qua khó khăn và hoàn thành tốt 
+nhất bài báo cáo này. 
+Một lần nữa, em xin kính chúc thầy dồi dào sức khỏe, hạnh phúc và luôn thành 
+công trong sự nghiệp giảng dạy. 
+Em xin chân thành cảm ơn! 
+      Hà Nội, ngày 27 tháng 9 năm 2025 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 4 =====
+ 
+MỤC LỤC 
+LỜI CẢM ƠN .................................................................................................................... 2 
+CHƯƠNG 1: GIỚI THIỆU BÀI TOÁN .......................................................................... 5 
+1.1. Đặt vấn đề ................................................................................................................. 5 
+CHƯƠNG 2: CÁC CHỨC NĂNG ................................................................................... 5 
+2.1. Các chức năng cơ bản ............................................................................................... 5 
+2.2. Các thiết bị được sử dụng ......................................................................................... 5 
+CHƯƠNG 3: GIAO DIỆN ................................................................................................ 6 
+3.1. Dashboard ................................................................................................................. 6 
+3.2. Data Sensor ............................................................................................................... 6 
+3.3. Active History ........................................................................................................... 7 
+3.4. Profile ....................................................................................................................... 9 
+CHƯƠNG 4: THIẾT KẾ HỆ THỐNG ........................................................................... 9 
+4.1. Phần cứng ................................................................................................................. 9 
+4.1.1. Các thiết bị và thành phần ................................................................................. 9 
+4.1.2. Thiết kế mạch .................................................................................................. 11 
+4.1.3. Lập trình cho mạch điều khiển ESP32 ............................................................ 11 
+4.2. Backend .................................................................................................................. 13 
+4.2.1. Thiết kế cơ sở dữ liệu ...................................................................................... 13 
+4.3. Xây dựng API Docs ................................................................................................ 14 
+4.3.1. Lấy dữ liệu cảm biến ....................................................................................... 15 
+4.3.2. Lấy lịch sử hoạt động ...................................................................................... 17 
+4.3.3. Lấy trạng thái thiết bị gần nhất ........................................................................ 20 
+4.6. Biểu đồ tuần tự ....................................................................................................... 21 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 5 =====
+4.7. Front-end ................................................................................................................ 23 
+4.8. Lấy dữ liệu từ server ............................................................................................... 24 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 6 =====
+CHƯƠNG 1: GIỚI THIỆU BÀI TOÁN 
+1.1. Đặt vấn đề: 
+Trong bối cảnh của cuộc Cách mạng công nghi ệp lần thứ tư, sự phát triển vũ bão 
+của công nghệ đã tạo ra những bước tiến đột phá, cải thiện sâu sắc chất lượng đời sống. 
+Giữa làn sóng đổi mới đó, Internet vạn vật (IoT - Internet of Things) đã khẳng định vị thế 
+là một công ngh ệ trụ cột, đóng vai trò then ch ốt trong vi ệc kiến tạo một tương lai thông 
+minh. Về bản chất, IoT tạo ra một hệ sinh thái nơi các thiết bị vật lý có thể kết nối, thu thập 
+và trao đổi dữ liệu thông qua mạng Internet, cho phép chúng tương tác và v ận hành một 
+cách tự động mà không đòi hỏi sự can thiệp trực tiếp từ con người.  
+CHƯƠNG 2: CÁC CHỨC NĂNG 
+2.1. Các chức năng cơ bản: 
+• Giám sát thông tin nhi ệt độ, độ ẩm, cường độ ánh sáng theo th ời gian t hực thông 
+qua các cảm biến. 
+• Điều khiển bật tắt các thiết bị đèn, quạt và điều hoà thông qua socket và giao th ức 
+MQTT. 
+• Theo dõi l ịch sử thông số cảm biến Data Sensor: Tìm ki ếm theo các tiêu chí, s ắp 
+xếp theo ID, nhiệt độ, độ ẩm, cường độ ánh sáng và thời gian. 
+• Theo dõi lịch sử bật tắt thiết bị Active History: Tìm kiếm theo các tiêu chí, sắp xếp 
+theo ID, thiết bị và thời gian. 
+2.2. Các thiết bị được sử dụng: 
+• Phần cứng:  
+o ESP32 
+o Cảm biến đo nhiệt độ, độ ẩm DHT11 
+o Cảm biến ánh sáng 4 pin 
+o 3 đèn led 
+• Phần mềm: 
+o Front-end: HTML, CSS 
+o Back-end: Nodejs 
+o MQTT broker: Mosquitto 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 7 =====
+CHƯƠNG 3: GIAO DIỆN 
+3.1. Dashboard: 
+Trang Dashboard hiển thị trực quan các thông số thu thập từ cảm biến nhiệt độ, độ 
+ẩm và ánh sáng. Dữ liệu được biểu diễn bằng biểu đồ động cho thấy sự thay đổi giá trị theo 
+thời gian, đồng thời cung cấp các nút thao tác để người dùng dễ dàng điều khiển thiết bị. 
+ 
+Hình 3.1. Trang Dashboard  
+3.2. Data Sensor: 
+ Trang Data Sensor lưu trữ lại các bản ghi dữ liệu thu được từ các cảm biến theo thời 
+gian thực. 
+• Bảng dữ liệu cảm biến (Data Sensor) gồm 5 cột chính: 
+o ID: Số thứ tự bản ghi. 
+o Nhiệt độ (°C): Giá trị đo từ cảm biến nhiệt độ. 
+o Độ ẩm (%): Giá trị đo từ cảm biến độ ẩm. 
+o Độ sáng (lux): Cường độ ánh sáng thu được từ cảm biến. 
+o Thời gian: Thời điểm ghi nhận dữ liệu. 
+• Trang Data Sensor có m ột khung tìm kiếm để người dùng tìm kiếm thông tin theo 
+mong muốn. 
+• Các nút cho phép sắp xếp các dữ liệu theo hướng tăng hoặc giảm dần. 
+• Trang Data Sensor được phân trang và mỗi trang chứa tối đa 50 bản ghi dữ liệu. 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 8 =====
+ 
+Hình 3.2. Trang Data Sensor (1) 
+ 
+ Hình 3.3. Trang Data Sensor (2) 
+3.3. Active History: 
+Trang Active History lưu trữ lại các bản ghi lịch sử hoạt động bật tắt của các thiết 
+bị theo thời gian thực. 
+• Bảng lịch sử hoạt động (Active History) gồm 4 cột chính: 
+o ID: Số thứ tự bản ghi. 
+o Thiết bị: Tên thiết bị được điều khiển (Quạt, Đèn, Điều hoà, …). 
+o Trạng thái: Trạng thái hiện tại của thiết bị (Bật/Tắt). 
+o Thời gian: Thời điểm ghi nhận thao tác điều khiển. 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 9 =====
+• Trang Active History có một khung tìm kiếm để người dùng tìm kiếm thông tin theo 
+mong muốn. 
+• Các nút cho phép sắp xếp các dữ liệu theo hướng tăng hoặc giảm dần. 
+• Trang Active History được phân trang và mỗi trang chứa tối đa 20 bản ghi dữ liệu. 
+Hình 3.4. Trang Active History (1) 
+ 
+Hình 3.5. Trang Active History (2) 
+ 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 10 =====
+3.4. Profile: 
+Trang Profile hiển thị các thông tin cá nhân và các đường dẫn đến Github, Figma và 
+tài liệu PDF mô tả dự án. 
+ 
+Hình 3.6. Trang Profile 
+CHƯƠNG 4: THIẾT KẾ HỆ THỐNG 
+4.1. Phần cứng: 
+4.1.1. Các thiết bị và thành phần: 
+Mạch bao gồm các thành phần: 
+Thành phần Hình ảnh thành phần 
+Mạch điều khiển ESP32 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 11 =====
+Cảm biến nhiệt độ, độ ẩm 
+DHT11 
+ 
+Cảm biến ánh sáng 4 pin 
+ 
+Led 5mm 
+ 
+Breadboard 
+ 
+Dây nối 
+ 
+ 
+ 
+ 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 12 =====
+4.1.2. Thiết kế mạch: 
+ 
+Hình 4.1. Thiết kế mạch 
+4.1.3. Lập trình cho mạch điều khiển ESP32: 
+ Sử dụng IDE Arduino cùng các thư viện PubSub, Wifi với ESP32. ESP32 được cấu 
+hình để kết nối mạng, trao đổi dữ liệu với các thiết bị và dịch vụ bên ngoài. Chương trình 
+sử dụng cơ chế callback để xử lý các sự kiện khi có tín hiệu hoặc dữ liệu gửi đến, giúp hệ 
+thống phản hồi kịp thời mà không làm gián đoạn các tác vụ khác. Nhờ vậy, việc điều khiển 
+và giám sát trên ESP32 trở nên linh hoạt và hiệu quả hơn. 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 13 =====
+ 
+Hình 4.2. Lập trình điều khiển cho ESP32 (1) 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 14 =====
+ 
+Hình 4.3. Lập trình điều khiển cho ESP32 (2) 
+Chương trình trên ESP32 được cấu hình để thực hiện cơ chế publish/subscribe với 
+Mosquitto Broker. Cách tiếp cận này cho phép thiết lập kênh giao tiếp hiệu quả giữa ESP32 
+và Backend Server thông qua giao th ức MQTT – một giao th ức nhẹ, tối ưu cho các ứng 
+dụng IoT và phù hợp với các thiết bị có tài nguyên hạn chế. 
+4.2. Backend: 
+4.2.1. Thiết kế cơ sở dữ liệu: 
+• Cơ sở dữ liệu sẽ gồm có 2 bảng chính: 
+o Data Sensor: 
+▪  ID (integer(10)): Mỗi bản ghi d ữ liệu sẽ có một ID duy nhất, giúp 
+phân biệt và truy xuất dữ liệu một cách chính xác. 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 15 =====
+▪ temperature (integer(10)): Lưu tr ữ giá trị nhiệt độ đo được tại một 
+thời điểm. 
+▪ humidity (integer(10)): Lưu trữ giá trị độ ẩm đo được. 
+▪ light (integer(10)): Lưu trữ giá trị cường độ ánh sáng đo được. 
+▪ datetime (timestamp): Ghi lại mốc thời gian chính xác (ngày và giờ) 
+khi dữ liệu được cảm biến gửi về. 
+o Active History: 
+▪ ID (integer(10)): Đảm bảo mỗi hành động được ghi lại là duy nhất. 
+▪ device (varchar(255)): Lưu tên của thiết bị đã được điều khiển.  
+▪ action (varchar(255)): Lưu hành động đã thực hiện trên thiết bị. 
+▪ time (timestamp): Ghi lại mốc thời gian chính xác khi hành động được 
+thực hiện. 
+ 
+Hình 4.4. Biểu đồ ERD 
+4.3. Xây dựng API Docs: 
+ Xây dựng API Docs sử dụng Postman: 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 16 =====
+Hình 4.5. Giao diện trang chủ Postman 
+4.3.1. Lấy dữ liệu cảm biến: 
+• Method: GET 
+• Endpoint: /api/sensors 
+• Mô tả: Trả về một danh sách dữ liệu từ các cảm biến, có bao gồm hỗ trợ phân 
+trang, tìm kiếm và sắp xếp 
+o http://localhost:3000/api/sensors 
+ 
+Hình 4.6. Test API phân trang dữ liệu từ cảm biến 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 17 =====
+o http://localhost:3000/api/sensors?page=2&limit=10 
+ 
+ 
+Hình 4.7. Test API phân trang dữ liệu từ cảm biến 
+o http://localhost:3000/api/sensors?sort_key=temp&sort_dir=ASC 
+ 
+ 
+Hình 4.8. Test API sắp xếp dữ liệu cảm biến 
+o http://localhost:3000/api/sensors?search=28.5 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 18 =====
+  
+Hình 4.9. Test API tìm kiếm dữ liệu cảm biến 
+ 
+4.3.2. Lấy lịch sử hoạt động: 
+• Method: GET 
+• Endpoint: /api/history 
+• Mô tả: Trả về lịch sử điều khiển bật tắt các thiết bị, có bao gồm hô trợ phân trang, 
+tìm kiếm và sắp xếp. 
+o http://localhost:3000/api/history 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 19 =====
+ 
+Hình 4.10. Test API tìm kiếm lịch sử hoạt động 
+o http://localhost:3000/api/history?search_field=action&search_value=ON 
+ 
+Hình 4.11. Test API tìm kiếm lịch sử hoạt động 
+o http://localhost:3000/api/history?page=2&limit=2 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 20 =====
+ 
+Hình 4.12. Test API tìm kiếm lịch sử hoạt động 
+o http://localhost:3000/api/history?sort_key=device&sort_dir=ASC 
+ 
+ 
+ 
+ Hình 4.13. Test API lấy lịch sử hoạt động 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 21 =====
+4.3.3. Lấy trạng thái thiết bị gần nhất: 
+• Method: GET 
+• Endpoint: /api/device-states 
+• Mô tả: Trả về trạng thái bật/tắt cuối cùng được ghi nhận của các thiết bị. 
+• http://localhost:3000/api/device-states 
+ 
+Hình 4.14. Test API lấy trạng thái thiết bị gần nhất 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 22 =====
+4.6. Biểu đồ tuần tự: 
+ 
+Hình 4.15. Biểu đồ tuần tự 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 23 =====
+Luồng 1: Phần cứng gửi dữ liệu cảm biến (1-6). Luồng này di ễn ra t ự động và liên t ục 
+(được bao trong khung loop). 
+• 1. Send data: Thiết bị Hardware (cảm biến) định kỳ đọc thông số (nhiệt độ, độ ẩm,...) 
+và gửi dữ liệu này đến MQTT. 
+• 2. Send data: MQTT broker nhận dữ liệu và chuyển tiếp đến Backend (vì Backend 
+đã đăng ký nhận tin từ topic này). 
+• 3. sub iot/sensor: Backend lắng nghe và nhận được dữ liệu từ MQTT. 
+• 4. save data: Backend xử lý và lưu dữ liệu này vào bảng Data_sensor trong cơ sở dữ 
+liệu. 
+• 5 & 6. call, return: B ảng Data_sensor xác nh ận việc lưu t rữ thành công và tr ả kết 
+quả về cho Backend. 
+Luồng 2: Người dùng xem dữ liệu thời gian thực (7-13) 
+• 7. open web: Actor (người dùng) mở trang web. 
+• 8. call api to get data: Frontend (trang web) ngay l ập tức gọi một API tới Backend 
+để lấy dữ liệu cảm biến mới nhất. 
+• 9. /api/sensor: Backend nhận yêu cầu, bắt đầu truy vấn cơ sở dữ liệu. 
+• 10 & 11. call, return: Backend thực hiện một cuộc gọi (query) đến bảng Data_sensor 
+để lấy bản ghi gần nhất. Bảng này trả dữ liệu về. 
+• 12 & 13. return, display: Backend trả dữ liệu về cho Frontend, và Frontend hiển thị 
+các thông số này ra cho người dùng xem. 
+Luồng 3: Người dùng điều khiển bật/tắt thiết bị (14-25) 
+• 14. turn on/off: Actor nhấn nút bật/tắt một thiết bị trên giao diện. 
+• 15. call api: Frontend gửi một yêu cầu API đến Backend để thay đổi trạng thái thiết 
+bị. 
+• 16. /api/states-device: Backend nhận yêu cầu và trước tiên, nó ghi lại hành động này 
+vào bảng Active_history (bước 22, 23). 
+• 17. pub iot/control: Backend công bố (publish) một lệnh điều lên MQTT. 
+• 18. send to hardware: MQTT chuyển tiếp lệnh này đến Hardware. 
+• 19. sub iot/control: Hardware (đã đăng ký nghe l ệnh từ topic này) nhận được lệnh 
+và thực thi. 
+• 20 & 21. display on/off, send to backend: Hardware có thể gửi một thông điệp phản 
+hồi về Backend (thông qua MQTT) để xác nhận đã thực hiện lệnh. 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 24 =====
+• 24 & 25. return, display: Backend tr ả kết quả về cho Frontend để cập nhật lại giao 
+diện. 
+Luồng 4 & 5: Người dùng xem trang lịch sử (26-39). Hai luồng này có cấu trúc tương tự 
+nhau: Người dùng yêu cầu, Frontend gọi API, Backend truy vấn CSDL và trả dữ liệu về. 
+• Xem lịch sử hoạt động (26-32): 
+o Người dùng mở trang lịch sử thiết bị. 
+o Frontend gọi API /api/history tới Backend. 
+o Backend truy vấn bảng Active_history để lấy danh sách các hành động. 
+o Dữ liệu được trả về và hiển thị trên Frontend. 
+• Xem lịch sử dữ liệu cảm biến (33-39): 
+o Người dùng mở trang lịch sử cảm biến. 
+o Frontend gọi API /api/sensor tới Backend. 
+o Backend truy vấn bảng Data_sensor. 
+o Dữ liệu được trả về và hiển thị dưới dạng biểu đồ hoặc bảng trên Frontend. 
+4.7. Front-end: 
+Trong xây dựng Front-End, ba công cụ nền tảng không thể thiếu là HTML, CSS và 
+JavaScript. 
+• HTML đóng vai trò là bộ khung nội dung và cấu trúc của trang web, xác định các 
+thành phần như tiêu đề, đoạn văn, hình ảnh, bảng biểu... 
+• CSS chịu trách nhiệm về hình thức và phong cách trình bày, giúp trang web trở 
+nên trực quan, đẹp mắt thông qua màu sắc, bố cục, font chữ và hiệu ứng giao diện. 
+• JavaScript đảm nhận phần hành vi, mang đến sự tương tác và động cho trang 
+web, ví dụ như xử lý sự kiện, cập nhật dữ liệu theo thời gian thực hay điều khiển 
+logic phía client. 
+Sự kết hợp của HTML – CSS – JavaScript tạo nên một giao diện web hoàn chỉnh, vừa 
+có cấu trúc chặt chẽ, vừa thẩm mỹ, lại tương tác linh hoạt với người dùng. 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 25 =====
+ 
+Hình 4.16. Các công cụ xây dựng FE 
+4.8. Lấy dữ liệu từ server: 
+Để tương tác với Backend Server, hệ thống sử dụng hai cơ chế chính, mỗi cơ chế 
+phù hợp với một mục đích riêng: 
+• Xử lý dữ liệu thời gian thực: 
+Sử dụng Socket.IO để thiết lập kết nối liên tục, lắng nghe và nhận dữ liệu realtime 
+từ server. 
+• Xử lý các yêu cầu thông thường (API): 
+Sử dụng HTTP request (fetch request) để gửi yêu cầu và nhận phản hồi từ server. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641
+
+
+===== PDF PAGE 26 =====
+Github dự án: 
++ https://github.com/ThangLeDepTraiVcl/IOT-Project.git 
+ Downloaded by Hoang Anh (quocanh033009@gmail.com)
+ Scan to open on Studeersnel
+lOMoARcPSD|70084641

@@ -1,0 +1,13 @@
+test	result	evidence	limitation
+T01 Three sensors MQTT-STOMP-SQL	PASS	F23-telemetry-comparison.json; db-observed-sensor-data.tsv	420 observations, not a long-term load test
+T02 Physical light change	PASS	MQTT/STOMP trace and Dashboard images	User changed illumination; lux is uncalibrated estimate
+T564 LED1 ON	CONFIRMED	F24-command-comparison.json; db-report-action-history.tsv	Physical LED photo/Serial still required for visual proof
+T565 LED2 ON	CONFIRMED	F24-command-comparison.json; db-report-action-history.tsv	Physical LED photo/Serial still required for visual proof
+T566 LED1 OFF	CONFIRMED	F24-command-comparison.json; db-report-action-history.tsv	Physical LED photo/Serial still required for visual proof
+T567 LED2 OFF	CONFIRMED	F24-command-comparison.json; db-report-action-history.tsv	Physical LED photo/Serial still required for visual proof
+T568 LED1 ON	TIMEOUT_VERIFIED	F24-command-comparison.json; db-report-action-history.tsv	Device remained last-confirmed OFF; no status acknowledgment
+T569 LED2 ON	TIMEOUT_VERIFIED	F24-command-comparison.json; db-report-action-history.tsv	Device remained last-confirmed OFF; no status acknowledgment
+T09 Hardware Offline	PASS	hardware-state-events.json; F10f-dashboard-hardware-offline.png	User unplugged; exact removal time not measured
+T10 Processing filter with live pending row	NOT_CAPTURED	F18a-history-processing.png	Screenshot shows empty results after timeout; do not use as proof of a pending row
+T11 Firmware binary and physical wiring	USER_CONFIRMATION_REQUIRED	hardware-photos/	Source on disk does not prove flashed firmware or physical resistor values
+T12 MQTT/Wi-Fi fault and late/duplicate ACK	NOT_TESTED	No simulated packets injected	Do not cite old BTH3 simulation as real-hardware evidence

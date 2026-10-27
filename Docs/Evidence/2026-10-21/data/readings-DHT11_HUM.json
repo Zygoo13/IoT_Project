@@ -1,0 +1,168 @@
+{
+  "content": [
+    {
+      "id": 9205,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 50.2,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:46.851908Z"
+    },
+    {
+      "id": 9202,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 50.1,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:44.876262Z"
+    },
+    {
+      "id": 9199,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 50.1,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:42.901903Z"
+    },
+    {
+      "id": 9196,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 50,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:40.912489Z"
+    },
+    {
+      "id": 9193,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.8,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:39.142455Z"
+    },
+    {
+      "id": 9190,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.8,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:37.021416Z"
+    },
+    {
+      "id": 9187,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.7,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:35.221896Z"
+    },
+    {
+      "id": 9184,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.7,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:33.185941Z"
+    },
+    {
+      "id": 9181,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.7,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:31.244543Z"
+    },
+    {
+      "id": 9178,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.7,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:29.308594Z"
+    },
+    {
+      "id": 9175,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.6,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:27.591068Z"
+    },
+    {
+      "id": 9172,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.5,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:25.515055Z"
+    },
+    {
+      "id": 9169,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.4,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:23.761384Z"
+    },
+    {
+      "id": 9166,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.4,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:21.064306Z"
+    },
+    {
+      "id": 9163,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.4,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:18.571683Z"
+    },
+    {
+      "id": 9160,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.4,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:16.896851Z"
+    },
+    {
+      "id": 9157,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.4,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:14.948623Z"
+    },
+    {
+      "id": 9154,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.4,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:12.944638Z"
+    },
+    {
+      "id": 9151,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.4,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:10.966908Z"
+    },
+    {
+      "id": 9148,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 49.4,
+      "unit": "%RH",
+      "recordedAt": "2026-10-20T19:31:08.904751Z"
+    }
+  ],
+  "page": 0,
+  "size": 20,
+  "totalElements": 2951,
+  "totalPages": 148
+}

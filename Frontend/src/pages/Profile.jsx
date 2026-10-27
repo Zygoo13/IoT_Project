@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import defaultAvatar from "../assets/avatar.jpg";
+import defaultAvatar from "../assets/profile-avatar.jpg";
 import { requestApi } from "../services/api";
 
 const FORM_FIELDS = [
@@ -277,7 +277,7 @@ export default function Profile() {
               </section>
 
               <section className="profile-links">
-                <h2>Liên kết đồ án</h2>
+                <h2>Liên kết</h2>
 
                 <div className="profile-link-list">
                   {PROJECT_LINKS.map(({ label, field }) =>

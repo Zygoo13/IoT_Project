@@ -1,0 +1,168 @@
+{
+  "content": [
+    {
+      "id": 11560,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 83.728,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T11:41:52.799711Z"
+    },
+    {
+      "id": 11559,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 48.6,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T11:41:52.778338Z"
+    },
+    {
+      "id": 11558,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 27.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T11:41:52.608233Z"
+    },
+    {
+      "id": 11557,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 82.816,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T11:41:50.756579Z"
+    },
+    {
+      "id": 11556,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 48.6,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T11:41:50.737662Z"
+    },
+    {
+      "id": 11555,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 27.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T11:41:50.710173Z"
+    },
+    {
+      "id": 11554,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 83.488,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T11:41:48.842574Z"
+    },
+    {
+      "id": 11553,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 48.6,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T11:41:48.827055Z"
+    },
+    {
+      "id": 11552,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 27.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T11:41:48.782329Z"
+    },
+    {
+      "id": 11551,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 83.056,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T11:41:47.113049Z"
+    },
+    {
+      "id": 11550,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 48.6,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T11:41:47.096479Z"
+    },
+    {
+      "id": 11549,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 27.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T11:41:46.866615Z"
+    },
+    {
+      "id": 11548,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 83.344,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T11:41:45.018649Z"
+    },
+    {
+      "id": 11547,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 48.6,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T11:41:45.005809Z"
+    },
+    {
+      "id": 11546,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 27.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T11:41:44.953171Z"
+    },
+    {
+      "id": 11545,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 83.392,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T11:41:43.289329Z"
+    },
+    {
+      "id": 11544,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 48.6,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T11:41:43.180899Z"
+    },
+    {
+      "id": 11543,
+      "sensorCode": "DHT11_TEMP",
+      "sensorType": "TEMPERATURE",
+      "value": 27.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-27T11:41:43.041318Z"
+    },
+    {
+      "id": 11542,
+      "sensorCode": "LDR_LIGHT",
+      "sensorType": "LIGHT",
+      "value": 83.392,
+      "unit": "lux",
+      "recordedAt": "2026-10-27T11:41:41.190929Z"
+    },
+    {
+      "id": 11541,
+      "sensorCode": "DHT11_HUM",
+      "sensorType": "HUMIDITY",
+      "value": 48.6,
+      "unit": "%RH",
+      "recordedAt": "2026-10-27T11:41:41.175043Z"
+    }
+  ],
+  "page": 0,
+  "size": 20,
+  "totalElements": 11215,
+  "totalPages": 561
+}
