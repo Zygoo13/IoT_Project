@@ -29,12 +29,8 @@ public class OpenApiConfig {
                 .description("Chỉ có khi lệnh đã lưu nhưng publish MQTT thất bại."));
         error.setRequired(List.of("code", "message"));
         return new OpenAPI()
-                .info(new Info().title("IoT Monitor API").version("BTH4")
-                        .description("Đăng nhập bằng tài khoản cục bộ, sao chép token vào Authorize. "
-                                + "Không nhập tiền tố Bearer. Thời gian JSON là UTC; page bắt đầu từ 0, size tối đa 20. "
-                                + "HTTP 202 chỉ xác nhận đã nhận lệnh; trạng thái đèn chờ MQTT status. "
-                                + "MQTT và STOMP /ws được mô tả trong Backend/CONTRACT.md; Swagger thử REST."))
-                .servers(List.of(new Server().url("/").description("Cùng origin với Swagger UI")))
+                .info(new Info().title("IoT Monitor API").version("BTH4"))
+                .servers(List.of(new Server().url("/").description("Máy chủ hiện tại")))
                 .components(new Components().addSchemas("ApiError", error)
                         .addSecuritySchemes("bearerAuth", new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))

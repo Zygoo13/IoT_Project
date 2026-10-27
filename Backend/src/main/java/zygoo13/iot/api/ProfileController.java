@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Profile", description = "Hồ sơ của User xác định từ JWT; không trả passwordHash.")
+@Tag(name = "Profile", description = "Hồ sơ cá nhân")
 @RestController
 @RequestMapping("/api/profile")
 public class ProfileController {

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Devices", description = "Gửi lệnh LED qua MQTT; không tự xác nhận trạng thái.")
+@Tag(name = "Devices", description = "Điều khiển LED")
 @RestController
 public class DeviceCommandController {
     private final DeviceCommandService commands;

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import zygoo13.iot.entity.User;
 import zygoo13.iot.repository.UserRepository;
 
-@Tag(name = "Auth", description = "Đăng nhập, không có đăng ký tài khoản.")
+@Tag(name = "Auth", description = "Đăng nhập")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
